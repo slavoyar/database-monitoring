@@ -1,0 +1,6 @@
+{
+  "npm.enableRunFromFolder": true,
+  "eslint.workingDirectories": ["./frontend"],
+  "typescript.validate.enable": false,
+  "editor.formatOnSave": true
+}
