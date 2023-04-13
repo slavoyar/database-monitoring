@@ -1,12 +1,12 @@
-const path = require('path');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
+const path = require('path')
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
 
-let mode = 'development';
+let mode = 'development'
 if (process.env.NODE_ENV === 'production') {
-  mode = 'production';
+  mode = 'production'
 }
-const devtool = mode === 'production' ? false : 'inline-source-map';
+const devtool = mode === 'production' ? false : 'inline-source-map'
 
 module.exports = {
   entry: './src/index.tsx',
@@ -14,21 +14,21 @@ module.exports = {
   devtool,
   plugins: [
     new MiniCssExtractPlugin(),
-    new HtmlWebpackPlugin(
-    {
+    new HtmlWebpackPlugin({
       template: './public/index.html',
       filename: './index.html',
-      favicon: './public/favicon.ico'
-    })
-    ],
+      favicon: './public/favicon.ico',
+      manifest: 'public/manifest.json',
+    }),
+  ],
   module: {
     rules: [
       {
-        test: /\.(js|jsx)$/, 
+        test: /\.(js|jsx)$/,
         exclude: /node_modules/,
-        loader: "babel-loader",
+        loader: 'babel-loader',
       },
-      { 
+      {
         test: /\.(ts|tsx)$/,
         use: {
           loader: 'ts-loader',
@@ -38,27 +38,24 @@ module.exports = {
             },
           },
         },
-      },  
-      { 
+      },
+      {
         test: /\.(html)$/,
         loader: 'html-loader',
       },
       {
         test: /\.(s[ac]|c)ss$/i,
-        use: [
-          MiniCssExtractPlugin.loader,
-          'css-loader',
-        ],
+        use: [MiniCssExtractPlugin.loader, 'css-loader'],
       },
       {
-        test: /\.(png|svg|jpg|jpeg|gif|ico)$/,
+        test: /\.(png|svg|jpg|jpeg|gif|ico|json)$/,
         exclude: /node_modules/,
-        use: ['file-loader?name=[name].[ext]']
-      }
+        use: ['file-loader?name=[name].[ext]'],
+      },
     ],
   },
   resolve: {
-    extensions: ["*", ".js", ".jsx", ".ts", ".tsx"],  
+    extensions: ['*', '.js', '.jsx', '.ts', '.tsx'],
   },
   output: {
     filename: 'bundle.js',
@@ -67,5 +64,8 @@ module.exports = {
   },
   devServer: {
     hot: true,
+    static: {
+      directory: path.join(__dirname, 'public'),
+    },
   },
-};
+}
