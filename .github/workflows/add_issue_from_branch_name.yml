@@ -22,7 +22,7 @@ jobs:
         uses: actions/github-script@v6
         with:
           script: |
-            import octokit from '@octokit/rest';
+            const octokit = require('@octokit/rest')();
             const prBranchName = context.payload.pull_request.head.ref;
             const prDescription = context.payload.pull_request.body;
             const issueNumberRegex = /#(\d+)/g;
@@ -38,5 +38,3 @@ jobs:
               pull_number: context.payload.pull_request.number,
               body: updatedDescription
             });
-        env:
-          type: module
