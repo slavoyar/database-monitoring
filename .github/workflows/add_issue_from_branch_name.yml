@@ -38,3 +38,5 @@ jobs:
               pull_number: context.payload.pull_request.number,
               body: updatedDescription
             });
+        env:
+          type: module
