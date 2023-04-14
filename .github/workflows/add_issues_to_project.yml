@@ -13,16 +13,16 @@ jobs:
     name: Add issue to project
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/add-to-project@RELEASE_VERSION
+      - uses: actions/add-to-project@v0.5.0
         with:
           project-url: https://github.com/users/slavoyar/projects/2/
           github-token: ${{ secrets.PERSONAL_TOKEN }}
 
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
-      - name: Set Project Status
-        uses: "peter-evans/create-or-update-project@v2"
+      - name: Create or Update Project Card
+        uses: peter-evans/create-or-update-project-card@v2.0.1
         with:
           project-name: "DatabaseMonitoring"
           column-name: "Backlog"
