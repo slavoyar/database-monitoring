@@ -22,17 +22,17 @@ jobs:
         uses: actions/github-script@v6
         with:
           script: |
-            const {octokit} = require('@octokit/rest');
+            const {Octokit} = require('@octokit/rest');
             const prBranchName = context.payload.pull_request.head.ref;
             const prDescription = context.payload.pull_request.body;
             const issueNumberRegex = /#(\d+)/g;
             const issueNumber = prBranchName.split('-')[0];
-            octokit.authenticate({
+            Octokit.authenticate({
               type: 'token',
               token: process.env.GITHUB_TOKEN
             });
             const updatedDescription = prDescription + "\n\n" + "Closes #" + issueNumber;
-            await octokit.pullRequests.update({
+            await Octokit.pullRequests.update({
               owner: context.repo.owner,
               repo: context.repo.repo,
               pull_number: context.payload.pull_request.number,
