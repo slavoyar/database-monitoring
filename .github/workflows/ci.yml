@@ -27,7 +27,7 @@ jobs:
         run: cd ./src/Webapp && npm install
 
       - name: Lint
-        run: npm run lint
+        run: cd ./src/Webapp && npm run lint
 
       - name: Build
-        run: npm run build
+        run: cd ./src/Webapp && npm run build
