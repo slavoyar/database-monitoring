@@ -1,0 +1,38 @@
+name: Add Issue Link
+on:
+  pull_request:
+    types:
+      - open
+
+jobs:
+  add_issue_link:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up environment variable for token
+        run: echo "GITHUB_TOKEN=${{ secrets.PERSONAL_TOKEN }}" >> $GITHUB_ENV
+
+      - name: Install dependencies
+        run: npm install @octokit/rest
+
+      - name: Add Issue Link
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const {Octokit} = require('@octokit/rest');
+            const octokit = new Octokit({
+              auth: process.env.GITHUB_TOKEN
+              });
+            const prBranchName = context.payload.pull_request.head.ref;
+            const prDescription = context.payload.pull_request.body;
+            const issueNumberRegex = /#(\d+)/g;
+            const issueNumber = prBranchName.split('-')[0];
+            const updatedDescription = prDescription + "\n\n" + "Closes #" + issueNumber;
+            await octokit.rest.pulls.update({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.payload.pull_request.number,
+              body: updatedDescription
+            });
