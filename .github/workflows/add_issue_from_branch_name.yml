@@ -1,0 +1,36 @@
+name: Add Issue Link
+on:
+  pull_request:
+    types:
+      - synchronize
+
+jobs:
+  add_issue_link:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up environment variable for token
+        run: echo "GITHUB_TOKEN=${{ secrets.PERSONAL_TOKEN }}" >> $GITHUB_ENV
+
+      - name: Add Issue Link
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const prBranchName = context.payload.pull_request.head.ref;
+            const prDescription = context.payload.pull_request.body;
+            const issueNumberRegex = /#(\d+)/g;
+            const issueNumber = prBranchName.split('-')[0];
+            const octokit = require('@octokit/rest')();
+            octokit.authenticate({
+              type: 'token',
+              token: process.env.GITHUB_TOKEN
+            });
+            const updatedDescription = prDescription + "\n\n" + "Closes #" + issueNumber;
+            await octokit.pullRequests.update({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.payload.pull_request.number,
+              body: updatedDescription
+            });

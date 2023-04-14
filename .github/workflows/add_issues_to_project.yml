@@ -1,0 +1,30 @@
+name: Add issues on creating to project database-monitoring
+
+on:
+  pull_request:
+    types:
+      - opened
+  issues:
+    types:
+      - opened
+
+jobs:
+  add-to-project:
+    name: Add issue to project
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/add-to-project@RELEASE_VERSION
+        with:
+          project-url: https://github.com/users/slavoyar/projects/2/
+          github-token: ${{ secrets.PERSONAL_TOKEN }}
+
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set Project Status
+        uses: "peter-evans/create-or-update-project@v2"
+        with:
+          project-name: "DatabaseMonitoring"
+          column-name: "Backlog"
+          issue: ${{ github.event.issue.number }}
+          token: ${{ secrets.PERSONAL_TOKEN }}
