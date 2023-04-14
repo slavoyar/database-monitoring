@@ -19,5 +19,5 @@ jobs:
         with:
           project-name: DatabaseMonitoring
           column-name: Backlog
-          issue: ${{ github.event.issue.number }}
+          issue-number: ${{ github.event.issue.number }}
           token: ${{ secrets.PERSONAL_TOKEN }}
