@@ -2,7 +2,7 @@ name: Add Issue Link
 on:
   pull_request:
     types:
-      - open
+      - opened
 
 jobs:
   add_issue_link:
