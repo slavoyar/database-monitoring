@@ -20,7 +20,8 @@
     "paths": {
       "css/*": ["src/css/*"],
       "components/*": ["src/components/*"],
-      "api/*": ["src/api/*"]
+      "api/*": ["src/api/*"],
+      "pages/*": ["src/pages/*"]
     }
   },
   "include": ["src"]
