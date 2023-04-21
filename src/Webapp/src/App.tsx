@@ -1,8 +1,7 @@
 import React, { FC } from 'react'
-import Navbar from './components/common/Navbar/Navbar'
-
 import { BrowserRouter } from 'react-router-dom'
-import { Layout, Menu, MenuProps } from 'antd'
+import { Layout } from 'antd'
+import Navbar from 'components/common/Navbar/Navbar'
 
 const { Content } = Layout
 
