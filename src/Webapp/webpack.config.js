@@ -1,6 +1,7 @@
 const path = require('path')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
+const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin')
 
 let mode = 'development'
 if (process.env.NODE_ENV === 'production') {
@@ -18,7 +19,7 @@ module.exports = {
       template: './public/index.html',
       filename: './index.html',
       favicon: './public/favicon.ico',
-      manifest: 'public/manifest.json',
+      manifest: './public/manifest.json',
     }),
   ],
   module: {
@@ -55,7 +56,14 @@ module.exports = {
     ],
   },
   resolve: {
-    extensions: ['*', '.js', '.jsx', '.ts', '.tsx'],
+    plugins: [
+      new TsconfigPathsPlugin({
+        baseUrl: path.resolve(__dirname, '.'),
+        configFile: path.resolve(__dirname, './tsconfig.json'),
+        extensions: ['.js', '.ts', '.tsx'],
+      }),
+    ],
+    extensions: ['.js', '.jsx', '.ts', '.tsx', '.css', '.json'],
   },
   output: {
     filename: 'bundle.js',
