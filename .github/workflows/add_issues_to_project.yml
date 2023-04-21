@@ -16,7 +16,6 @@ jobs:
       - name: Create or Update Project Card
         uses: peter-evans/create-or-update-project-card@v2.0.1
         with:
-          project-name: 2
+          project-name: DatabaseMonitoring
           column-name: Backlog
           issue-number: ${{ github.event.issue.number }}
-          token: ${{ secrets.PERSONAL_TOKEN }}
