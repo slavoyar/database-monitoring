@@ -4,5 +4,5 @@
 }
 
 .dashboard-content {
-  background: rgb(240, 242, 245);
+  height: calc(100vh - 64px);
 }

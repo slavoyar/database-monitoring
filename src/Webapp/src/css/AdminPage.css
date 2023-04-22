@@ -1,7 +1,7 @@
 .sidebar-layout {
-  height: 100vh;
+  height: calc(100vh - 64px);
 }
 
 .admin-page-content {
-  padding: 20px;
+  padding: 50px 100px;
 }
