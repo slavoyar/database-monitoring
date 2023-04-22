@@ -1,6 +1,6 @@
 import React, { FC } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Form, Input, Button } from 'antd'
+import { Form, Input, Button, Layout } from 'antd'
 import { ValidateErrorEntity } from 'rc-field-form/es/interface'
 import 'css/LoginPage.css'
 
@@ -22,40 +22,42 @@ const LoginPage: FC = () => {
   }
 
   return (
-    <div className='login-page'>
-      <h1>Авторизация</h1>
-      <Form
-        name='login'
-        labelCol={{ span: 4 }}
-        wrapperCol={{ span: 20 }}
-        initialValues={{ remember: true }}
-        autoComplete='off'
-        className='login-form'
-        onFinish={onFinish}
-        onFinishFailed={onFinishFailed}
-      >
-        <Form.Item
-          label='Логин'
+    <Layout className='login-layout'>
+      <div className='login-container'>
+        <h1>Авторизация</h1>
+        <Form
           name='login'
-          rules={[{ required: true, message: 'Пожалуйста введите логин!' }]}
+          labelCol={{ span: 4 }}
+          wrapperCol={{ span: 20 }}
+          initialValues={{ remember: true }}
+          autoComplete='off'
+          className='login-form'
+          onFinish={onFinish}
+          onFinishFailed={onFinishFailed}
         >
-          <Input />
-        </Form.Item>
+          <Form.Item
+            label='Логин'
+            name='login'
+            rules={[{ required: true, message: 'Пожалуйста введите логин!' }]}
+          >
+            <Input />
+          </Form.Item>
 
-        <Form.Item
-          label='Пароль'
-          name='password'
-          rules={[{ required: true, message: 'Пожалуйста введите пароль!' }]}
-        >
-          <Input.Password />
-        </Form.Item>
-        <Form.Item wrapperCol={{ span: 24 }}>
-          <Button type='primary' htmlType='submit'>
-            Войти
-          </Button>
-        </Form.Item>
-      </Form>
-    </div>
+          <Form.Item
+            label='Пароль'
+            name='password'
+            rules={[{ required: true, message: 'Пожалуйста введите пароль!' }]}
+          >
+            <Input.Password />
+          </Form.Item>
+          <Form.Item wrapperCol={{ span: 24 }}>
+            <Button type='primary' htmlType='submit'>
+              Войти
+            </Button>
+          </Form.Item>
+        </Form>
+      </div>
+    </Layout>
   )
 }
 

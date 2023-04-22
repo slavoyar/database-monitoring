@@ -1,7 +1,7 @@
-.login-page {
+.login-container {
   display: block;
   text-align: center;
-  max-width: 500px;
+  min-width: 500px;
   margin: 150px auto;
   padding: 20px;
   border-radius: 10px;
@@ -10,4 +10,8 @@
 
 .login-form button {
   width: 100%;
+}
+
+.login-layout {
+  height: 100vh;
 }
