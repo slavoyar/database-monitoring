@@ -1,11 +1,11 @@
-import React, { FC } from 'react'
+import React, { FC, ReactNode } from 'react'
 import { Layout } from 'antd'
 import Navbar from 'components/common/Navbar'
 import Sidebar from 'components/common/Sidebar'
 import 'css/AdminPage.css'
 
 interface AdminPageProps {
-  children: string
+  children: ReactNode
 }
 
 const AdminPage: FC<AdminPageProps> = ({ children }: AdminPageProps) => (

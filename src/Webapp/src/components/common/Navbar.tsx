@@ -11,7 +11,7 @@ const Navbar: FC = () => {
   const navigate = useNavigate()
   const location = useLocation()
   const onLogoClick = () => {
-    if (location.pathname.includes(Path.dashboard)) {
+    if (!location.pathname.includes(Path.dashboard)) {
       navigate(`/${Path.dashboard}`)
     }
   }
@@ -24,16 +24,16 @@ const Navbar: FC = () => {
         theme='dark'
         className='navbar-menu'
         mode='horizontal'
-        defaultSelectedKeys={['/dashboard']}
+        defaultSelectedKeys={[`/${Path.dashboard}`]}
       >
         <Menu.Item key='/dashboard'>
-          <Link to='/dashboard'>
+          <Link to={`/${Path.dashboard}`}>
             <DashboardOutlined />
             Обзорная панель
           </Link>
         </Menu.Item>
         <Menu.Item key='stats'>
-          <Link to='/dashboard'>
+          <Link to={`/${Path.dashboard}`}>
             <LineChartOutlined />
             Статистика
           </Link>
