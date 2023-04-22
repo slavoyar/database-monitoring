@@ -1,11 +1,4 @@
 {
-  "settings": {
-    "import/resolver": {
-      "node": {
-        "extensions": [".js", ".jsx", ".ts", ".tsx"]
-      }
-    }
-  },
   "env": {
     "browser": true,
     "es2021": true
@@ -50,5 +43,13 @@
         "tsx": "never"
       }
     ]
+  },
+  "settings": {
+    "import/resolver": {
+      "node": {
+        "extensions": [".js", ".jsx", ".ts", ".tsx"]
+      },
+      "typescript": { "project": "./tsconfig.json" }
+    }
   }
 }

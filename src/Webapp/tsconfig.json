@@ -15,7 +15,14 @@
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react-jsx",
-    "sourceMap": true
+    "sourceMap": true,
+    "baseUrl": ".",
+    "paths": {
+      "css/*": ["src/css/*"],
+      "components/*": ["src/components/*"],
+      "api/*": ["src/api/*"],
+      "pages/*": ["src/pages/*"]
+    }
   },
   "include": ["src"]
 }

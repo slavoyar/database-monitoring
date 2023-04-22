@@ -1,0 +1,39 @@
+
+.header {
+  display: flex;
+  font-size: 18px;
+}
+
+
+.logo {
+  float: left;
+  width: 120px;
+  height: 31px;
+  margin: 16px 24px 16px 0;
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.navbar-menu {
+  width: 100%;
+}
+
+.navbar-menu a span {
+  padding-right: 5px;
+  font-size: 100%;
+}
+
+.navbar-settings {
+  display: flex;
+}
+
+.navbar-settings a {
+  color: white;
+}
+
+.navbar-workspace-select {
+  min-width: 150px;
+  display: flex;
+  align-items: center;
+  margin-right: 10px;
+}
+
