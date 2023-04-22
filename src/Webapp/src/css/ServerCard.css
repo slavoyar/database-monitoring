@@ -1,0 +1,9 @@
+.server-card .ant-card-extra{
+  font-size: 20px;
+}
+
+.server-card {
+  width: 20em;
+  display: inline-block;
+  margin: 10px;
+}

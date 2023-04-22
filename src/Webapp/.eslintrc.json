@@ -14,6 +14,10 @@
   },
   "plugins": ["react", "react-hooks", "@typescript-eslint", "prettier"],
   "rules": {
+    "no-unused-vars": "off",
+    "no-shadow": "off",
+    "@typescript-eslint/no-shadow": ["error"],
+    "@typescript-eslint/no-unused-vars": "error",
     "react/react-in-jsx-scope": "off",
     "react/function-component-definition": [
       2,
@@ -22,6 +26,7 @@
         "unnamedComponents": "arrow-function"
       }
     ],
+    "react/jsx-props-no-spreading": "off",
     "camelcase": "error",
     "spaced-comment": "error",
     "quotes": ["error", "single"],
