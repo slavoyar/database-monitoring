@@ -1,5 +1,6 @@
 import React, { FC } from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import LoginPage from 'pages/LoginPage'
 
 const App: FC = () => (
   <BrowserRouter>
@@ -10,7 +11,7 @@ const App: FC = () => (
           <Route path='servers' />
           <Route path='users' />
         </Route>
-        <Route path='auth' />
+        <Route path='login' element={<LoginPage />} />
       </Route>
     </Routes>
   </BrowserRouter>
