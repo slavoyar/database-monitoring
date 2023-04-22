@@ -1,0 +1,8 @@
+.card-container {
+  max-width: 80rem;
+  margin: auto;
+}
+
+.dashboard-content {
+  background: rgb(240, 242, 245);
+}

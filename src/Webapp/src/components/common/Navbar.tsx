@@ -9,15 +9,20 @@ const { Header } = Layout
 const Navbar: FC = () => (
   <Header className='header'>
     <div className='logo' />
-    <Menu theme='dark' className='navbar-menu' mode='horizontal' defaultSelectedKeys={['/']}>
-      <Menu.Item key='/'>
-        <Link to='/'>
+    <Menu
+      theme='dark'
+      className='navbar-menu'
+      mode='horizontal'
+      defaultSelectedKeys={['/dashboard']}
+    >
+      <Menu.Item key='/dashboard'>
+        <Link to='/dashboard'>
           <DashboardOutlined />
           Обзорная панель
         </Link>
       </Menu.Item>
       <Menu.Item key='stats'>
-        <Link to='/stats'>
+        <Link to='/dashboard'>
           <LineChartOutlined />
           Статистика
         </Link>
