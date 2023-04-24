@@ -1,0 +1,41 @@
+Что бы пользоваться данной приблудой:
+
+1. Запустить сервер RabbitMq на компе
+    windows: https://community.chocolatey.org/packages/rabbitmq
+
+2. Добавить ссылки на библиотеки EventBus и EventBusRabbitMQ
+
+
+                    Работа с библиотеками
+1. Регистрируем EventBusRabbitMq (см. EventBusTest Program.cs 39 строчка)
+    1.1 HostName для ConnectionFactory в нашем случае localhost
+        если будем запускать в кубере или докере поменяем
+    1.2 clientName для EventBusRabbitMQ названия вашего сервиса
+        ex. (PingService, Aggregator, Authorization)
+
+
+                        Отправка
+Начинаем с работы с библиотеками ^
+
+1. Создаём !!!record!!!(не класс) "CustomEvent" унаследываемся от "BaseEvent" (см. EventBusTest Evets)
+    1.1 record "CustomEvent" хранится в папке вашего сервиса не надо изменять папку BuildingBlocks
+
+2. С помощью DI получаем сервис IEventBus (см. EventBusTest SendController.cs 19 строчка)
+
+3. Паблишим наш евент (См. EventBusTest SendController.cs 32 строчка)
+
+Все подписанные сервисы получили наш ивент
+
+
+                        Подписка
+Начинаем с работы с библиотеками ^
+
+1. Создаем "CustomEventHandler<T>" и наследуемся от IIntegrationEventHandler<T>
+    где T евент который хотим слушать. Реализуем Handle как вам нужно. (см. EventBusTest CustomEventsHandler)
+
+2. Регистрируем в DI "CustomEventHandler" (см. EventBusTest Program.cs 63 строчка)
+
+3. Настраиваем подписку (см. EventBusTest Program.cs 71 строчка)
+    3.1 Метод Subscribe<T, TH> где T ивент который хотим слушать а Th хендлер который будет отрабатывать.
+
+Теперь мы подписанны на ивенты
