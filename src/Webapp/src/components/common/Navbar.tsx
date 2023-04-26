@@ -2,7 +2,7 @@ import React, { FC } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { DashboardOutlined, LineChartOutlined, SettingOutlined } from '@ant-design/icons'
 import { Layout, Menu, Select } from 'antd'
-import Path from 'src/models/Path'
+import { Path } from 'models'
 import 'css/Navbar.css'
 
 const { Header } = Layout

@@ -21,7 +21,8 @@
       "css/*": ["src/css/*"],
       "components/*": ["src/components/*"],
       "api/*": ["src/api/*"],
-      "pages/*": ["src/pages/*"]
+      "pages/*": ["src/pages/*"],
+      "models/*": ["src/models/*"]
     }
   },
   "include": ["src"]

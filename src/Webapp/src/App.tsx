@@ -1,10 +1,8 @@
 import React, { FC } from 'react'
 import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom'
-import LoginPage from 'pages/LoginPage'
-import Dashboard from 'pages/Dashboard'
-import AdminPage from 'pages/AdminPage'
-import Path from './models/Path'
-import UserSettings from 'components/admin/UserSettings'
+import { UserSettings } from 'components/admin'
+import { Dashboard, AdminPage, LoginPage } from './pages'
+import { Path } from 'models'
 
 const App: FC = () => (
   <React.StrictMode>

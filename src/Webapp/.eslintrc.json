@@ -32,7 +32,7 @@
     "quotes": ["error", "single"],
     "no-duplicate-imports": "error",
     "import/order": [
-      1,
+      "error",
       {
         "groups": ["external", "builtin", "internal", "sibling", "parent", "index"]
       }

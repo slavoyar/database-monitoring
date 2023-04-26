@@ -2,5 +2,8 @@
   "npm.enableRunFromFolder": true,
   "eslint.workingDirectories": ["./src/Webapp"],
   "typescript.validate.enable": false,
-  "editor.formatOnSave": true
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.organizeImports": false
+  }
 }

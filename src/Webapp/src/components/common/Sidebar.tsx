@@ -10,7 +10,7 @@ import {
   DatabaseOutlined,
 } from '@ant-design/icons'
 
-import Path from 'src/models/Path'
+import { Path } from 'models'
 
 const { Sider } = Layout
 const ADMIN_MENU_ITEMS: MenuItemType[] = [
