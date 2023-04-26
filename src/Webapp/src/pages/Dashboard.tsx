@@ -1,8 +1,10 @@
 import React, { FC } from 'react'
 import { Layout } from 'antd'
+import { Server,ServerStatus } from 'models'
+
 import { Navbar } from 'components/common/'
 import { Cards } from 'components/dashboard/'
-import { ServerStatus, Server } from 'models'
+
 import 'css/Dashboard.css'
 
 const SERVERS_MOCK_DATA: Server[] = [

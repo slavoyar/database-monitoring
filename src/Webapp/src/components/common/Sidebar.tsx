@@ -1,16 +1,15 @@
 import React, { FC } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Layout, Menu } from 'antd'
-import { MenuItemType } from 'antd/es/menu/hooks/useItems'
-import { MenuInfo } from 'rc-menu/lib/interface'
 import {
+  DatabaseOutlined,
+  DeploymentUnitOutlined,
   SettingOutlined,
   UserOutlined,
-  DeploymentUnitOutlined,
-  DatabaseOutlined,
 } from '@ant-design/icons'
-
+import { Layout, Menu } from 'antd'
+import { MenuItemType } from 'antd/es/menu/hooks/useItems'
 import { Path } from 'models'
+import { MenuInfo } from 'rc-menu/lib/interface'
 
 const { Sider } = Layout
 const ADMIN_MENU_ITEMS: MenuItemType[] = [
