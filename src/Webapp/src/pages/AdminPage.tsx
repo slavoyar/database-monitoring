@@ -1,7 +1,6 @@
 import React, { FC, ReactNode } from 'react'
 import { Layout } from 'antd'
-import Navbar from 'components/common/Navbar'
-import Sidebar from 'components/common/Sidebar'
+import { Navbar, Sidebar } from 'components/common/'
 import 'css/AdminPage.css'
 
 interface AdminPageProps {
