@@ -11,4 +11,4 @@ interface Server {
   address: string
 }
 
-export { ServerStatus, Server }
+export { ServerStatus, type Server }

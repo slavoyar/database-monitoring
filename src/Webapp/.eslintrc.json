@@ -12,7 +12,14 @@
     "ecmaVersion": "latest",
     "sourceType": "module"
   },
-  "plugins": ["react", "react-hooks", "@typescript-eslint", "prettier", "simple-import-sort"],
+  "plugins": [
+    "react",
+    "react-hooks",
+    "@typescript-eslint",
+    "prettier",
+    "simple-import-sort",
+    "import"
+  ],
   "rules": {
     "no-unused-vars": "off",
     "no-shadow": "off",
@@ -63,6 +70,7 @@
     ]
   },
   "settings": {
+    "import/internal-regex": "^@",
     "import/resolver": {
       "node": {
         "extensions": [".js", ".jsx", ".ts", ".tsx"]

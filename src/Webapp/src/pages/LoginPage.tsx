@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { Button, Form, Input, Layout } from 'antd'
 import { ValidateErrorEntity } from 'rc-field-form/es/interface'
 
-import 'css/LoginPage.css'
+import '@css/LoginPage.css'
 
 interface LoginForm {
   login: string

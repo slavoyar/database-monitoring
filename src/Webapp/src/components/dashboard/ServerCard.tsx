@@ -1,9 +1,9 @@
 import React, { FC } from 'react'
-import { CheckCircleFilled, CloseCircleFilled,WarningFilled } from '@ant-design/icons'
+import { CheckCircleFilled, CloseCircleFilled, WarningFilled } from '@ant-design/icons'
+import { Server, ServerStatus } from '@models'
 import { Card } from 'antd'
-import { Server,ServerStatus } from 'models'
 
-import 'css/ServerCard.css'
+import '@css/ServerCard.css'
 
 type StatusIconProps = Pick<Server, 'status'>
 

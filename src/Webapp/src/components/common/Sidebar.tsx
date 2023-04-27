@@ -6,9 +6,9 @@ import {
   SettingOutlined,
   UserOutlined,
 } from '@ant-design/icons'
+import { Path } from '@models'
 import { Layout, Menu } from 'antd'
 import { MenuItemType } from 'antd/es/menu/hooks/useItems'
-import { Path } from 'models'
 import { MenuInfo } from 'rc-menu/lib/interface'
 
 const { Sider } = Layout
