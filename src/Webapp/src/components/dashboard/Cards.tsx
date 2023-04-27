@@ -1,5 +1,5 @@
 import React, { FC } from 'react'
-import { Server } from 'models'
+import { Server } from '@models'
 
 import ServerCard from './ServerCard'
 

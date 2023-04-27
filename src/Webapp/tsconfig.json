@@ -18,11 +18,7 @@
     "sourceMap": true,
     "baseUrl": ".",
     "paths": {
-      "css/*": ["src/css/*"],
-      "components/*": ["src/components/*"],
-      "api/*": ["src/api/*"],
-      "pages/*": ["src/pages/*"],
-      "models/*": ["src/models/*"]
+      "@*": ["src/*"]
     }
   },
   "include": ["src"]
