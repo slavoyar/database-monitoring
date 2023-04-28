@@ -21,7 +21,7 @@ const MOCK_DATA = [
     [WorkspaceTableColumn.SERVERS]: 'Server1',
   },
   {
-    key: '2',
+    key: '3',
     [WorkspaceTableColumn.NAME]: 'Workspace2',
     [WorkspaceTableColumn.USERS]: 'User1',
     [WorkspaceTableColumn.SERVERS]: 'Server1, Server2',

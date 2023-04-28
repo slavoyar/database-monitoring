@@ -1,6 +1,6 @@
 import React, { FC } from 'react'
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
-import { UserSettings, WorkspaceTable } from '@components/admin'
+import { UserSettings, WorkspaceView } from '@components/admin'
 import { Path } from '@models'
 import { AdminPage, Dashboard, LoginPage } from '@pages'
 
@@ -23,7 +23,7 @@ const App: FC = () => (
             path={Path.workspaces}
             element={
               <AdminPage>
-                <WorkspaceTable />
+                <WorkspaceView />
               </AdminPage>
             }
           />
