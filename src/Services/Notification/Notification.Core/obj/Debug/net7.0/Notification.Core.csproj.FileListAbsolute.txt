@@ -1,0 +1,12 @@
+D:\OTUS\database-monitoring\src\Services\Notification\Notification.Core\bin\Debug\net7.0\Notification.Core.deps.json
+D:\OTUS\database-monitoring\src\Services\Notification\Notification.Core\bin\Debug\net7.0\Notification.Core.dll
+D:\OTUS\database-monitoring\src\Services\Notification\Notification.Core\bin\Debug\net7.0\Notification.Core.pdb
+D:\OTUS\database-monitoring\src\Services\Notification\Notification.Core\obj\Debug\net7.0\Notification.Core.csproj.AssemblyReference.cache
+D:\OTUS\database-monitoring\src\Services\Notification\Notification.Core\obj\Debug\net7.0\Notification.Core.GeneratedMSBuildEditorConfig.editorconfig
+D:\OTUS\database-monitoring\src\Services\Notification\Notification.Core\obj\Debug\net7.0\Notification.Core.AssemblyInfoInputs.cache
+D:\OTUS\database-monitoring\src\Services\Notification\Notification.Core\obj\Debug\net7.0\Notification.Core.AssemblyInfo.cs
+D:\OTUS\database-monitoring\src\Services\Notification\Notification.Core\obj\Debug\net7.0\Notification.Core.csproj.CoreCompileInputs.cache
+D:\OTUS\database-monitoring\src\Services\Notification\Notification.Core\obj\Debug\net7.0\Notification.Core.dll
+D:\OTUS\database-monitoring\src\Services\Notification\Notification.Core\obj\Debug\net7.0\refint\Notification.Core.dll
+D:\OTUS\database-monitoring\src\Services\Notification\Notification.Core\obj\Debug\net7.0\Notification.Core.pdb
+D:\OTUS\database-monitoring\src\Services\Notification\Notification.Core\obj\Debug\net7.0\ref\Notification.Core.dll
