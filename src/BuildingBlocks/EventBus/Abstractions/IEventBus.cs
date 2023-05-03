@@ -6,15 +6,15 @@ public interface IEventBus
 
     void Subscribe<T, TH>()
         where T : BaseEvent
-        where TH : IIntegrationEventHandler<T>;
+        where TH : IBaseEventHandler<T>;
 
     void SubscribeDynamic<TH>(string eventName)
-        where TH : IDynamicIntegrationEventHandler;
+        where TH : IDynamicBaseEventHandler;
 
     void UnsubscribeDynamic<TH>(string eventName)
-        where TH : IDynamicIntegrationEventHandler;
+        where TH : IDynamicBaseEventHandler;
 
     void Unsubscribe<T, TH>()
-        where TH : IIntegrationEventHandler<T>
+        where TH : IBaseEventHandler<T>
         where T : BaseEvent;
 }

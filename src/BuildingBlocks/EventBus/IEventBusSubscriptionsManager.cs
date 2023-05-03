@@ -5,17 +5,17 @@ public interface IEventBusSubscriptionsManager
     bool IsEmpty { get; }
     event EventHandler<string> OnEventRemoved;
     void AddDynamicSubscription<TH>(string eventName)
-        where TH : IDynamicIntegrationEventHandler;
+        where TH : IDynamicBaseEventHandler;
 
     void AddSubscription<T, TH>()
         where T : BaseEvent
-        where TH : IIntegrationEventHandler<T>;
+        where TH : IBaseEventHandler<T>;
 
     void RemoveSubscription<T, TH>()
-            where TH : IIntegrationEventHandler<T>
+            where TH : IBaseEventHandler<T>
             where T : BaseEvent;
     void RemoveDynamicSubscription<TH>(string eventName)
-        where TH : IDynamicIntegrationEventHandler;
+        where TH : IDynamicBaseEventHandler;
 
     bool HasSubscriptionsForEvent<T>() where T : BaseEvent;
     bool HasSubscriptionsForEvent(string eventName);

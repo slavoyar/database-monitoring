@@ -19,14 +19,14 @@ public partial class InMemoryEventBusSubscriptionsManager : IEventBusSubscriptio
     public void Clear() => _handlers.Clear();
 
     public void AddDynamicSubscription<TH>(string eventName)
-        where TH : IDynamicIntegrationEventHandler
+        where TH : IDynamicBaseEventHandler
     {
         DoAddSubscription(typeof(TH), eventName, isDynamic: true);
     }
 
     public void AddSubscription<T, TH>()
         where T : BaseEvent
-        where TH : IIntegrationEventHandler<T>
+        where TH : IBaseEventHandler<T>
     {
         var eventName = GetEventKey<T>();
 
@@ -63,7 +63,7 @@ public partial class InMemoryEventBusSubscriptionsManager : IEventBusSubscriptio
 
 
     public void RemoveDynamicSubscription<TH>(string eventName)
-        where TH : IDynamicIntegrationEventHandler
+        where TH : IDynamicBaseEventHandler
     {
         var handlerToRemove = FindDynamicSubscriptionToRemove<TH>(eventName);
         DoRemoveHandler(eventName, handlerToRemove);
@@ -71,7 +71,7 @@ public partial class InMemoryEventBusSubscriptionsManager : IEventBusSubscriptio
 
 
     public void RemoveSubscription<T, TH>()
-        where TH : IIntegrationEventHandler<T>
+        where TH : IBaseEventHandler<T>
         where T : BaseEvent
     {
         var handlerToRemove = FindSubscriptionToRemove<T, TH>();
@@ -114,7 +114,7 @@ public partial class InMemoryEventBusSubscriptionsManager : IEventBusSubscriptio
 
 
     private SubscriptionInfo FindDynamicSubscriptionToRemove<TH>(string eventName)
-        where TH : IDynamicIntegrationEventHandler
+        where TH : IDynamicBaseEventHandler
     {
         return DoFindSubscriptionToRemove(eventName, typeof(TH));
     }
@@ -122,7 +122,7 @@ public partial class InMemoryEventBusSubscriptionsManager : IEventBusSubscriptio
 
     private SubscriptionInfo FindSubscriptionToRemove<T, TH>()
             where T : BaseEvent
-            where TH : IIntegrationEventHandler<T>
+            where TH : IBaseEventHandler<T>
     {
         var eventName = GetEventKey<T>();
         return DoFindSubscriptionToRemove(eventName, typeof(TH));

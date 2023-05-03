@@ -1,6 +1,6 @@
 ﻿namespace DatabaseMonitoring.BuildingBlocks.EventBus.Abstractions;
 
-public interface IDynamicIntegrationEventHandler
+public interface IDynamicBaseEventHandler
 {
     Task Handle(dynamic eventData);
 }

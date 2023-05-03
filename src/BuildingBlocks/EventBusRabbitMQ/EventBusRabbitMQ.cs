@@ -91,7 +91,7 @@ public class EventBusRabbitMQ : IEventBus, IDisposable
     }
 
     public void SubscribeDynamic<TH>(string eventName)
-        where TH : IDynamicIntegrationEventHandler
+        where TH : IDynamicBaseEventHandler
     {
         _logger.LogInformation("Subscribing to dynamic event {EventName} with {EventHandler}", eventName, typeof(TH).GetGenericTypeName());
 
@@ -102,7 +102,7 @@ public class EventBusRabbitMQ : IEventBus, IDisposable
 
     public void Subscribe<T, TH>()
         where T : BaseEvent
-        where TH : IIntegrationEventHandler<T>
+        where TH : IBaseEventHandler<T>
     {
         var eventName = _subsManager.GetEventKey<T>();
         DoInternalSubscription(eventName);
@@ -131,7 +131,7 @@ public class EventBusRabbitMQ : IEventBus, IDisposable
 
     public void Unsubscribe<T, TH>()
         where T : BaseEvent
-        where TH : IIntegrationEventHandler<T>
+        where TH : IBaseEventHandler<T>
     {
         var eventName = _subsManager.GetEventKey<T>();
 
@@ -141,7 +141,7 @@ public class EventBusRabbitMQ : IEventBus, IDisposable
     }
 
     public void UnsubscribeDynamic<TH>(string eventName)
-        where TH : IDynamicIntegrationEventHandler
+        where TH : IDynamicBaseEventHandler
     {
         _subsManager.RemoveDynamicSubscription<TH>(eventName);
     }
@@ -246,7 +246,7 @@ public class EventBusRabbitMQ : IEventBus, IDisposable
             {
                 if (subscription.IsDynamic)
                 {
-                    if (scope.ServiceProvider.GetService(subscription.HandlerType) is not IDynamicIntegrationEventHandler handler) continue;
+                    if (scope.ServiceProvider.GetService(subscription.HandlerType) is not IDynamicBaseEventHandler handler) continue;
                     using dynamic eventData = JsonDocument.Parse(message);
                     await Task.Yield();
                     await handler.Handle(eventData);
@@ -257,7 +257,7 @@ public class EventBusRabbitMQ : IEventBus, IDisposable
                     if (handler == null) continue;
                     var eventType = _subsManager.GetEventTypeByName(eventName);
                     var integrationEvent = JsonSerializer.Deserialize(message, eventType, new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
-                    var concreteType = typeof(IIntegrationEventHandler<>).MakeGenericType(eventType);
+                    var concreteType = typeof(IBaseEventHandler<>).MakeGenericType(eventType);
 
                     await Task.Yield();
                     await (Task)concreteType.GetMethod("Handle").Invoke(handler, new object[] { integrationEvent });
