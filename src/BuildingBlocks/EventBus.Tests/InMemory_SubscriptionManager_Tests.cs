@@ -1,6 +1,4 @@
-using DatabaseMonitoring.BuildingBlocks.EventBus;
-
-namespace EventBus.Test;
+namespace EventBus.Tests;
 
 public class InMemory_SubscriptionManager_Tests
 {
