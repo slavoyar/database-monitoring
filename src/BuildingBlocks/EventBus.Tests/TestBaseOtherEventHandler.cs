@@ -1,6 +1,4 @@
-using DatabaseMonitoring.BuildingBlocks.EventBus.Abstractions;
-
-namespace EventBus.Test;
+namespace EventBus.Tests;
 
 public class TestBaseOtherEventHandler : IBaseEventHandler<TestBaseEvent>
 {

@@ -1,0 +1,26 @@
+name: .net eventbus
+
+on:
+  push:
+    branches: ["main"]
+
+    paths:
+      - src/BuildingBlocks/**
+
+  pull_request:
+    branches: ["main"]
+
+    paths:
+      - src/BuildingBlocks/**
+
+jobs:
+  BuildProjectForLinux:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - uses: ./.github/workflows/composite/build-test
+        with:
+          dotnet_version: 7.0.x
+          project_path: BuildingBlocks
+          tests_path: BuildingBlocks/EventBus.Tests

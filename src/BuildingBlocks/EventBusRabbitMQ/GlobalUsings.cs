@@ -1,4 +1,5 @@
 ﻿global using Microsoft.Extensions.Logging;
+global using Microsoft.Extensions.DependencyInjection;
 global using Polly;
 global using Polly.Retry;
 global using RabbitMQ.Client;
