@@ -1,7 +1,8 @@
 import React, { FC } from 'react'
-import { Form, Input, Button } from 'antd'
+import { Button, Form, Input } from 'antd'
 import { ValidateErrorEntity } from 'rc-field-form/es/interface'
-import 'css/UserSettings.css'
+
+import '@css/UserSettings.css'
 
 interface UserSettingsForm {
   login: string

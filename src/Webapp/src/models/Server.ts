@@ -4,11 +4,11 @@ enum ServerStatus {
   down = 'down',
 }
 
-export interface Server {
+interface Server {
   name: string
   status: ServerStatus
   icon: string
   address: string
 }
 
-export default ServerStatus
+export { ServerStatus, type Server }

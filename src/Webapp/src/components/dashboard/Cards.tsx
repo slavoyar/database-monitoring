@@ -1,6 +1,6 @@
 import React, { FC } from 'react'
+import { Server } from '@models'
 
-import { Server } from 'src/models/Server'
 import ServerCard from './ServerCard'
 
 interface CardsProps {

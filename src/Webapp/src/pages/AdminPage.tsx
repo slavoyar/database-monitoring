@@ -1,8 +1,8 @@
 import React, { FC, ReactNode } from 'react'
+import { Navbar, Sidebar } from '@components/common/'
 import { Layout } from 'antd'
-import Navbar from 'components/common/Navbar'
-import Sidebar from 'components/common/Sidebar'
-import 'css/AdminPage.css'
+
+import '@css/AdminPage.css'
 
 interface AdminPageProps {
   children: ReactNode
