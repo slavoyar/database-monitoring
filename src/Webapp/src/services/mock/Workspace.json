@@ -1,0 +1,40 @@
+[
+  {
+    "id": "123124",
+    "name": "Workspace 1",
+    "servers": [
+      {
+        "id": "12345",
+        "name": "Server 1",
+        "status": "ping",
+        "icon": "database",
+        "address": "192.168.1.214"
+      },
+      {
+        "id": "54321",
+        "name": "Server 2",
+        "status": "connection",
+        "icon": "graph",
+        "address": "192.168.1.200"
+      }
+    ],
+    "users": [
+      {
+        "id": "12345",
+        "firstName": "John",
+        "secondName": "Doe",
+        "email": "test@mail.ru",
+        "phone": "+7(123)456-78-90",
+        "description": "This is the description for the user"
+      },
+      {
+        "id": "123456",
+        "firstName": "John",
+        "secondName": "Wick",
+        "email": "john.wick@mail.ru",
+        "phone": "+7(123)456-78-90",
+        "description": "He is done"
+      }
+    ]
+  }
+]
