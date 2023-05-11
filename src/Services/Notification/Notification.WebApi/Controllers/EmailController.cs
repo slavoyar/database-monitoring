@@ -9,27 +9,26 @@ namespace DatabaseMonitoring.Services.Notification.WebApi.Controllers;
 public class EmailController : ControllerBase
 {
     private readonly ILogger<EmailController> logger;
-    private readonly IEmailSender sender;
+    private readonly IMailService mailsService;
+    private readonly IMapper mapper;
 
-    public EmailController(ILogger<EmailController> logger, IEmailSender sender)
+    public EmailController(
+        ILogger<EmailController> logger,
+        IMailService mailsService,
+        IMapper mapper)
     {
         this.logger = logger;
-        this.sender = sender;
+        this.mailsService = mailsService;
+        this.mapper = mapper;
     }
 
     [HttpPost]
-    [Route("send")]
-    public async Task<ActionResult> SendEmailMessageAsync(SendEmailRequest request)
+    [Route("Send")]
+    public async Task<ActionResult> SendSingleEmailAsync(SendEmailRequest request)
     {
-        try
-        {
-            await sender.SendEmailAsync(request.Recepient, request.Subject, request.Body);
-            return Ok();
-        }
-        catch(Exception e)
-        {
-            logger.LogWarning(e.Message);
-            return StatusCode(500,"An error occured while sending email");
-        }
+        var mailData = mapper.Map<MailData>(request);
+        var cts = new CancellationToken();
+        await mailsService.SendAsync(mailData, cts);
+        return Ok();
     }
 }

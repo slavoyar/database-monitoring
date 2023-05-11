@@ -1,10 +1,10 @@
-using DatabaseMonitoring.Services.Notification.Core.Interfaces;
-using DatabaseMonitoring.Services.Notification.Infrastructure.Services;
-using DatabaseMonitoring.Services.Notification.Infrastructure.Models;
-using DatabaseMonitoring.Services.Notification.Core.Models;
-using DatabaseMonitoring.Services.Notification.Infrastructure.Data;
-
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddDbContext<AppDbContext>(options =>
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("EmailNotificationDb"));
+});
+builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 // Add services to the container.
 
@@ -12,9 +12,10 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection(SmtpSettings.Smtp));
-builder.Services.AddSingleton<IEmailSender, SmtpEmailSender>();
-builder.Services.AddSingleton<IRepository<EmailMessage>, EfRepository<EmailMessage>>();
+builder.Services.Configure<MailConfiguration>(builder.Configuration.GetSection(nameof(MailConfiguration)));
+builder.Services.AddScoped<IMailService, MailService>();
+builder.Services.AddScoped<IRepository<MailEntity>, EfRepository<MailEntity>>();
+builder.Services.AddScoped<IRepository<ErrorSending>, EfRepository<ErrorSending>>();
 
 var app = builder.Build();
 
