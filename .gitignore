@@ -282,3 +282,4 @@ src/**/app.yaml
 src/**/inf.yaml
 
 .angular/
+dist/
