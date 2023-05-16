@@ -1,8 +1,3 @@
-using System.Linq.Expressions;
-using DatabaseMonitoring.Services.Notification.Core.Interfaces;
-using DatabaseMonitoring.Services.Notification.Core.Models;
-using Microsoft.EntityFrameworkCore;
-
 namespace DatabaseMonitoring.Services.Notification.Infrastructure.Repository;
 
 public class EfRepository<T>

@@ -1,6 +1,3 @@
-using System.Linq.Expressions;
-using DatabaseMonitoring.Services.Notification.Core.Models;
-
 namespace DatabaseMonitoring.Services.Notification.Core.Interfaces;
 
 public interface IRepository<T>
