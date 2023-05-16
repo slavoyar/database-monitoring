@@ -1,5 +1,5 @@
-import React, { FC } from 'react'
-import { useNavigate } from 'react-router-dom'
+import React, { FC, useEffect, useState } from 'react'
+import { useLocation, useNavigate } from 'react-router-dom'
 import {
   DatabaseOutlined,
   DeploymentUnitOutlined,
@@ -37,15 +37,24 @@ const ADMIN_MENU_ITEMS: MenuItemType[] = [
 
 const Sidebar: FC = () => {
   const navigate = useNavigate()
+  const location = useLocation()
+  const [selectedKeys, setSeletedKeys] = useState<string[]>([])
+
   const onMenuClick = ({ key }: MenuInfo): void => {
     navigate(`/${Path.admin}/${key}`)
+    setSeletedKeys([key])
   }
+
+  useEffect(() => {
+    const path = location.pathname.split('/').pop()
+    setSeletedKeys(Object.values(Path).filter((item) => path === item))
+  }, [])
 
   return (
     <Sider width={300}>
       <Menu
         mode='inline'
-        defaultSelectedKeys={[Path.user]}
+        selectedKeys={selectedKeys}
         style={{ height: '100%', borderRight: 0 }}
         items={ADMIN_MENU_ITEMS}
         onClick={onMenuClick}

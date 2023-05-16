@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventBus", "EventBus\EventBus.csproj", "{801BA479-D4BB-47C0-ABA3-00D51F0BCEAB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventBusRabbitMQ", "EventBusRabbitMQ\EventBusRabbitMQ.csproj", "{AFE81AEF-1FBA-47AA-8B4D-C46D10AFB04A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{801BA479-D4BB-47C0-ABA3-00D51F0BCEAB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{801BA479-D4BB-47C0-ABA3-00D51F0BCEAB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{801BA479-D4BB-47C0-ABA3-00D51F0BCEAB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{801BA479-D4BB-47C0-ABA3-00D51F0BCEAB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AFE81AEF-1FBA-47AA-8B4D-C46D10AFB04A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AFE81AEF-1FBA-47AA-8B4D-C46D10AFB04A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AFE81AEF-1FBA-47AA-8B4D-C46D10AFB04A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AFE81AEF-1FBA-47AA-8B4D-C46D10AFB04A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

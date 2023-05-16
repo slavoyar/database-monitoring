@@ -1,4 +1,4 @@
-import UserSettings from './UserSettings'
+import UserSettings from './settings/UserSettings'
+import WorkspaceView from './workspace/WorkspaceView'
 
-// eslint-disable-next-line import/prefer-default-export
-export { UserSettings }
+export { UserSettings, WorkspaceView }
