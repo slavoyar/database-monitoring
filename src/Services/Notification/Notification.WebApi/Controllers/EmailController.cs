@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace DatabaseMonitoring.Services.Notification.WebApi.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("api/[controller]")]
 public class EmailController : ControllerBase
 {
     private readonly ILogger<EmailController> logger;
