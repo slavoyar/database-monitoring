@@ -1,0 +1,14 @@
+global using System.Linq.Expressions;
+global using DatabaseMonitoring.Services.Notification.Core.Interfaces;
+global using DatabaseMonitoring.Services.Notification.Core.Models;
+global using DatabaseMonitoring.Services.Notification.Infrastructure.Data;
+global using Microsoft.EntityFrameworkCore;
+global using DatabaseMonitoring.Services.Notification.Infrastructure.Models;
+global using MailKit.Net.Smtp;
+global using Microsoft.Extensions.Logging;
+global using Microsoft.Extensions.Options;
+global using MimeKit;
+global using AutoMapper;
+global using DatabaseMonitoring.Services.Notification.Infrastructure.Configuration;
+global using DatabaseMonitoring.Services.Notification.Infrastructure.Services.Interfaces;
+global using MailKit.Security;
