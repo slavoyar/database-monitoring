@@ -10,6 +10,7 @@ namespace MIAUDataBase.Services.Abstracts
         #endregion
         #region Add
         public Task<T> AddAsync(T dto);
+        public Task AddRangeAsync(ICollection<T> entities);
         #endregion
         #region Update
         public Task<bool> TryUpdateAsync(T dto);

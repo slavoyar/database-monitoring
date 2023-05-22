@@ -18,7 +18,7 @@ namespace MIAUDataBase.Controllers
             this.logSetService = logSetService;
         }
 
-        [HttpPost("{serverId}")]
+        /*[HttpPost("{serverId}")]
         public async Task<IResult> Create(string serverId, LogCreateFromServerPatientController logModel)
         {
             var modelToCreate = mapper.Map<LogCreateModel>(logModel) ?? throw new Exception("Problem after mapping");
@@ -27,7 +27,9 @@ namespace MIAUDataBase.Controllers
             var retObj = await logSetService.AddAsync(dto);
             var retModel = mapper.Map<LogViewModel>(retObj);
             return Results.Created("Not uri", retModel);
-        }
+        }*/
+
+
 
 
     }
