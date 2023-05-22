@@ -1,8 +1,0 @@
-﻿using MIAUDataBase.DataBase;
-
-namespace MIAUDataBase.Domain.Entities.NotUsedHere
-{
-    public class WorkSpace : AbstractEntity
-    {
-    }
-}
