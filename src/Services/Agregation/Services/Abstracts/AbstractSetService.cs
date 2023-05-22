@@ -28,6 +28,15 @@ namespace MIAUDataBase.Services.Abstracts
             return dtoToReturn;
         }
 
+        public async Task AddRangeAsync(ICollection<TDto> dtos)
+        {
+            var entities = mapper.Map<ICollection<TEntity>>(dtos);
+            await repository.AddRangeAsync(entities);
+            await repository.SaveChangesAsync();
+            return;
+        }
+
+
         public async Task<bool> TryDeleteAsync(Guid id)
         {
             return await Task.Run(() =>

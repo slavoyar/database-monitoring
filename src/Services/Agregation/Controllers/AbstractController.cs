@@ -33,6 +33,15 @@ namespace MIAUDataBase.Controllers
             return Results.Created("Not uri", retModel);
         }
 
+        [HttpPost("list/")]
+        public async Task<IResult> CreateRange(IEnumerable<TCreate> createModels) 
+        {
+            var dtos = mapper.Map<ICollection<TDto>>(createModels);
+            await setService.AddRangeAsync(dtos);
+            return Results.Created("Not uri", null);
+        }
+
+
         [HttpDelete("{id}")]
         public async Task<IResult> DeleteById(Guid id)
         {
