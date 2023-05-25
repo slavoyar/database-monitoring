@@ -11,8 +11,8 @@ namespace MIAUDataBase.Services.Abstracts
         where TDto : AbstractDto
         where TEntity : AbstractEntity
     {
-        private readonly IAbstractRepository<TEntity> repository;
-        private readonly IMapper mapper;
+        protected readonly IAbstractRepository<TEntity> repository;
+        protected readonly IMapper mapper;
         public AbstractSetService(IAbstractRepository<TEntity> repository, IMapper mapper)
         {
             this.repository = repository;

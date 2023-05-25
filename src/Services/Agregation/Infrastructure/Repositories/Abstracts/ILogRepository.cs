@@ -7,5 +7,8 @@ namespace MIAUDataBase.Infrastructure.Repositories.Abstracts
     /// </summary>
     public interface ILogRepository : IAbstractRepository<Log>
     {
+        public List<Log> GetAllForServer(string id, int itemsPerPage, int page);
+        public Task<List<Log>> GetAllForServerAsync(string id, int itemsPerPage, int page);
+
     }
 }

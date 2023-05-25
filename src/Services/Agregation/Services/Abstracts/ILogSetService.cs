@@ -7,5 +7,6 @@ namespace MIAUDataBase.Services.Abstracts
     /// </summary>
     public interface ILogSetService : ISetService<LogDto>
     {
+        public Task<List<LogDto>> GetAllForServerAsync(string serverId, int itemsPerPage, int page);        
     }
 }
