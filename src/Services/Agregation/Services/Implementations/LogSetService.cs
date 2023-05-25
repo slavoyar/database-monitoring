@@ -11,5 +11,9 @@ namespace MIAUDataBase.Services.Implementations
         public LogSetService(ILogRepository repository, IMapper mapper) : base(repository, mapper)
         {
         }
+        public async Task<List<LogDto>> GetAllForServerAsync(string serverId, int itemsPerPage, int page)
+        {
+            repository.Get
+        }        
     }
 }

@@ -10,7 +10,7 @@ namespace MIAUDataBase.Infrastructure.Repositories.Abstracts
     public abstract class AbstractRepository<T> : IAbstractRepository<T> where T : AbstractEntity
     {
         protected readonly DbContext Context;
-        private readonly DbSet<T> _entitySet;
+        protected readonly DbSet<T> _entitySet;
 
         protected AbstractRepository(DbContext context)
         {
