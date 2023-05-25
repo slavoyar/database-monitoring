@@ -1,5 +1,4 @@
 ﻿using MIAUDataBase.DataBase.Entities;
-using MIAUDataBase.Domain.Entities.NotUsedHere;
 using Microsoft.EntityFrameworkCore;
 
 namespace MIAUDataBase.Infrastructure
@@ -10,12 +9,8 @@ namespace MIAUDataBase.Infrastructure
         public DbSet<ServerPatient> ServerPatients { get; set; } = null!;
         public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options)
         {
-            //Database.EnsureDeleted();
+            Database.EnsureDeleted();
             Database.EnsureCreated();
         }
-        //protected override void OnModelCreating(ModelBuilder modelBuilder)
-        //{
-
-        //}
     }
 }
