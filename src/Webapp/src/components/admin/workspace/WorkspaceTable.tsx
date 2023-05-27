@@ -134,7 +134,7 @@ const WorkspaceTable: FC = () => {
       />
       <EditWorkspaceDialog
         workspace={currentWorkspace}
-        open={!!currentWorkspace || isModalOpen}
+        isOpen={!!currentWorkspace || isModalOpen}
         onCancel={close}
         onSave={onSaveHandler}
       />

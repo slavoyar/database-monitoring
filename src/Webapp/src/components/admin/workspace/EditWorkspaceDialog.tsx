@@ -9,11 +9,13 @@ import { WorkspaceTableData } from './WorkspaceTable'
 
 interface EditWorkspaceDialogProps extends ModalFuncProps {
   workspace: WorkspaceTableData | undefined
+  isOpen: boolean
   onSave: (workspace: Optional<WorkspaceTableData, 'key'>) => void
 }
 
 const EditWorkspaceDialog: FC<EditWorkspaceDialogProps> = ({
   workspace,
+  isOpen,
   onSave,
   ...props
 }: EditWorkspaceDialogProps) => {
@@ -22,16 +24,14 @@ const EditWorkspaceDialog: FC<EditWorkspaceDialogProps> = ({
   const [servers, setServers] = useState<string[]>([])
 
   useEffect(() => {
-    if (workspace?.name) {
-      setName(workspace.name)
-    }
-    if (workspace?.users) {
-      setUsers(workspace.users.map((item) => item.id))
-    }
-    if (workspace?.servers) {
-      setServers(workspace.servers.map((item) => item.id))
-    }
-  }, [workspace])
+    
+      setName(workspace?.name ?? '')
+    
+      setUsers(workspace?.users.map((item) => item.id) ?? [])
+    
+      setServers(workspace?.servers.map((item) => item.id) ?? [])
+    
+  }, [workspace, isOpen])
 
   const userOptions = MOCK_USERS.map((user) => ({ value: user.id, label: user.name }))
   const serverOptions = MOCK_SERVERS.map((server) => ({ value: server.id, label: server.name }))
@@ -53,7 +53,7 @@ const EditWorkspaceDialog: FC<EditWorkspaceDialogProps> = ({
     setName(event.target.value)
   }
   return (
-    <Modal title={computedTitle} onOk={onOkHandler} {...props}>
+    <Modal title={computedTitle} onOk={onOkHandler} open={isOpen} {...props}>
       <PropertyInput title='Название' value={name} onChange={onNameChange} />
       <PropertySelect
         title='Пользователи'
