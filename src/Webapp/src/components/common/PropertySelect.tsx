@@ -6,10 +6,10 @@ interface PropertySelectProps extends SelectProps {
 }
 
 const PropertySelect: FC<PropertySelectProps> = ({ title, ...props }: PropertySelectProps) => (
-  <>
-    <strong>{{ title }}</strong>
-    <Select {...props} />
-  </>
+  <div className='property'>
+    <strong>{title}</strong>
+    <Select style={{ display: 'block' }} {...props} />
+  </div>
 )
 
 export default PropertySelect
