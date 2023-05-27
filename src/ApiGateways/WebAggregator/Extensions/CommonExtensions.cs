@@ -3,7 +3,8 @@ internal static class CommonExtensions
 {
   public static IServiceCollection AddApplicationServices(this IServiceCollection services)
   {
-    services.AddTransient<HttpClientAuthorizationDelegatingHandler>();
+    // TODO: Add all services that will be used
+
     return services;
   }
 
