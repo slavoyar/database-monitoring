@@ -1,4 +1,9 @@
 import Path from './Path'
-import { Server, ServerStatus } from './Server'
+import { Server, ServerId,ServerStatus } from './Server'
+import {User, UserId} from './User'
+import { Workspace, WorkspaceId } from './Workspace'
 
-export { Path, type Server, ServerStatus }
+export { Path}
+export { type Server, ServerStatus, type ServerId }
+export { type Workspace, type WorkspaceId}
+export { type User, type UserId}
