@@ -21,8 +21,8 @@ export const MOCK_USERS = [
     phone: '+71234567890',
   },
   {
-    id: 'user2',
-    name: 'User 1',
+    id: 'user3',
+    name: 'User 3',
     email: 'user@mail.ru',
     phone: '+71234567890',
   },

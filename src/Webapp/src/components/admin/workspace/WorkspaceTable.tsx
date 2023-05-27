@@ -1,6 +1,7 @@
 import React, { FC, useEffect, useState } from 'react'
 import { DeleteOutlined, PlusOutlined } from '@ant-design/icons'
 import { Server, User } from '@models'
+import { Optional } from '@models/Types'
 import { MOCK_WORKSPACES } from '@models/Workspace'
 import { Button, Table } from 'antd'
 
@@ -15,8 +16,14 @@ enum WorkspaceTableColumn {
 export interface WorkspaceTableData {
   key: string
   [WorkspaceTableColumn.NAME]: string
-  [WorkspaceTableColumn.USERS]: string
-  [WorkspaceTableColumn.SERVERS]: string
+  [WorkspaceTableColumn.USERS]: User[]
+  [WorkspaceTableColumn.SERVERS]: Server[]
+}
+
+type EntityWithName = User | Server
+
+function objectArrayToString(arr: EntityWithName[]): string {
+  return arr.map((item) => item.name).join(', ')
 }
 
 const columns = [
@@ -29,32 +36,31 @@ const columns = [
     title: 'Пользователи',
     dataIndex: WorkspaceTableColumn.USERS,
     key: WorkspaceTableColumn.USERS,
+    render: (data: User[]) => objectArrayToString(data),
   },
   {
     title: 'Сервера',
     dataIndex: WorkspaceTableColumn.SERVERS,
     key: WorkspaceTableColumn.SERVERS,
+    render: (data: Server[]) => objectArrayToString(data),
   },
 ]
-
-type EntityWithName = User | Server
-
-function objectArrayToString(arr: EntityWithName[]): string {
-  return arr.map((item) => item.name).join(', ')
-}
 
 const WorkspaceTable: FC = () => {
   const [data, setData] = useState<WorkspaceTableData[]>([])
   const [deleteDisabled, setDeleteDisabled] = useState(true)
   const [selectedRows, setSelectedRows] = useState<React.Key[]>([])
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [currentWorkspace, setCurrentWorkspace] = useState<WorkspaceTableData | undefined>(
+    undefined,
+  )
 
   useEffect(() => {
     const tableData = MOCK_WORKSPACES.map((workspace) => ({
       key: workspace.id,
       name: workspace.name,
-      users: objectArrayToString(workspace.users),
-      servers: objectArrayToString(workspace.servers),
+      users: workspace.users,
+      servers: workspace.servers,
     }))
     setData(tableData)
   }, [])
@@ -75,18 +81,36 @@ const WorkspaceTable: FC = () => {
     setSelectedRows(newSelectedRowKeys)
   }
 
-  const onSaveHandler = (workspace: Omit<WorkspaceTableData, 'key'>): void => {
-    setIsModalOpen(false)
-    const newWorkspace = {
-      ...workspace,
-      key: String(data.length + 1),
+  const close = (): void => {
+    if (isModalOpen) {
+      setIsModalOpen(false)
     }
-    setData([...data, newWorkspace])
+    if (currentWorkspace) {
+      setCurrentWorkspace(undefined)
+    }
   }
 
+  const onSaveHandler = (workspace: Optional<WorkspaceTableData, 'key'>): void => {
+    const result = [...data]
+    const workspaceIndex = data.findIndex((item) => item.key === workspace.key)
+    if (workspaceIndex < 0) {
+      const newWorkspace = {
+        ...workspace,
+        key: String(data.length + 1),
+      }
+      result.push(newWorkspace)
+    }
+    result[workspaceIndex] = { ...workspace } as WorkspaceTableData
+    setData(result)
+    close()
+  }
   const rowSelection = {
     selectedRows,
     onChange: onSelectChange,
+  }
+
+  const onRowClick = (record: WorkspaceTableData): void => {
+    setCurrentWorkspace(record)
   }
 
   return (
@@ -101,11 +125,17 @@ const WorkspaceTable: FC = () => {
           onClick={onDeleteClick}
         />
       </Button.Group>
-      <Table bordered dataSource={data} columns={columns} rowSelection={rowSelection} />
+      <Table
+        bordered
+        dataSource={data}
+        columns={columns}
+        rowSelection={rowSelection}
+        onRow={(record) => ({ onClick: () => onRowClick(record) })}
+      />
       <EditWorkspaceDialog
-        workspace={undefined}
-        open={isModalOpen}
-        onCancel={() => setIsModalOpen(false)}
+        workspace={currentWorkspace}
+        open={!!currentWorkspace || isModalOpen}
+        onCancel={close}
         onSave={onSaveHandler}
       />
     </>

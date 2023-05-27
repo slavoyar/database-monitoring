@@ -1,6 +1,7 @@
-import React, { FC, useState } from 'react'
+import React, { FC, useEffect, useState } from 'react'
 import { PropertyInput, PropertySelect } from '@components/common'
 import { MOCK_SERVERS } from '@models/Server'
+import { Optional } from '@models/Types'
 import { MOCK_USERS } from '@models/User'
 import { Modal, ModalFuncProps } from 'antd'
 
@@ -8,7 +9,7 @@ import { WorkspaceTableData } from './WorkspaceTable'
 
 interface EditWorkspaceDialogProps extends ModalFuncProps {
   workspace: WorkspaceTableData | undefined
-  onSave: (workspace: Omit<WorkspaceTableData, 'key'>) => void
+  onSave: (workspace: Optional<WorkspaceTableData, 'key'>) => void
 }
 
 const EditWorkspaceDialog: FC<EditWorkspaceDialogProps> = ({
@@ -16,9 +17,21 @@ const EditWorkspaceDialog: FC<EditWorkspaceDialogProps> = ({
   onSave,
   ...props
 }: EditWorkspaceDialogProps) => {
-  const [name, setName] = useState<string>(workspace ? workspace.name : '')
+  const [name, setName] = useState<string>('')
   const [users, setUsers] = useState<string[]>([])
   const [servers, setServers] = useState<string[]>([])
+
+  useEffect(() => {
+    if (workspace?.name) {
+      setName(workspace.name)
+    }
+    if (workspace?.users) {
+      setUsers(workspace.users.map((item) => item.id))
+    }
+    if (workspace?.servers) {
+      setServers(workspace.servers.map((item) => item.id))
+    }
+  }, [workspace])
 
   const userOptions = MOCK_USERS.map((user) => ({ value: user.id, label: user.name }))
   const serverOptions = MOCK_SERVERS.map((server) => ({ value: server.id, label: server.name }))
@@ -28,7 +41,12 @@ const EditWorkspaceDialog: FC<EditWorkspaceDialogProps> = ({
     : 'Создать рабочее пространство'
 
   const onOkHandler = (): void => {
-    onSave({ name, users: users.join(', '), servers: servers.join(', ') })
+    onSave({
+      key: workspace?.key,
+      name,
+      users: MOCK_USERS.filter((item) => users.includes(item.id)),
+      servers: MOCK_SERVERS.filter((item) => servers.includes(item.id)),
+    })
   }
 
   const onNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -43,6 +61,7 @@ const EditWorkspaceDialog: FC<EditWorkspaceDialogProps> = ({
         mode='multiple'
         value={users}
         onChange={setUsers}
+        allowClear
       />
       <PropertySelect
         title='Серверы'
@@ -50,6 +69,7 @@ const EditWorkspaceDialog: FC<EditWorkspaceDialogProps> = ({
         mode='multiple'
         value={servers}
         onChange={setServers}
+        allowClear
       />
     </Modal>
   )
