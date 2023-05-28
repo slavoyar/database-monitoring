@@ -122,6 +122,7 @@ const UserTable: FC = () => {
         isOpen={!!currentUser || isModalOpen}
         user={currentUser}
         onSave={onSaveHandler}
+        onCancel={close}
       />
     </>
   )
