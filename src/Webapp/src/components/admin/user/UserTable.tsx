@@ -1,7 +1,10 @@
 import React, { FC, useEffect, useState } from 'react'
 import { DeleteOutlined, PlusOutlined } from '@ant-design/icons'
+import { Optional } from '@models/Types'
 import { MOCK_USERS } from '@models/User'
 import { Button, Table } from 'antd'
+
+import EditUserDialog from './EditUserDialog'
 
 enum UserTableColumn {
   NAME = 'name',
@@ -38,6 +41,8 @@ const UserTable: FC = () => {
   const [tableData, setTableData] = useState<UserTableData[]>([])
   const [deleteDisabled, setDeleteDisabled] = useState(true)
   const [selectedRows, setSelectedRows] = useState<React.Key[]>([])
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [currentUser, setCurrentUser] = useState<UserTableData>()
 
   useEffect(() => {
     const users = MOCK_USERS.map((user) => ({
@@ -50,7 +55,7 @@ const UserTable: FC = () => {
   }, [])
 
   const onAddClick = (): void => {
-    console.log('on add click')
+    setIsModalOpen(true)
   }
 
   const onDeleteClick = (): void => {
@@ -70,6 +75,30 @@ const UserTable: FC = () => {
     onChange: onSelectChange,
   }
 
+  const close = (): void => {
+    if (isModalOpen) {
+      setIsModalOpen(false)
+    }
+    if (currentUser) {
+      setCurrentUser(undefined)
+    }
+  }
+
+  const onRowClick = (record: UserTableData): void => {
+    setCurrentUser(record)
+  }
+
+  const onSaveHandler = (user: Optional<UserTableData, 'key'>): void => {
+    const newData = [...tableData]
+    const userIndex = newData.findIndex((item) => item.key === user.key)
+    if (userIndex < 0) {
+      newData.push({ ...user, key: String(tableData.length) })
+    }
+    newData[userIndex] = user as UserTableData
+    setTableData(newData)
+    close()
+  }
+
   return (
     <>
       <Button.Group>
@@ -82,7 +111,18 @@ const UserTable: FC = () => {
           onClick={onDeleteClick}
         />
       </Button.Group>
-      <Table bordered dataSource={tableData} columns={columns} rowSelection={rowSelection} />
+      <Table
+        bordered
+        dataSource={tableData}
+        columns={columns}
+        rowSelection={rowSelection}
+        onRow={(record) => ({ onClick: () => onRowClick(record) })}
+      />
+      <EditUserDialog
+        isOpen={!!currentUser || isModalOpen}
+        user={currentUser}
+        onSave={onSaveHandler}
+      />
     </>
   )
 }
