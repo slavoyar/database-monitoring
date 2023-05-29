@@ -4,7 +4,6 @@ import { MOCK_SERVERS } from '@models/Server'
 import { Optional } from '@models/Types'
 import { Button, Table } from 'antd'
 
-import EditWorkspaceDialog from '../workspace/EditWorkspaceDialog'
 import EditServerDialog from './EditServerDialog'
 
 enum ServerTableColumn {
