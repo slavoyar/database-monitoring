@@ -281,3 +281,6 @@ src/**/app.yaml
 src/**/inf.yaml
 
 .angular/
+
+*launch.json
+*tasks.json
