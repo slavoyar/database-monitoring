@@ -1,10 +1,6 @@
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddDbContext<AppDbContext>(options =>
-{
-    options.UseSqlServer(builder.Configuration.GetConnectionString("EmailNotificationDb"));
-});
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 // Add services to the container.
@@ -18,8 +14,7 @@ builder.Services.Configure<MailConfiguration>(builder.Configuration.GetSection(n
 builder.Services.Configure<WorkspaceConfiguration>(builder.Configuration.GetSection(nameof(WorkspaceConfiguration)));
 
 builder.Services.AddScoped<IMailService, MailService>();
-builder.Services.AddScoped<IRepository<MailEntity>, EfRepository<MailEntity>>();
-builder.Services.AddScoped<IRepository<ErrorSending>, EfRepository<ErrorSending>>();
+
 
 var app = builder.Build();
 
