@@ -26,7 +26,6 @@ public class MailService : IMailService
     {
         var mailEntity = mapper.Map<MailEntity>(mailData);
         await mailRepository.CreateAsync(mailEntity);
-        await mailRepository.SaveChangesAsync();
         try
         {
             var mail = new MimeMessage();
@@ -84,7 +83,6 @@ public class MailService : IMailService
                 Reason = ex.Message
             };
             await errorSendingRepository.CreateAsync(errorSending);
-            await errorSendingRepository.SaveChangesAsync();
             logger.LogWarning($"Error while sending message {mailEntity.Id}");
             return false;
         }

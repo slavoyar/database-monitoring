@@ -5,4 +5,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="MongoDb.Driver" Version="2.19.2" />
+  </ItemGroup>
+
 </Project>

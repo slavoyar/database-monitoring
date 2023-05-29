@@ -10,4 +10,4 @@ global using DatabaseMonitoring.Services.Notification.Infrastructure.Models;
 global using DatabaseMonitoring.Services.Notification.Infrastructure.Services;
 global using DatabaseMonitoring.Services.Notification.Infrastructure.Configuration;
 global using DatabaseMonitoring.Services.Notification.Infrastructure.Services.Interfaces;
-global using DatabaseMonitoring.Services.Notification.WebApi.Config;
+global using DatabaseMonitoring.Services.Notification.WebApi.Configuration;

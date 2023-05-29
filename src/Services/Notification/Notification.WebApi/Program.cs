@@ -1,17 +1,26 @@
 
+using DatabaseMonitoring.Services.Notification.Infrastructure.Data;
+using DatabaseMonitoring.Services.Notification.Infrastructure.Repository;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 // Add services to the container.
+builder.Services.Configure<MailConfiguration>(builder.Configuration.GetSection(nameof(MailConfiguration)));
+builder.Services.Configure<MongoDbConfiguration>(builder.Configuration.GetSection(nameof(MongoDbConfiguration)));
+
+
+builder.Services.AddSingleton<MongoDb>();
+builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
+builder.Services.AddScoped<INotificationService, NotificationService>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.Configure<MailConfiguration>(builder.Configuration.GetSection(nameof(MailConfiguration)));
-builder.Services.Configure<WorkspaceConfiguration>(builder.Configuration.GetSection(nameof(WorkspaceConfiguration)));
+
 
 builder.Services.AddScoped<IMailService, MailService>();
 
