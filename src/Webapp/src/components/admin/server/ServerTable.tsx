@@ -5,6 +5,7 @@ import { Optional } from '@models/Types'
 import { Button, Table } from 'antd'
 
 import EditWorkspaceDialog from '../workspace/EditWorkspaceDialog'
+import EditServerDialog from './EditServerDialog'
 
 enum ServerTableColumn {
   NAME = 'name',
@@ -79,17 +80,18 @@ const ServerTable: FC = () => {
     }
   }
 
-  const onSaveHandler = (workspace: Optional<ServerTableData, 'key'>): void => {
+  const onSaveHandler = (server: Omit<Optional<ServerTableData, 'key'>, 'status'>): void => {
     const result = [...tableDate]
-    const workspaceIndex = tableDate.findIndex((item) => item.key === workspace.key)
-    if (workspaceIndex < 0) {
+    const index = tableDate.findIndex((item) => item.key === server.key)
+    if (index < 0) {
       const newWorkspace = {
-        ...workspace,
+        ...server,
         key: String(tableDate.length + 1),
+        status: 'bad',
       }
       result.push(newWorkspace)
     }
-    result[workspaceIndex] = { ...workspace } as ServerTableData
+    result[index] = { ...server } as ServerTableData
     setTableData(result)
     close()
   }
@@ -122,8 +124,8 @@ const ServerTable: FC = () => {
         rowSelection={rowSelection}
         onRow={(record) => ({ onClick: () => onRowClick(record) })}
       />
-      <EditWorkspaceDialog
-        workspace={currentServer}
+      <EditServerDialog
+        server={currentServer}
         isOpen={!!currentServer || isModalOpen}
         onCancel={close}
         onSave={onSaveHandler}
