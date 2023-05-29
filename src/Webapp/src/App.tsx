@@ -1,6 +1,6 @@
 import React, { FC } from 'react'
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
-import { UserSettings, UserView, WorkspaceView } from '@components/admin'
+import { ServerView, UserSettings, UserView, WorkspaceView } from '@components/admin'
 import { Path } from '@models'
 import { AdminPage, Dashboard, LoginPage } from '@pages'
 
@@ -35,7 +35,14 @@ const App: FC = () => (
               </AdminPage>
             }
           />
-          <Route path={Path.servers} element={<AdminPage>servers</AdminPage>} />
+          <Route
+            path={Path.servers}
+            element={
+              <AdminPage>
+                <ServerView />
+              </AdminPage>
+            }
+          />
         </Route>
         <Route path={Path.login} element={<LoginPage />} />
       </Routes>
