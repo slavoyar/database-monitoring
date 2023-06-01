@@ -6,7 +6,7 @@ namespace MIAUDataBase.Services.Abstracts
     {
         #region Get
         public Task<T?> GetAsync(Guid id);
-        public Task<ICollection<T>> GetPagedAsync(int pageIndex, int pageSize);
+        public Task<ICollection<T>> GetPagedAsync(int page, int itemsPerPage);
         #endregion
         #region Add
         public Task<T> AddAsync(T dto);

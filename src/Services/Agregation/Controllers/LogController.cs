@@ -6,19 +6,20 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace MIAUDataBase.Controllers
 {
-    public class LogController :
-        AbstractController<LogCreateModel, LogEditModel, LogViewModel, LogDto>
+    public class LogController : AbstractController<LogCreateModel, LogEditModel, LogViewModel, LogDto>
     {
-
+         private readonly ILogSetService logSetService;
         public LogController(ILogSetService setService, IMapper mapper) : base(setService, mapper)
         {
+            this.logSetService = setService;
         }
 
-        [HttpGet("Logs/{serverid}")]
-        public async Task<IResult> DeleteById(Guid id, int itemsPerPage, int page)
+        [HttpGet("byServerId/{serverId}")]
+        public async Task<IResult> GetAllById(string serverId, int page, int itemsPerPage)
         {
-            var result = await setService.TryDeleteAsync(id);
-            return result ? Results.Ok() : Results.NotFound();
+            var dtos = await logSetService.GetAllForServerAsync(serverId, page, itemsPerPage);
+            var models = mapper.Map<ICollection<LogViewModel>>(dtos);
+            return Results.Ok(models);
         }
     }
 }
