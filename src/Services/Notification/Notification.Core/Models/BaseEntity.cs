@@ -1,4 +1,4 @@
-namespace DatabaseMonitoring.Services.Notification.Core;
+namespace DatabaseMonitoring.Services.Notification.Core.Models;
 
 public class BaseEntity
 {
