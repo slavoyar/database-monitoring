@@ -47,12 +47,12 @@ namespace MIAUDataBase.Services.Abstracts
             });
         }
 
-        public async Task<ICollection<TDto>> GetPagedAsync(int pageIndex, int pageSize)
+        public async Task<ICollection<TDto>> GetPagedAsync(int page, int itemsPerPage)
         {
             var query = repository.GetAll();
             var entities = await query
-                .Skip(pageIndex * pageSize)
-                .Take(pageSize)
+                .Skip((page-1) * itemsPerPage)
+                .Take(itemsPerPage)
                 .ToListAsync();
             return mapper.Map<ICollection<TDto>>(entities);
         }

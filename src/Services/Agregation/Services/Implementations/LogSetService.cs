@@ -8,14 +8,14 @@ namespace MIAUDataBase.Services.Implementations
 {
     public class LogSetService : AbstractSetService<LogDto, Log>, ILogSetService
     {
-        new private readonly ILogRepository repository;
+        private readonly ILogRepository logRepository;
         public LogSetService(ILogRepository repository, IMapper mapper) : base(repository, mapper)
         {
-            this.repository = repository;
+            this.logRepository = repository;
         }
-        public async Task<List<LogDto>> GetAllForServerAsync(string serverId, int itemsPerPage, int page)
+        public async Task<List<LogDto>> GetAllForServerAsync(string serverId, int page, int itemsPerPage)
         {
-            var entities = await repository.GetAllForServerAsync(serverId, itemsPerPage, page);
+            var entities = await logRepository.GetAllForServerAsync(serverId, page, itemsPerPage);
             var dtos = mapper.Map<ICollection<LogDto>>(entities);
             return dtos.ToList();
         }        

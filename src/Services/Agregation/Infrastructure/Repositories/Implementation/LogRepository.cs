@@ -9,7 +9,7 @@ namespace MIAUDataBase.Infrastructure.Repositories.Implementation
         public LogRepository(DbContext context) : base(context)
         {
         }
-        public List<Log> GetAllForServer(string serverId, int itemsPerPage, int page)
+        public List<Log> GetAllForServer(string serverId, int page, int itemsPerPage)
         {
             var query = GetAll()
                     .Where(log => log.ServerId == serverId)
@@ -17,11 +17,11 @@ namespace MIAUDataBase.Infrastructure.Repositories.Implementation
                     .Take(itemsPerPage);
             return query.ToList();
         }
-        public async Task<List<Log>> GetAllForServerAsync(string serverId, int itemsPerPage, int page)
+        public async Task<List<Log>> GetAllForServerAsync(string serverId, int page, int itemsPerPage)
         {
             var query = GetAll()
                     .Where(log => log.ServerId == serverId)
-                    .Skip((page - 1)*itemsPerPage)
+                    .Skip((page - 1) * itemsPerPage)
                     .Take(itemsPerPage);
             return await query.ToListAsync();            
         }        

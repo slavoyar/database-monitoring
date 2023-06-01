@@ -33,14 +33,13 @@ namespace MIAUDataBase.Controllers
             return Results.Created("Not uri", retModel);
         }
 
-        [HttpPost("list/")]
+        [HttpPost("list")]
         public async Task<IResult> CreateRange(IEnumerable<TCreate> createModels) 
         {
             var dtos = mapper.Map<ICollection<TDto>>(createModels);
             await setService.AddRangeAsync(dtos);
             return Results.Created("Not uri", null);
         }
-
 
         [HttpDelete("{id}")]
         public async Task<IResult> DeleteById(Guid id)
@@ -61,10 +60,13 @@ namespace MIAUDataBase.Controllers
             return Results.Ok(view);
         }
 
-        [HttpGet("list/{pageNumber}/{pageSize}")]
-        public async Task<IResult> GetPaged(int pageNumber, int pageSize)
+        [HttpGet("list/{page}/{itemsPerPage}")]
+        public async Task<IResult> GetPaged(int page, int itemsPerPage)
         {
-            var dtoPage = await setService.GetPagedAsync(pageNumber - 1, pageSize);
+            if (page <= 0 || itemsPerPage <= 0) return Results.ValidationProblem(new Dictionary<string, string[]>() {
+                    { "page or items per page less or equal then 0" , new string[]{ "Enter correct numbers" }  },
+                }); 
+            var dtoPage = await setService.GetPagedAsync(page, itemsPerPage);
             var viewModelPage = mapper.Map<ICollection<TViewModel>>(dtoPage);
             return Results.Ok(viewModelPage);
         }
