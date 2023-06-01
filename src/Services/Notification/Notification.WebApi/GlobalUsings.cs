@@ -1,6 +1,5 @@
 global using System.Text.Json;
 global using AutoMapper;
-global using Microsoft.EntityFrameworkCore;
 global using System.ComponentModel.DataAnnotations;
 global using DatabaseMonitoring.Services.Notification.Core.Models;
 global using DatabaseMonitoring.Services.Notification.Core.Interfaces;
