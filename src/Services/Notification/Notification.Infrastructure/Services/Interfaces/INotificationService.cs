@@ -2,7 +2,7 @@ namespace DatabaseMonitoring.Services.Notification.Infrastructure.Services.Inter
 
 public interface INotificationService
 {
-    Task<IEnumerable<NotificationDto>> GetUnreadNotificationsForUserInWorkspace(Guid userId, Guid workspaceId);
+    Task<IEnumerable<NotificationDto>> GetUnreadNotifications(Guid userId, Guid workspaceId);
     Task MarkAsRead(Guid userId, IEnumerable<string> notificationsId);
 
 }

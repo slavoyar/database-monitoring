@@ -9,7 +9,7 @@ public class NotificationService : INotificationService
         this.repository = repository;
     }
 
-    public async Task<IEnumerable<NotificationDto>> GetUnreadNotificationsForUserInWorkspace(Guid userId, Guid workspaceId)
+    public async Task<IEnumerable<NotificationDto>> GetUnreadNotifications(Guid userId, Guid workspaceId)
     {
         var result = await repository
             .GetAllAsync(n => n.WorkspacesId.Contains(workspaceId) && n.UsersReceived != null && n.UsersReceived.Contains(userId));
