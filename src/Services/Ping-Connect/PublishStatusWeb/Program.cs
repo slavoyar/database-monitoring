@@ -1,15 +1,15 @@
 ﻿using System;
-using System.Net.Http;
-using System.Text;
-using System.Threading;
-using RabbitMQ.Client;
+using System.IO;
+using System.Data.SQLite;
+
+namespace PublishStatusWeb;
 
 /// <summary>
 /// Программа для перебора Web ресурсов, чтобы можно было проверить API
 /// </summary>
 class Program
 {
-    private static HttpClient client = new()
+    private static readonly HttpClient Client = new()
     {
         BaseAddress = new Uri("http://localhost:5043/"),
     };
@@ -17,58 +17,44 @@ class Program
     private static async Task Main(string[] args)
     {
         //Список сайтов
-        //TODO:брать список сайтов из БД
-        var mySites = new string[] { "yandex.ru", "youtube.com", "miro.com","github.com","metanit.com","m1etanit1.com" };
+        List<string> resultList = new List<string>();
+
+        var path = "data.db";
+        var fullPath = System.IO.Path.GetFullPath(path);
+        var connectionString = $"Data Source={fullPath};Version=3;";
+
+        await using (var connection = new SQLiteConnection(connectionString))
+        {
+            connection.Open();
+
+            const string sql = "SELECT address FROM web_list";
+            await using (var command = new SQLiteCommand(sql, connection))
+            {
+                await using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        var result = reader.GetString(0);
+                        resultList.Add(result);
+                    }
+                }
+            }
+        }
         
         while (true)
         {
-            //var count = 1;
-            foreach (var site in mySites)
+            foreach (var site in resultList)
             {
                 //URL адрес API статуса сайта
                 var url = $"/PingToWeb?nameOrAddress={site}";
-                
                 //Выполнение GET-запроса
-                var response = await client.GetAsync(url);
-                
+                var response = await Client.GetAsync(url);
                 //Получение ответа в виде строки
                 var responseStatus = await response.Content.ReadAsStringAsync();
+                Console.WriteLine($"Проверка: {site}");
                 
-                //Отправляем в очередь статус сайта
-                //PublishStatusWebRabbitMQ(responseStatus, count);
-                //count++;
                 Thread.Sleep(5000);
             }
         }
     }
-    
-    // static void PublishStatusWebRabbitMQ(string status, int count)
-    // {
-    //     //Создаем фабрику подключений
-    //     var factory = new ConnectionFactory() { HostName = "localhost" };
-    //     //Создаем подключение
-    //     using var connection = factory.CreateConnection();
-    //     //Создаем канал
-    //     using var channel = connection.CreateModel();
-    //     //Создаем очередь
-    //     channel.QueueDeclare(queue: "StatusWebSite",
-    //         durable: false,
-    //         exclusive: false,
-    //         autoDelete: false,
-    //         arguments: null);
-    //
-    //     // Создаем exchanger с именем "Status" и типом "direct"
-    //     channel.ExchangeDeclare(exchange: "Status", type: ExchangeType.Direct);
-    //     
-    //     //Создаем сообщение
-    //     var message = status;
-    //     var body = Encoding.UTF8.GetBytes(message);
-    //
-    //     //Отправляем сообщение в очередь
-    //     channel.BasicPublish(exchange: "Status",
-    //         routingKey: "StatusWebSite",
-    //         basicProperties: null,
-    //         body: body);
-    //     Console.WriteLine($" [{count}] Sent : {message}");
-    // }
 }

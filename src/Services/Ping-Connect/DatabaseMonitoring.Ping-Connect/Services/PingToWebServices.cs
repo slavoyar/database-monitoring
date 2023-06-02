@@ -11,37 +11,37 @@ public static class PingToWebServices
     /// </summary>
     /// <param name="nameOrAddress">Адрес ресурса</param>
     /// <returns></returns>
-    public static async Task<string> GetPingHostAsync(string nameOrAddress)
+    public static async Task<ServerPingStatusPublished> GetPingHostAsync(string nameOrAddress)
     {
         //Очищаем адрес для проверки.
-        nameOrAddress = nameOrAddress.Replace("https://", "")
-            .Replace("http://", "")
-            .Replace("/", "");
+        nameOrAddress = ReplaceNameOrAddress(nameOrAddress);
         
-        var time = DateTime.Now;
         var infoPingStatus = new ServerPingStatusPublished();
+        using var ping = new Ping();
         
         try
         {
-            using var ping = new Ping();
             var reply = ping.Send(nameOrAddress);
-            Console.WriteLine($"{time} : [INFO] : Success ping - \"{nameOrAddress}\"");
-            infoPingStatus.Time = time;
-            infoPingStatus.Info = reply.Status.ToString();
-            infoPingStatus.PingStatus = reply.Status.ToString();
-            infoPingStatus.ServerId = nameOrAddress;
+            //Console.WriteLine($"{time} : [INFO] : Success ping - \"{nameOrAddress}\"");
+            infoPingStatus.Id = nameOrAddress;
+            infoPingStatus.Status = "Success";
+            infoPingStatus.Error = "";
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"{time} : [ERROR] : Error ping - \"{nameOrAddress}\": " + ex.Message);
-            infoPingStatus.Time = time;
-            infoPingStatus.Info = ex.Message;
-            infoPingStatus.PingStatus = "Error";
-            infoPingStatus.ServerId = nameOrAddress;
+            //Console.WriteLine($"{time} : [ERROR] : Error ping - \"{nameOrAddress}\": " + ex.Message);
+            infoPingStatus.Id = nameOrAddress;
+            infoPingStatus.Status = "Error";
+            infoPingStatus.Error = ex.Message;
         }
-
-        var infoPing = JsonConvert.SerializeObject(infoPingStatus);
         
-        return infoPing;
+        return await Task.FromResult(infoPingStatus);
+    }
+
+    private static string ReplaceNameOrAddress(string nameOrAddress)
+    {
+        return nameOrAddress.Replace("https://", "")
+            .Replace("http://", "")
+            .Replace("/", "");
     }
 }

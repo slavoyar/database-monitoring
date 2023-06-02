@@ -1,4 +1,5 @@
 using DatabaseMonitoring.BuildingBlocks.EventBus.Events;
+using DatabaseMonitoring.Ping_Connect.Models;
 
 namespace DatabaseMonitoring.Ping_Connect.CustomEvents;
 
@@ -8,9 +9,13 @@ public record ConnectToDatabaseEvents : BaseEvent
     {
 
     }
-    public ConnectToDatabaseEvents(string info)
+    public ConnectToDatabaseEvents(ServerPingStatusPublished info)
     {
-        this.info = info;
+        this.Id = info.Id;
+        this.Status = info.Status;
+        this.Error = info.Error;
     }
-    public string info { get; set; } = "ConnectToDatabaseEvents";
+    public string? Id { get; set; } = null;
+    public string? Status { get; set; } = null;   
+    public string? Error { get; set; } = null;
 }

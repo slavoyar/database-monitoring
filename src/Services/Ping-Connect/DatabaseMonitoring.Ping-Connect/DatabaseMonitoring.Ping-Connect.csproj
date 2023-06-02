@@ -18,6 +18,14 @@
     <ItemGroup>
       <ProjectReference Include="..\..\..\BuildingBlocks\EventBus\EventBus.csproj" />
       <ProjectReference Include="..\..\..\BuildingBlocks\EventBusRabbitMQ\EventBusRabbitMQ.csproj" />
+      <ProjectReference Include="..\PublishStatusBD\PublishStatusBD.csproj" />
+      <ProjectReference Include="..\PublishStatusWeb\PublishStatusWeb.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Update="data.db">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
     </ItemGroup>
 
 </Project>

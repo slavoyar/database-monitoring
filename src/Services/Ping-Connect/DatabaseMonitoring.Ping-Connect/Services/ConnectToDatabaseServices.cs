@@ -16,9 +16,8 @@ public static class ConnectToDatabaseServices
     /// <param name="password">Пароль</param>
     /// <param name="database">База данных</param>
     /// <returns></returns>
-    public static async Task<string> GetConnectToDatabaseAsync(string bd, string host, string username, string password, string database)
+    public static async Task<ServerPingStatusPublished> GetConnectToDatabaseAsync(string bd, string host, string username, string password, string database)
     {
-        var time = DateTime.Now;
         var infoPingStatus = new ServerPingStatusPublished();
         
         try
@@ -28,35 +27,30 @@ public static class ConnectToDatabaseServices
                 //Host=localhost;Username=postgres;Password=8888;Database=postgres
                 await using var connection = new NpgsqlConnection($"Host={host};Username={username};Password={password};Database={database};");
                 connection.Open();
-                Console.WriteLine($"{time} : [INFO] : Success ping - \"{host}\" - \"{database}\"");
-                infoPingStatus.Time = time;
-                infoPingStatus.Info = connection.ToString();
-                infoPingStatus.PingStatus = "Success";
-                infoPingStatus.ServerId = $"\"{host}\" - \"{database}\"";
+                //Console.WriteLine($"{time} : [INFO] : Success ping - \"{host}\" - \"{database}\"");
+                infoPingStatus.Id = $"\"{host}\" - \"{database}\"";
+                infoPingStatus.Status = "Success";
+                infoPingStatus.Error = "";
             }
             else
             {
                 //Server=localhost;Database=mysql;Uid=test;Pwd=test;
                 await using var connection = new MySqlConnection($"Server={host};Uid={username};Pwd={password};Database={database};");
                 connection.Open();
-                Console.WriteLine($"{time} : [INFO] : Success ping - \"{host}\" - \"{database}\"");
-                infoPingStatus.Time = time;
-                infoPingStatus.Info = connection.ToString();
-                infoPingStatus.PingStatus = "Success";
-                infoPingStatus.ServerId = $"\"{host}\" - \"{database}\"";
+                //Console.WriteLine($"{time} : [INFO] : Success ping - \"{host}\" - \"{database}\"");
+                infoPingStatus.Id = $"\"{host}\" - \"{database}\"";
+                infoPingStatus.Status = "Success";
+                infoPingStatus.Error = "";
             }
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"{time} : [ERROR] : Error ping - \"{host}\" - \"{database}\" " + ex.Message);
-            infoPingStatus.Time = time;
-            infoPingStatus.Info = ex.Message;
-            infoPingStatus.PingStatus = "Error";
-            infoPingStatus.ServerId = "\"{host}\" - \"{database}\"";
+            //Console.WriteLine($"{time} : [ERROR] : Error ping - \"{host}\" - \"{database}\" " + ex.Message);
+            infoPingStatus.Id = $"\"{host}\" - \"{database}\"";
+            infoPingStatus.Status = "Error";
+            infoPingStatus.Error = ex.Message;
         }
-        
-        var infoPing = JsonConvert.SerializeObject(infoPingStatus);
-        
-        return infoPing;
+
+        return await Task.FromResult(infoPingStatus);
     }
 }
