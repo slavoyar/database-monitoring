@@ -65,6 +65,18 @@ namespace MIAUDataBase.Infrastructure.Repositories.Abstracts
             return await GetAll(asNoTracking).ToListAsync(cancellationToken);
         }
 
+        public List<T> GetPaged(int page, int itemsPerPage)
+        {
+            var query = _entitySet
+                .Skip((page - 1) * itemsPerPage)
+                .Take(itemsPerPage);
+            return query.ToList();
+        }
+
+        public Task<List<T>> GetPagedAsync(int page, int itemsPerPage)
+        {
+            return Task.Run(() => GetPaged(page, itemsPerPage));
+        }
 
         #endregion
 
@@ -199,7 +211,6 @@ namespace MIAUDataBase.Infrastructure.Repositories.Abstracts
         {
             await Context.SaveChangesAsync(cancellationToken);
         }
-
         #endregion
     }
 }

@@ -1,7 +1,4 @@
 ﻿using AutoMapper;
-using MIAUDataAgregation.Controllers.Models.ServerPatient;
-using MIAUDataBase.Controllers.Models.Abstracts;
-using MIAUDataBase.Controllers.Models.Log;
 using MIAUDataBase.Controllers.Models.ServerPatient;
 using MIAUDataBase.Services.Abstracts;
 using MIAUDataBase.Services.DTO;
@@ -28,7 +25,7 @@ namespace MIAUDataBase.Controllers
             if (page <= 0 || itemsPerPage <= 0) return Results.ValidationProblem(new Dictionary<string, string[]>() {
                     { "page or items per page less or equal then 0" , new string[]{ "Enter correct numbers" }  },
                 });
-            var dtoPage = await serverPatientSetService.GetPagedAsync(page, itemsPerPage);
+            var dtoPage = await serverPatientSetService.GetShortServerPatientsPaged(page, itemsPerPage);
             var viewModelPage = mapper.Map<ICollection<ServerPatientShortViewModel>>(dtoPage);
             return Results.Ok(viewModelPage);
         }
