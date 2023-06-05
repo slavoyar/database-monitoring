@@ -1,5 +1,4 @@
 
-using DatabaseMonitoring.Services.Notification.Infrastructure.Data;
 using DatabaseMonitoring.Services.Notification.Infrastructure.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,7 +10,6 @@ builder.Services.Configure<MailConfiguration>(builder.Configuration.GetSection(n
 builder.Services.Configure<MongoDbConfiguration>(builder.Configuration.GetSection(nameof(MongoDbConfiguration)));
 
 
-builder.Services.AddSingleton<MongoDb>();
 builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
 
