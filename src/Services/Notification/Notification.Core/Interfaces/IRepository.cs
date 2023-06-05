@@ -1,19 +1,17 @@
 namespace DatabaseMonitoring.Services.Notification.Core.Interfaces;
 
 public interface IRepository<T>
-    where T: BaseEntity
+    where T : BaseEntity
 {
-    Task<IEnumerable<T>> GetAllAsync(Expression<Func<T,bool>> exspression = null);
+    Task<IEnumerable<T>> GetAllAsync(Expression<Func<T, bool>> exspression = null);
 
     Task<T> GetFristOrDefaultAsync(Expression<Func<T, bool>> expression);
-    
-    Task<T> GetByIdAsync(Guid id);
 
-    Task<T> CreateAsync(T entity);
+    Task<T> GetByIdAsync(string id);
 
-    Task<T> UpdateAsync(T entity);
+    Task<string> CreateAsync(T entity);
 
-    Task<T> DeleteAsync(T entity);
+    Task DeleteOneByIdAsync(string id);
+    Task DeleteManyByIdAsync(IEnumerable<string> id);
 
-    Task<bool> SaveChangesAsync();
 }

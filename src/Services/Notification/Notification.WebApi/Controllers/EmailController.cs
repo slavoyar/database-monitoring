@@ -1,7 +1,3 @@
-using DatabaseMonitoring.Services.Notification.Core.Interfaces;
-using DatabaseMonitoring.Services.Notification.WebApi.Models;
-using Microsoft.AspNetCore.Mvc;
-
 namespace DatabaseMonitoring.Services.Notification.WebApi.Controllers;
 
 [ApiController]

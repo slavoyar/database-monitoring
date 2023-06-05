@@ -1,4 +1,4 @@
-namespace DatabaseMonitoring.Services.Notification.WebApi.Config;
+namespace DatabaseMonitoring.Services.Notification.WebApi.Configuration;
 
 public class WorkspaceConfiguration
 {

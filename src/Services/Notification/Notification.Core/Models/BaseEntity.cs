@@ -2,6 +2,8 @@ namespace DatabaseMonitoring.Services.Notification.Core.Models;
 
 public class BaseEntity
 {
-    public Guid Id { get; set; } = new Guid();
+    [BsonId]
+    [BsonRepresentation(BsonType.ObjectId)]
+    public string Id { get; set; }
     public DateTime CreationDate { get; set; } = DateTime.Now;
 }

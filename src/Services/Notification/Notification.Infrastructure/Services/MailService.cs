@@ -4,29 +4,20 @@ public class MailService : IMailService
 {
     private readonly ILogger<MailService> logger;
     private readonly MailConfiguration mailConfiguration;
-    private readonly IRepository<MailEntity> mailRepository;
-    private readonly IRepository<ErrorSending> errorSendingRepository;
     private readonly IMapper mapper;
 
     public MailService(
         IOptions<MailConfiguration> mailConfigurationOptions,
         ILogger<MailService> logger,
-        IRepository<MailEntity> mailRepository,
-        IRepository<ErrorSending> errorSendingRepository,
         IMapper mapper
         )
     {
         this.logger = logger;
         this.mailConfiguration = mailConfigurationOptions.Value;
-        this.mailRepository = mailRepository;
-        this.errorSendingRepository = errorSendingRepository;
         this.mapper = mapper;
     }
     public async Task<bool> SendAsync(MailData mailData, CancellationToken cts = default)
     {
-        var mailEntity = mapper.Map<MailEntity>(mailData);
-        await mailRepository.CreateAsync(mailEntity);
-        await mailRepository.SaveChangesAsync();
         try
         {
             var mail = new MimeMessage();
@@ -78,14 +69,7 @@ public class MailService : IMailService
         }
         catch (Exception ex)
         {
-            var errorSending = new ErrorSending()
-            {
-                MailEntity = mailEntity,
-                Reason = ex.Message
-            };
-            await errorSendingRepository.CreateAsync(errorSending);
-            await errorSendingRepository.SaveChangesAsync();
-            logger.LogWarning($"Error while sending message {mailEntity.Id}");
+            logger.LogWarning($"Error while sending message. Reason: {ex.Data}");
             return false;
         }
     }
