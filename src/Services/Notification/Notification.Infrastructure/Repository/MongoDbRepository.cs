@@ -3,9 +3,10 @@ namespace DatabaseMonitoring.Services.Notification.Infrastructure.Repository;
 public class MongoDbRepository<T> : IRepository<T> where T : BaseEntity
 {
     private readonly IMongoCollection<T> collection;
-    public MongoDbRepository(MongoDb mongoDb)
+    public MongoDbRepository(IOptions<MongoDbConfiguration> options)
     {
-        collection = mongoDb.Database.GetCollection<T>(GetCollectionName(typeof(T)));
+        collection = new MongoClient(options.Value.ConnectionString)
+            .GetDatabase(options.Value.DataBaseName).GetCollection<T>(GetCollectionName(typeof(T)));
     }
 
     protected string GetCollectionName(Type collectionType)

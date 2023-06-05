@@ -3,9 +3,10 @@ namespace DatabaseMonitoring.Services.Notification.Infrastructure.Repository;
 public class NotificationRepository : MongoDbRepository<NotificationEntity>, INotificationRepository
 {
     private readonly IMongoCollection<NotificationEntity> collection;
-    public NotificationRepository(MongoDb mongoDb) : base(mongoDb)
+    public NotificationRepository(IOptions<MongoDbConfiguration> options) : base(options)
     {
-        collection = mongoDb.Database.GetCollection<NotificationEntity>(GetCollectionName(typeof(NotificationEntity)));
+        collection = new MongoClient(options.Value.ConnectionString)
+            .GetDatabase(options.Value.DataBaseName).GetCollection<NotificationEntity>(GetCollectionName(typeof(NotificationEntity)));
     }
 
     public async Task<NotificationEntity> UpdateAsync(NotificationEntity entity)
