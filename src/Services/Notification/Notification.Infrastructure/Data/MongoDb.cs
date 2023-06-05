@@ -7,6 +7,6 @@ public class MongoDb
     public MongoDb(IOptions<MongoDbConfiguration> options)
     {
         var cfg = options.Value;
-        var i = new MongoClient(cfg.ConnectionString).GetDatabase(cfg.DataBaseName);
+        Database = new MongoClient(cfg.ConnectionString).GetDatabase(cfg.DataBaseName);
     }
 }
