@@ -7,7 +7,7 @@ public class NotificationRepository : MongoDbRepository<NotificationEntity>, INo
     private readonly IMongoCollection<NotificationEntity> collection;
     public NotificationRepository(MongoDb mongoDb) : base(mongoDb)
     {
-        collection = mongoDb.Database.GetCollection<NotificationEntity>(nameof(NotificationEntity));
+        collection = mongoDb.Database.GetCollection<NotificationEntity>(GetCollectionName(typeof(NotificationEntity)));
     }
 
     public async Task<NotificationEntity> UpdateAsync(NotificationEntity entity)

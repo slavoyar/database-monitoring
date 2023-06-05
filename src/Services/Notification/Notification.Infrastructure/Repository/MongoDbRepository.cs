@@ -8,7 +8,7 @@ public class MongoDbRepository<T> : IRepository<T> where T : BaseEntity
         collection = mongoDb.Database.GetCollection<T>(GetCollectionName(typeof(T)));
     }
 
-    private string GetCollectionName(Type collectionType)
+    protected string GetCollectionName(Type collectionType)
         => ((BsonCollectionAttribute)collectionType.GetCustomAttributes(typeof(BsonCollectionAttribute), true).FirstOrDefault())?.CollectionName;
 
     public async Task<string> CreateAsync(T entity)
