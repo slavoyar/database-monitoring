@@ -11,4 +11,4 @@ global using DatabaseMonitoring.Services.Notification.Infrastructure.Configurati
 global using DatabaseMonitoring.Services.Notification.Infrastructure.Services.Interfaces;
 global using MailKit.Security;
 global using MongoDB.Driver;
-global using DatabaseMonitoring.Services.Notification.Core;
+global using DatabaseMonitoring.Services.Notification.Infrastructure.Data;

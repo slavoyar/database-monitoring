@@ -1,5 +1,3 @@
-using DatabaseMonitoring.Services.Notification.Infrastructure.Data;
-
 namespace DatabaseMonitoring.Services.Notification.Infrastructure.Repository;
 
 public class MongoDbRepository<T> : IRepository<T> where T : BaseEntity

@@ -2,7 +2,7 @@ global using Xunit;
 global using Moq;
 global using AutoFixture.AutoMoq;
 global using AutoMapper;
-global using System.Text.Json;
+global using System.Linq.Expressions;
 global using DatabaseMonitoring.Services.Notification.WebApi.Mappings;
 global using AutoFixture;
 global using DatabaseMonitoring.Services.Notification.WebApi.Models.Requests;
