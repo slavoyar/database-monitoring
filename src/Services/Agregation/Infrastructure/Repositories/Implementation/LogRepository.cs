@@ -19,11 +19,14 @@ namespace MIAUDataBase.Infrastructure.Repositories.Implementation
         }
         public async Task<List<Log>> GetAllForServerAsync(string serverId, int page, int itemsPerPage)
         {
-            var query = GetAll()
-                    .Where(log => log.ServerId == serverId)
-                    .Skip((page - 1) * itemsPerPage)
-                    .Take(itemsPerPage);
-            return await query.ToListAsync();            
-        }        
+            return await Task.Run(() => GetAllForServer(serverId, page, itemsPerPage));
+            //var query = GetAll()
+            //        .Where(log => log.ServerId == serverId)
+            //        .Skip((page - 1) * itemsPerPage)
+            //        .Take(itemsPerPage);
+            //return await query.ToListAsync();            
+        }  
+        
+
     }
 }
