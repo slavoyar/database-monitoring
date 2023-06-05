@@ -1,6 +1,9 @@
-﻿namespace MIAUDataBase.Controllers.Models.ServerPatient
+﻿namespace MIAUDataAgregation.Services.DTO
 {
-    public class ServerPatientShortViewModel
+    /// <summary>
+    /// Короткое описание сервера пациента
+    /// </summary>
+    public class ShortServerPatientDto
     {
         public string Name { get; set; } = null!;
         public string IdAddress { get; set; } = null!;

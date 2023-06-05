@@ -1,4 +1,5 @@
-﻿using MIAUDataBase.Services.DTO;
+﻿using MIAUDataAgregation.Services.DTO;
+using MIAUDataBase.Services.DTO;
 
 namespace MIAUDataBase.Services.Abstracts
 {
@@ -7,5 +8,6 @@ namespace MIAUDataBase.Services.Abstracts
     /// </summary>
     public interface IServerPatientSetService : ISetService<ServerPatientDto>
     {
+        public Task<List<ShortServerPatientDto>> GetShortServerPatientsPaged(int page, int itemsPerPage);
     }
 }

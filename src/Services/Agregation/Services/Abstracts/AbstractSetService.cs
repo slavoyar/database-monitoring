@@ -2,7 +2,6 @@
 using MIAUDataBase.DataBase;
 using MIAUDataBase.Infrastructure.Repositories.Abstracts;
 using MIAUDataBase.Services.DTO;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 
 namespace MIAUDataBase.Services.Abstracts
@@ -49,11 +48,7 @@ namespace MIAUDataBase.Services.Abstracts
 
         public async Task<ICollection<TDto>> GetPagedAsync(int page, int itemsPerPage)
         {
-            var query = repository.GetAll();
-            var entities = await query
-                .Skip((page-1) * itemsPerPage)
-                .Take(itemsPerPage)
-                .ToListAsync();
+            var entities = await repository.GetPagedAsync(page, itemsPerPage);
             return mapper.Map<ICollection<TDto>>(entities);
         }
 

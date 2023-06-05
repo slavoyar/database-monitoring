@@ -13,6 +13,8 @@ namespace MIAUDataBase.Infrastructure.Repositories.Abstracts
         public Task<T?> GetAsync(Guid id);
         public IQueryable<T> GetAll(bool asNoTracking = false);
         public Task<List<T>> GetAllAsync(CancellationToken cancellationToken, bool asNoTracking = false);
+        public List<T> GetPaged(int page, int itemsPerPage);
+        public Task<List<T>> GetPagedAsync(int page, int itemsPerPage);
         #endregion
         #region Add
         public T Add(T entity);
