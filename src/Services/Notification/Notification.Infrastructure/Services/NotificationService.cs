@@ -34,6 +34,6 @@ public class NotificationService : INotificationService
 
         //Delete all notifications without user
         if (groups.Any(n => n.Key))
-            await repository.DeleteManyByIdAsync(groups.First(n => n.Key == true).Select(x => x.Id));
+            await repository.DeleteManyByIdAsync(groups.First(n => n.Key).Select(x => x.Id));
     }
 }
