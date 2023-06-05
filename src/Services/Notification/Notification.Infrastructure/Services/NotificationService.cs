@@ -13,12 +13,16 @@ public class NotificationService : INotificationService
     {
         var result = await repository
             .GetAllAsync(n => n.WorkspacesId.Contains(workspaceId) && n.UsersReceived != null && n.UsersReceived.Contains(userId));
+        if (!result.Any())
+            return new List<NotificationDto>();
         return result.Select(entity => NotificationDto.MapFrom(entity));
     }
 
     public async Task MarkAsRead(Guid userId, IEnumerable<string> notificationsId)
     {
         var result = await repository.GetAllAsync(n => notificationsId.Contains(n.Id));
+        if (!result.Any())
+            return;
 
         var groups = result.GroupBy(n => n.UsersReceived == null || n.UsersReceived.Count() == 0);
 
