@@ -8,3 +8,4 @@ global using DatabaseMonitoring.Services.Notification.Infrastructure.Services;
 global using DatabaseMonitoring.Services.Notification.Infrastructure.Configuration;
 global using DatabaseMonitoring.Services.Notification.Infrastructure.Services.Interfaces;
 global using Microsoft.AspNetCore.Mvc;
+global using DatabaseMonitoring.Services.Notification.WebApi.ViewModels;
