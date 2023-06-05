@@ -1,5 +1,6 @@
 namespace DatabaseMonitoring.Services.Notification.Core.Models;
 
+[BsonCollection("Notifications")]
 public class NotificationEntity : BaseEntity
 {
     public string Data { get; set; }

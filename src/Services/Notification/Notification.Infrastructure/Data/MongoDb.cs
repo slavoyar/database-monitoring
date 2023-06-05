@@ -2,12 +2,11 @@ namespace DatabaseMonitoring.Services.Notification.Infrastructure.Data;
 
 public class MongoDb
 {
-    private readonly MongoDbConfiguration cfg;
-    public IMongoDatabase Database { get; private set; }
+    public IMongoDatabase Database { get; }
 
     public MongoDb(IOptions<MongoDbConfiguration> options)
     {
-        cfg = options.Value;
+        var cfg = options.Value;
         var i = new MongoClient(cfg.ConnectionString).GetDatabase(cfg.DataBaseName);
     }
 }

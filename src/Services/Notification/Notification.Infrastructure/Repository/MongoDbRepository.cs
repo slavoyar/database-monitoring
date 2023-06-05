@@ -5,8 +5,11 @@ public class MongoDbRepository<T> : IRepository<T> where T : BaseEntity
     private readonly IMongoCollection<T> collection;
     public MongoDbRepository(MongoDb mongoDb)
     {
-        collection = mongoDb.Database.GetCollection<T>(nameof(T));
+        collection = mongoDb.Database.GetCollection<T>(GetCollectionName(typeof(T)));
     }
+
+    private string GetCollectionName(Type collectionType)
+        => ((BsonCollectionAttribute)collectionType.GetCustomAttributes(typeof(BsonCollectionAttribute), true).FirstOrDefault())?.CollectionName;
 
     public async Task<string> CreateAsync(T entity)
     {
