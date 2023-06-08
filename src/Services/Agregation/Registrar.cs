@@ -1,11 +1,11 @@
-﻿using Agregation.Infrastructure.DataAccess;
+﻿using Agregation.Domain.Interfaces;
+using Agregation.Infrastructure.DataAccess;
 using Agregation.Infrastructure.DataAccess.Repositories;
 using Agregation.Infrastructure.Services.Abstracts;
 using Agregation.Infrastructure.Services.Implementations;
 using Agregation.Infrastructure.Services.Mappers;
 using AutoMapper;
 using MIAUDataBase.Controllers.Mappers;
-using MIAUDataBase.Infrastructure.Repositories.Abstracts;
 using Microsoft.EntityFrameworkCore;
 
 namespace MIAUDataBase

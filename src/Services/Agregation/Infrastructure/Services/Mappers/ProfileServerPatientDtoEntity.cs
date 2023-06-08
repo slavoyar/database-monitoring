@@ -1,6 +1,6 @@
-﻿using Agregation.Infrastructure.Services.DTO;
+﻿using Agregation.Domain.Models;
+using Agregation.Infrastructure.Services.DTO;
 using AutoMapper;
-using MIAUDataBase.DataBase.Entities;
 
 namespace Agregation.Infrastructure.Services.Mappers
 {

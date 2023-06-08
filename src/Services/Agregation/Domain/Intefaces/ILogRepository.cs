@@ -1,4 +1,5 @@
-﻿using MIAUDataBase.DataBase.Entities;
+﻿
+using Agregation.Domain.Models;
 
 namespace Agregation.Domain.Interfaces
 {
