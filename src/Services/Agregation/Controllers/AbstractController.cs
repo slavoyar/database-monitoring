@@ -5,7 +5,7 @@ using MIAUDataBase.Controllers.Abstracts;
 using MIAUDataBase.Services.Abstracts;
 using Microsoft.AspNetCore.Mvc;
 
-namespace MIAUDataBase.Controllers
+namespace Agregation.Controllers
 {
     [Route("[controller]")]
     public abstract class AbstractController<TCreate, TEdit, TViewModel, TDto>

@@ -2,7 +2,7 @@
 using Agregation.ViewModels.ServerPatient;
 using AutoMapper;
 
-namespace MIAUDataBase.Controllers.Mappers
+namespace Agregation.Controllers.Mappers
 {
     public class ProfileServerPatientDtoModel : Profile
     {

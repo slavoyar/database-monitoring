@@ -1,7 +1,7 @@
 ﻿using Agregation.ViewModels.LogModels;
 using AutoMapper;
 
-namespace MIAUDataBase.Controllers.Mappers
+namespace Agregation.Controllers.Mappers
 {
     public class ProfileLogModels : Profile
     {
