@@ -4,7 +4,7 @@ using Agregation.ViewModels.LogModels;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 
-namespace MIAUDataBase.Controllers
+namespace Agregation.Controllers
 {
     public class LogController : AbstractController<LogCreateModel, LogEditModel, LogViewModel, LogDto>
     {

@@ -1,6 +1,6 @@
 ﻿using Agregation.ViewModels.Abstracts;
 
-namespace MIAUDataBase.Controllers.Abstracts
+namespace Agregation.Controllers.Abstracts
 {
     public interface IAbstractController<TCreate, TEdit>
         where TCreate : ICreateModel

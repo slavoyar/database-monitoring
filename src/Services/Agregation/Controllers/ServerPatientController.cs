@@ -4,7 +4,7 @@ using Agregation.ViewModels.ServerPatient;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 
-namespace MIAUDataBase.Controllers
+namespace Agregation.Controllers
 {
     [Route("[controller]")]
     public class ServerPatientController : Controller
