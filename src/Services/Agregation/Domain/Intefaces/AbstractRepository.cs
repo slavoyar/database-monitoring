@@ -1,5 +1,4 @@
-﻿using MIAUDataBase.DataBase;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace Agregation.Domain.Interfaces
 {

@@ -1,5 +1,5 @@
-﻿using MIAUDataBase.DataBase.Entities;
-using MIAUDataBase.Infrastructure.Repositories.Abstracts;
+﻿using Agregation.Domain.Interfaces;
+using Agregation.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Agregation.Infrastructure.DataAccess.Repositories

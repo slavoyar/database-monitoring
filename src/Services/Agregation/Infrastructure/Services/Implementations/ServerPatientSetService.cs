@@ -1,8 +1,8 @@
-﻿using Agregation.Infrastructure.Services.Abstracts;
+﻿using Agregation.Domain.Interfaces;
+using Agregation.Domain.Models;
+using Agregation.Infrastructure.Services.Abstracts;
 using Agregation.Infrastructure.Services.DTO;
 using AutoMapper;
-using MIAUDataBase.DataBase.Entities;
-using MIAUDataBase.Infrastructure.Repositories.Abstracts;
 
 namespace Agregation.Infrastructure.Services.Implementations
 {

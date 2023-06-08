@@ -1,4 +1,4 @@
-﻿using MIAUDataBase.DataBase.Entities;
+﻿using Agregation.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Agregation.Infrastructure.DataAccess

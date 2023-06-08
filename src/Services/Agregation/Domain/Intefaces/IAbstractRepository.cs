@@ -1,5 +1,4 @@
-﻿using MIAUDataBase.DataBase;
-
+﻿
 namespace Agregation.Domain.Interfaces
 {
     /// <summary>
