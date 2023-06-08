@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace MIAUDataBase
 {
-    /// <summary>
+    /// <summary> 
     /// Класс для расширения builder.Services из Program.cs, работает с IServiceCollection
     /// </summary>
     public static class Registrar
