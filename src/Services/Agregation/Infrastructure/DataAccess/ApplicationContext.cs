@@ -1,7 +1,7 @@
 ﻿using MIAUDataBase.DataBase.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace MIAUDataAgregation.Infrastructure.DataAccess
+namespace Agregation.Infrastructure.DataAccess
 {
     public class ApplicationContext : DbContext
     {
