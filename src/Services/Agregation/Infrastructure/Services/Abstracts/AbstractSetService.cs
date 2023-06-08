@@ -7,7 +7,7 @@ using MIAUDataBase.Services.Abstracts;
 namespace Agregation.Infrastructure.Services.Abstracts
 {
     public abstract class AbstractSetService<TDto, TEntity> : ISetService<TDto>
-        where TDto : AbstractDto
+        where TDto : IDto
         where TEntity : AbstractEntity
     {
         protected readonly IAbstractRepository<TEntity> repository;

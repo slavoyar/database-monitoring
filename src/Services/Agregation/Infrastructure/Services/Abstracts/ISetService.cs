@@ -6,7 +6,7 @@ namespace MIAUDataBase.Services.Abstracts
     /// Нужен для DI
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public interface ISetService<T> where T : AbstractDto
+    public interface ISetService<T> where T : IDto
     {
         #region Get
         public Task<T?> GetAsync(Guid id);
