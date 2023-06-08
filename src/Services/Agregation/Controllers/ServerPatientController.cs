@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using Agregation.Controllers.Models.ServerPatient;
+using AutoMapper;
 using MIAUDataBase.Controllers.Models.ServerPatient;
 using MIAUDataBase.Services.Abstracts;
 using MIAUDataBase.Services.DTO;

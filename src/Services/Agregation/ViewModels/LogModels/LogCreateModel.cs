@@ -1,6 +1,6 @@
 ﻿using MIAUDataBase.Controllers.Models.Abstracts;
 
-namespace MIAUDataBase.Controllers.Models.Log
+namespace Agregation.ViewModels.LogModels
 {
     public class LogCreateModel : ICreateModel
     {

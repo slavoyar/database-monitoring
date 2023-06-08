@@ -1,4 +1,4 @@
-﻿namespace MIAUDataBase.Controllers.Models.ServerPatient
+﻿namespace Agregation.ViewModels.ServerPatient
 {
     public class ServerPatientShortViewModel
     {

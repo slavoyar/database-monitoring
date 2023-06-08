@@ -1,4 +1,4 @@
-﻿namespace MIAUDataBase.Controllers.Models.Abstracts
+﻿namespace Agregation.ViewModels.Abstracts
 {
     public interface IEditModel
     {
