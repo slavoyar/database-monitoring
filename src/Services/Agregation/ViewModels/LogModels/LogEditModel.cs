@@ -1,8 +1,6 @@
-﻿using Agregation.ViewModels.Abstracts;
-
-namespace Agregation.ViewModels.LogModels
+﻿namespace Agregation.ViewModels.LogModels
 {
-    public class LogEditModel : IEditModel
+    public class LogEditModel
     {
         public string Id { get; set; } = null!;
         public string ServerId { get; set; } = null!;

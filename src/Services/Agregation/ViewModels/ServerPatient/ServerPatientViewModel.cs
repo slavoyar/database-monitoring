@@ -1,8 +1,6 @@
-﻿using Agregation.ViewModels.Abstracts;
-
-namespace Agregation.ViewModels.ServerPatient
+﻿namespace Agregation.ViewModels.ServerPatient
 {
-    public class ServerPatientViewModel : IViewModel
+    public class ServerPatientViewModel
     {
         public string Id { get; set; } = null!;
         public string Name { get; set; } = null!;

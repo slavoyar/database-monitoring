@@ -1,8 +1,6 @@
-﻿using Agregation.ViewModels.Abstracts;
-
-namespace Agregation.ViewModels.LogModels
+﻿namespace Agregation.ViewModels.LogModels
 {
-    public class LogCreateModel : ICreateModel
+    public class LogCreateModel
     {
         public string ServerId { get; set; } = null!;
         public string CriticalStatus { get; set; } = null!;
