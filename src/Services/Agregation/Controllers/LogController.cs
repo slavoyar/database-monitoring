@@ -1,5 +1,4 @@
 ﻿using Agregation.Infrastructure.Services.Abstracts;
-using Agregation.Infrastructure.Services.DTO;
 using Agregation.ViewModels.LogModels;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
@@ -7,17 +6,24 @@ using Microsoft.AspNetCore.Mvc;
 namespace Agregation.Controllers
 {
     [Route("[controller]")]
-    public class LogController : Controller// AbstractController<LogCreateModel, LogEditModel, LogViewModel, LogDto>
+    public class LogController : Controller
     {
         protected readonly ILogSetService logSetService;
         protected readonly IMapper mapper;
-        public LogController(ILogSetService setService, IMapper mapper)// : base(setService, mapper)
+        public LogController(ILogSetService setService, IMapper mapper)
         {
             logSetService = setService;
             this.mapper = mapper;
         }
 
-        [HttpGet("byServerId/{serverId}")]
+        /// <summary>
+        /// Получить логи сервера
+        /// </summary>
+        /// <param name="serverId">Идентификатор сервера</param>
+        /// <param name="page">Номер страницы</param>
+        /// <param name="itemsPerPage">Количесвто логов на страницу</param>
+        /// <returns>Возвращает список логов данного сервера в пагинированном виде</returns>
+        [HttpGet("/Aggregation/Log/{LogsRequest}")]
         public async Task<IResult> GetAllById(string serverId, int page, int itemsPerPage)
         {
             var dtos = await logSetService.GetAllForServerAsync(serverId, page, itemsPerPage);
