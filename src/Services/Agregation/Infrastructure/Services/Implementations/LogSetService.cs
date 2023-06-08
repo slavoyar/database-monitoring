@@ -1,5 +1,4 @@
 ﻿using Agregation.Domain.Interfaces;
-using Agregation.Domain.Models;
 using Agregation.Infrastructure.Services.Abstracts;
 using Agregation.Infrastructure.Services.DTO;
 using AutoMapper;
