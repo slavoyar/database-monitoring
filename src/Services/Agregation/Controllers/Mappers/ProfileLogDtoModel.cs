@@ -1,6 +1,6 @@
-﻿using Agregation.ViewModels.LogModels;
+﻿using Agregation.Infrastructure.Services.DTO;
+using Agregation.ViewModels.LogModels;
 using AutoMapper;
-using MIAUDataBase.Services.DTO;
 
 namespace MIAUDataBase.Controllers.Mappers
 {

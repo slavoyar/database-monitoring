@@ -1,8 +1,8 @@
-﻿using AutoMapper;
+﻿using Agregation.Infrastructure.Services.DTO;
+using AutoMapper;
 using MIAUDataBase.DataBase.Entities;
-using MIAUDataBase.Services.DTO;
 
-namespace MIAUDataBase.Services.Mappers
+namespace Agregation.Infrastructure.Services.Mappers
 {
     public class ProfileLogDtoEntity : Profile
     {

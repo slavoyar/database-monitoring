@@ -1,4 +1,4 @@
-﻿namespace MIAUDataBase.Services.DTO
+﻿namespace Agregation.Infrastructure.Services.DTO
 {
     public class ServerPatientDto : AbstractDto
     {

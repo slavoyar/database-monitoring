@@ -1,10 +1,10 @@
-﻿using AutoMapper;
+﻿using Agregation.Infrastructure.Services.DTO;
+using AutoMapper;
 using MIAUDataBase.DataBase;
 using MIAUDataBase.Infrastructure.Repositories.Abstracts;
-using MIAUDataBase.Services.DTO;
-using Microsoft.EntityFrameworkCore;
+using MIAUDataBase.Services.Abstracts;
 
-namespace MIAUDataBase.Services.Abstracts
+namespace Agregation.Infrastructure.Services.Abstracts
 {
     public abstract class AbstractSetService<TDto, TEntity> : ISetService<TDto>
         where TDto : AbstractDto

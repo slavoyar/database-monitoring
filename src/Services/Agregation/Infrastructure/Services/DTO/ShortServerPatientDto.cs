@@ -1,4 +1,4 @@
-﻿namespace MIAUDataAgregation.Services.DTO
+﻿namespace Agregation.Infrastructure.Services.DTO
 {
     /// <summary>
     /// Короткое описание сервера пациента
