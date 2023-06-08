@@ -1,4 +1,4 @@
-﻿namespace MIAUDataBase.Controllers.Models.Log
+﻿namespace MMAgregation.ViewModels.LogModels
 {
     public class LogCreateFromServerPatientController
     {
