@@ -6,12 +6,15 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Agregation.Controllers
 {
-    public class LogController : AbstractController<LogCreateModel, LogEditModel, LogViewModel, LogDto>
+    [Route("[controller]")]
+    public class LogController : Controller// AbstractController<LogCreateModel, LogEditModel, LogViewModel, LogDto>
     {
-         private readonly ILogSetService logSetService;
-        public LogController(ILogSetService setService, IMapper mapper) : base(setService, mapper)
+        protected readonly ILogSetService logSetService;
+        protected readonly IMapper mapper;
+        public LogController(ILogSetService setService, IMapper mapper)// : base(setService, mapper)
         {
-            this.logSetService = setService;
+            logSetService = setService;
+            this.mapper = mapper;
         }
 
         [HttpGet("byServerId/{serverId}")]
