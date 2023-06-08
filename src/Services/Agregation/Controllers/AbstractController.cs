@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
-using MIAUDataAgregation.Infrastructure.Services.Abstracts;
-using MIAUDataAgregation.Infrastructure.Services.DTO;
 using MIAUDataBase.Controllers.Abstracts;
 using MIAUDataBase.Controllers.Models.Abstracts;
+using MIAUDataBase.Services.Abstracts;
+using MIAUDataBase.Services.DTO;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MIAUDataBase.Controllers

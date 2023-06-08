@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
-using MIAUDataAgregation.Infrastructure.Services.DTO;
+using MIAUDataAgregation.Services.DTO;
 using MIAUDataBase.Controllers.Models.ServerPatient;
+using MIAUDataBase.Services.DTO;
 
 namespace MIAUDataBase.Controllers.Mappers
 {

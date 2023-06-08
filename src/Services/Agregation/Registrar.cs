@@ -1,11 +1,11 @@
 ﻿using AutoMapper;
 using MIAUDataAgregation.Infrastructure.DataAccess;
-using MIAUDataAgregation.Infrastructure.DataAccess.Repositories.Abstracts;
-using MIAUDataAgregation.Infrastructure.DataAccess.Repositories.Implementation;
-using MIAUDataAgregation.Infrastructure.Services.Abstracts;
-using MIAUDataAgregation.Infrastructure.Services.Implementations;
-using MIAUDataAgregation.Infrastructure.Services.Mappers;
 using MIAUDataBase.Controllers.Mappers;
+using MIAUDataBase.Infrastructure.Repositories.Abstracts;
+using MIAUDataBase.Infrastructure.Repositories.Implementation;
+using MIAUDataBase.Services.Abstracts;
+using MIAUDataBase.Services.Implementations;
+using MIAUDataBase.Services.Mappers;
 using Microsoft.EntityFrameworkCore;
 
 namespace MIAUDataBase
