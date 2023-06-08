@@ -1,7 +1,7 @@
 ﻿using MIAUDataBase.DataBase;
 using Microsoft.EntityFrameworkCore;
 
-namespace MIAUDataBase.Infrastructure.Repositories.Abstracts
+namespace Agregation.Domain.Interfaces
 {
     /// <summary>
     /// Репозиторий чтения и записи
