@@ -1,6 +1,7 @@
-﻿using MIAUDataBase.Services.DTO;
+﻿using Agregation.Infrastructure.Services.DTO;
+using MIAUDataBase.Services.Abstracts;
 
-namespace MIAUDataBase.Services.Abstracts
+namespace Agregation.Infrastructure.Services.Abstracts
 {
     /// <summary>
     /// Нужен для DI. 

@@ -1,4 +1,5 @@
-﻿using MIAUDataBase.Services.DTO;
+﻿using Agregation.Infrastructure.Services.Abstracts;
+using Agregation.Infrastructure.Services.DTO;
 
 namespace MIAUDataBase.Services.Abstracts
 {

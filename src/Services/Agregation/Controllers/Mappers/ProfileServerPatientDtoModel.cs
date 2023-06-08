@@ -1,7 +1,6 @@
-﻿using Agregation.ViewModels.ServerPatient;
+﻿using Agregation.Infrastructure.Services.DTO;
+using Agregation.ViewModels.ServerPatient;
 using AutoMapper;
-using MIAUDataAgregation.Services.DTO;
-using MIAUDataBase.Services.DTO;
 
 namespace MIAUDataBase.Controllers.Mappers
 {

@@ -1,7 +1,7 @@
-﻿using Agregation.ViewModels.ServerPatient;
+﻿using Agregation.Infrastructure.Services.Abstracts;
+using Agregation.Infrastructure.Services.DTO;
+using Agregation.ViewModels.ServerPatient;
 using AutoMapper;
-using MIAUDataBase.Services.Abstracts;
-using MIAUDataBase.Services.DTO;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MIAUDataBase.Controllers
