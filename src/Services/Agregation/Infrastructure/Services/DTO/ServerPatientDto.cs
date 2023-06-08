@@ -1,6 +1,6 @@
 ﻿namespace Agregation.Infrastructure.Services.DTO
 {
-    public class ServerPatientDto : AbstractDto
+    public class ServerPatientDto : IDto
     {
         public string Id { get; set; } = null!;
         public string Name { get; set; } = null!;

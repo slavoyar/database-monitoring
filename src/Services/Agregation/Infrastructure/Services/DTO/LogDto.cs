@@ -1,6 +1,6 @@
 ﻿namespace Agregation.Infrastructure.Services.DTO
 {
-    public class LogDto : AbstractDto
+    public class LogDto : IDto
     {
         public string Id { get; set; } = null!;
         public string ServerId { get; set; } = null!;
