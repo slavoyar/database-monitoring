@@ -1,8 +1,11 @@
-﻿using Agregation.Infrastructure.Services.Abstracts;
-using Agregation.Infrastructure.Services.DTO;
+﻿using Agregation.Infrastructure.Services.DTO;
 
 namespace MIAUDataBase.Services.Abstracts
 {
+    /// <summary>
+    /// Нужен для DI
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public interface ISetService<T> where T : AbstractDto
     {
         #region Get
