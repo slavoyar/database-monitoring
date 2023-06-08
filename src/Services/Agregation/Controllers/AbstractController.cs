@@ -1,6 +1,6 @@
-﻿using AutoMapper;
+﻿using Agregation.ViewModels.Abstracts;
+using AutoMapper;
 using MIAUDataBase.Controllers.Abstracts;
-using MIAUDataBase.Controllers.Models.Abstracts;
 using MIAUDataBase.Services.Abstracts;
 using MIAUDataBase.Services.DTO;
 using Microsoft.AspNetCore.Mvc;

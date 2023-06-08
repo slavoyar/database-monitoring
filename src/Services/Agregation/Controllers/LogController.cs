@@ -1,5 +1,5 @@
-﻿using AutoMapper;
-using MIAUDataBase.Controllers.Models.Log;
+﻿using Agregation.ViewModels.LogModels;
+using AutoMapper;
 using MIAUDataBase.Services.Abstracts;
 using MIAUDataBase.Services.DTO;
 using Microsoft.AspNetCore.Mvc;

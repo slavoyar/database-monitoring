@@ -1,5 +1,5 @@
-﻿using AutoMapper;
-using MIAUDataBase.Controllers.Models.Log;
+﻿using Agregation.ViewModels.LogModels;
+using AutoMapper;
 
 namespace MIAUDataBase.Controllers.Mappers
 {

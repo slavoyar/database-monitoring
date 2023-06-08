@@ -1,6 +1,6 @@
-﻿using MIAUDataBase.Controllers.Models.Abstracts;
+﻿using Agregation.ViewModels.Abstracts;
 
-namespace Agregation.Controllers.Models.ServerPatient
+namespace Agregation.ViewModels.ServerPatient
 {
     public class ServerPatientViewModel : IViewModel
     {
