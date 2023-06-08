@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using MIAUDataAgregation.Infrastructure.Services.DTO;
 using MIAUDataBase.Controllers.Models.Log;
+using MIAUDataBase.Services.DTO;
 
 namespace MIAUDataBase.Controllers.Mappers
 {
