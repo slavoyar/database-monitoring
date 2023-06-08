@@ -6,12 +6,14 @@ using AutoMapper;
 
 namespace Agregation.Infrastructure.Services.Implementations
 {
-    public class LogSetService : AbstractSetService<LogDto, Log>, ILogSetService
+    public class LogSetService : ILogSetService
     {
-        private readonly ILogRepository logRepository;
-        public LogSetService(ILogRepository repository, IMapper mapper) : base(repository, mapper)
+        protected readonly ILogRepository logRepository;
+        protected readonly IMapper mapper;
+        public LogSetService(ILogRepository repository, IMapper mapper)
         {
             logRepository = repository;
+            this.mapper = mapper;
         }
         public async Task<List<LogDto>> GetAllForServerAsync(string serverId, int page, int itemsPerPage)
         {
