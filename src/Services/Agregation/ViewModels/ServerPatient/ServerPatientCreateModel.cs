@@ -1,4 +1,4 @@
-﻿using MIAUDataBase.Controllers.Models.Abstracts;
+﻿using Agregation.ViewModels.Abstracts;
 
 namespace Agregation.ViewModels.ServerPatient
 {

@@ -1,4 +1,4 @@
-﻿namespace MMAgregation.ViewModels.LogModels
+﻿namespace Agregation.ViewModels.LogModels
 {
     public class LogCreateFromServerPatientController
     {
