@@ -1,6 +1,6 @@
 ﻿using MIAUDataBase.DataBase.Entities;
 
-namespace MIAUDataBase.Infrastructure.Repositories.Abstracts
+namespace Agregation.Domain.Interfaces
 {
     /// <summary>
     /// Нужен для DI. 

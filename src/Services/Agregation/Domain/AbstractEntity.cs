@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace MIAUDataBase.DataBase
+namespace Agregation.Domain
 {
     /// <summary>
     /// Содержит Id и указывает, что этот объект получается из бд

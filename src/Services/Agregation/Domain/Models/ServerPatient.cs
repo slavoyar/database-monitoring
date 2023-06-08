@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace MIAUDataBase.DataBase.Entities
+namespace Agregation.Domain.Models
 {
     public class ServerPatient : AbstractEntity
     {

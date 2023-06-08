@@ -1,6 +1,6 @@
 ﻿using MIAUDataBase.DataBase;
 
-namespace MIAUDataBase.Infrastructure.Repositories.Abstracts
+namespace Agregation.Domain.Interfaces
 {
     /// <summary>
     /// 
