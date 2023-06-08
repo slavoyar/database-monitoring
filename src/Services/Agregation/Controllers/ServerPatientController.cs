@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace MIAUDataBase.Controllers
 {
     [Route("[controller]")]
-    public class ServerPatientController
+    public class ServerPatientController : Controller
     {
         protected readonly ILogSetService logSetService;
         protected readonly IServerPatientSetService serverPatientSetService;
