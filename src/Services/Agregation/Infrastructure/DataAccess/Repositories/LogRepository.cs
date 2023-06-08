@@ -2,7 +2,7 @@
 using MIAUDataBase.Infrastructure.Repositories.Abstracts;
 using Microsoft.EntityFrameworkCore;
 
-namespace MIAUDataBase.Infrastructure.Repositories.Implementation
+namespace Agregation.Infrastructure.DataAccess.Repositories
 {
     public class LogRepository : AbstractRepository<Log>, ILogRepository
     {
