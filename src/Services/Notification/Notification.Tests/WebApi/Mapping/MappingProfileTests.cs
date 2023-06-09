@@ -1,4 +1,4 @@
-namespace Notification.Tests.WebApi.Mapping;
+namespace Notifications.Tests.WebApi.Mapping;
 
 public class MappingProfileAsyncTests
 {

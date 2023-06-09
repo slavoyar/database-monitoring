@@ -4,5 +4,6 @@ public interface INotificationService
 {
     Task<IEnumerable<NotificationDto>> GetUnreadNotifications(Guid userId, Guid workspaceId);
     Task MarkAsRead(Guid userId, IEnumerable<string> notificationsId);
+    Task<string> CreateNewNotification(NewNotificationDto newNotification);
 
 }

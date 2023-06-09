@@ -9,6 +9,13 @@ public class NotificationService : INotificationService
         this.repository = repository;
     }
 
+    public async Task<string> CreateNewNotification(NewNotificationDto newNotification)
+    {
+        var notificationEntity = NewNotificationDto.MapToNotificationEntity(newNotification);
+        await repository.CreateAsync(notificationEntity);
+        return notificationEntity.Id;
+    }
+
     public async Task<IEnumerable<NotificationDto>> GetUnreadNotifications(Guid userId, Guid workspaceId)
     {
         var result = await repository
