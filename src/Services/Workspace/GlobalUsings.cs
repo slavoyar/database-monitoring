@@ -9,3 +9,5 @@ global using DatabaseMonitoring.Services.Workspace.Services.Abstraction;
 global using DatabaseMonitoring.Services.Workspace.ViewModels;
 global using AutoMapper;
 global using DatabaseMonitoring.Services.Workspace.Mapping;
+global using Microsoft.OpenApi.Models;
+global using System.Reflection;
