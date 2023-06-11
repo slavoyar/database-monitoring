@@ -78,7 +78,7 @@ public class WorkspaceController : ControllerBase
     /// <summary>
     /// Update workspace by id
     /// </summary>
-    /// <param name="worksapceId">Workspace identifier</param>
+    /// <param name="workspaceId">Workspace identifier</param>
     /// <param name="request">New workspace data</param>
     /// <returns></returns>
     [ProducesResponseType(StatusCodes.Status200OK)]
