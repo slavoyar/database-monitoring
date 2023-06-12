@@ -8,10 +8,10 @@ namespace Agregation.Infrastructure.Services.Mappers
     {
         public ProfileServerPatientDtoEntity() 
         {
-            CreateMap<ServerPatient, ServerPatientDto>();
-            CreateMap<ServerPatientDto, ServerPatient>();
-            CreateMap<ServerPatient, ShortServerPatientDto>()
-                .ForMember(d => d.CountOfLogs, map => map.Ignore());
+            //CreateMap<ServerPatient, ServerPatientDto>();
+            //CreateMap<ServerPatientDto, ServerPatient>();
+            //CreateMap<ServerPatient, ShortServerPatientDto>()
+            //    .ForMember(d => d.CountOfLogs, map => map.Ignore());
         }
     }
 }

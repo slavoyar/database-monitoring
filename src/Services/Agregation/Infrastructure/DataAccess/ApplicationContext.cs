@@ -9,7 +9,7 @@ namespace Agregation.Infrastructure.DataAccess
         public DbSet<ServerPatient> ServerPatients { get; set; } = null!;
         public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options)
         {
-            //Database.EnsureDeleted();
+            Database.EnsureDeleted();
             Database.EnsureCreated();
         }
     }
