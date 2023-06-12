@@ -8,14 +8,15 @@ namespace Agregation.Infrastructure.Services.Mappers
     {
         public ProfileLogDtoEntity()
         {
-            //CreateMap<Log, LogDto>()
-            //    .ForMember(d => d.ServerId, m => m.MapFrom(s => s.ServerId.ToString()))
-            //    .ForMember(d => d.Id, m => m.MapFrom(s => s.Id.ToString()))
-            //    .ForMember(d => d.CreatedAt, m => m.MapFrom(s => s.CreationDate.ToString()));
-            //CreateMap<LogDto, Log>()
-            //    .ForMember(d => d.Id, m => m.MapFrom(s => Guid.Parse(s.Id)))
-            //    .ForMember(d => d.CreationDate, m => m.MapFrom(s => DateTime.Parse(s.CreatedAt)))
-            //    .ForMember(d => d.ServerId, m => m.MapFrom(s => s.ServerId));
+            CreateMap<Log, LogDto>()
+                .ForMember(d => d.ServerId, m => m.MapFrom(s => s.ServerId.ToString()))
+                .ForMember(d => d.Id, m => m.MapFrom(s => s.Id.ToString()))
+                .ForMember(d => d.CreatedAt, m => m.MapFrom(s => s.CreationDate.ToString()));
+            CreateMap<LogDto, Log>()
+                .ForMember(d => d.Id, m => m.MapFrom(s => Guid.Parse(s.Id)))
+                .ForMember(d => d.CreationDate, m => m.MapFrom(s => DateTime.Parse(s.CreatedAt)))
+                .ForMember(d => d.ServerId, m => m.MapFrom(s => Guid.Parse(s.ServerId)))
+                .ForMember(d => d.Server, m => m.Ignore());
         }
     }
 }
