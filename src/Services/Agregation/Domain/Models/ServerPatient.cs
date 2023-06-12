@@ -17,11 +17,11 @@ namespace Agregation.Domain.Models
         public bool ConnectionStatus { get; set; }
 
         [Required]
-        public string ConnectionAddress { get; set; } = null!;
+        public string IdAddress { get; set; } = null!;
 
         public DateTime LastSuccessLog { get; set; } = DateTime.Now;
 
-        public string IconName { get; set; } = null!;
+        public string IconId { get; set; } = null!;
 
         public virtual List<Log> Logs { get; set; } = new List<Log>();
     }
