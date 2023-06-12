@@ -7,21 +7,23 @@ namespace Agregation.Domain.Models
     /// </summary>
     public class Log : AbstractEntity
     {
-        [Required]
-        public string ServerId { get; set; } = null!;
-        [Required]
-        public string CriticalStatus { get; set; } = null!;
+
+        public bool CriticalStatus { get; set; }
+
         [Required]
         public string ErrorState { get; set; } = null!;
+
         [Required]
         public string ServiceType { get; set; } = null!;
-        [Required]
+
         public string ServiceName { get; set; } = null!;
-        [Required]
-        public string CreatedAt { get; set; } = null!;
-        [Required]
+
+        public DateTime CreationDate { get; set; } = DateTime.Now;
+
         public string RecievedAt { get; set; } = null!;
-        [Required]
+
         public string Message { get; set; } = null!;
+
+        public ServerPatient Server { get; set; } = null!;
     }
 }
