@@ -18,15 +18,10 @@ public class GetWorkspaceResponce
     /// <summary>
     /// Users
     /// </summary>
-    public ICollection<User> Users { get; set; }
+    public ICollection<Guid> Users { get; set; }
 
     /// <summary>
     /// Servers
     /// </summary>
-    public ICollection<Server> Servers { get; set; }
-
-    /// <summary>
-    /// Date of creation
-    /// </summary>
-    public DateTime CreationDate { get; set; }
+    public ICollection<Guid> Servers { get; set; }
 }

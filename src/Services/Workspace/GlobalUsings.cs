@@ -11,3 +11,8 @@ global using AutoMapper;
 global using DatabaseMonitoring.Services.Workspace.Mapping;
 global using Microsoft.OpenApi.Models;
 global using System.Reflection;
+global using DatabaseMonitoring.Services.Workspace.Infrustructure.Repository.Implementation;
+global using DatabaseMonitoring.Services.Workspace.Services.Implementation;
+global using DatabaseMonitoring.Services.Workspace.Extensions;
+global using DatabaseMonitoring.Services.Workspace.Infrustructure.Repository;
+global using DatabaseMonitoring.Services.Workspace.Options;

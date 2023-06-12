@@ -18,15 +18,15 @@ public class WorkspaceDto
     /// <summary>
     /// Users
     /// </summary>
-    public ICollection<User> Users { get; set; }
+    public ICollection<Guid> Users { get; set; }
 
     /// <summary>
     /// Servers
     /// </summary>
-    public ICollection<Server> Servers { get; set; }
+    public ICollection<Guid> Servers { get; set; }
 
     /// <summary>
     /// Creation date
     /// </summary>
-    public DateTime CreationDate { get; set; }
+    public DateTimeOffset CreationDate { get; set; }
 }

@@ -10,7 +10,7 @@ public class AppDbContext : DbContext
     /// </summary>
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
     {
-        
+        AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
     }
 
     /// <summary>
@@ -27,4 +27,22 @@ public class AppDbContext : DbContext
     /// Workspaces
     /// </summary>
     public DbSet<Server> Servers { get; set; }
+
+    /// <summary>
+    /// Configurting entity dependencies
+    /// </summary>
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder
+            .Entity<WorkspaceEntity>()
+            .HasMany(w => w.Users)
+            .WithOne(u => u.Workspace)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder
+            .Entity<WorkspaceEntity>()
+            .HasMany(w => w.Servers)
+            .WithOne(s => s.Workspace)
+            .OnDelete(DeleteBehavior.Cascade);
+    }
 }

@@ -1,4 +1,4 @@
-using DatabaseMonitoring.Services.Workspace.Infrustructure.Repository.Implementation;
+
 
 namespace DatabaseMonitoring.Services.Workspace.Controllers;
 
@@ -36,11 +36,12 @@ public class WorkspaceController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<GetWorkspaceResponce>> GetWorkspaceAsync(Guid workspaceId)
     {
-        var resultEntity = await workspaceService.GetByIdAsync(workspaceId);
-        if(resultEntity != null)
-            return Ok(mapper.Map<GetWorkspaceResponce>(resultEntity));
-        else
+        if(!await workspaceService.WorkspaceExists(workspaceId))
             return NotFound(ConstantResponceMessages.NoWorkspaceWasFound);
+
+        var resultEntity = await workspaceService.GetWorkspaceByIdAsync(workspaceId);
+        return mapper.Map<GetWorkspaceResponce>(resultEntity);
+
     }
 
     /// <summary>
@@ -53,7 +54,7 @@ public class WorkspaceController : ControllerBase
     public async Task<ActionResult<Guid>> CreateWorkspaceAsync(UpsertWorkspaceRequest request)
     {
         var workspaceDto = mapper.Map<WorkspaceDto>(request);
-        var id = await workspaceService.CreateAsync(workspaceDto);
+        var id = await workspaceService.CreateWorkspaceAsync(workspaceDto);
         return Ok(id);
     }
 
@@ -69,7 +70,7 @@ public class WorkspaceController : ControllerBase
 
     public async Task<ActionResult> DeleteWorkspaceAsync(Guid workspaceId)
     {
-        if(await workspaceService.DeleteAsync(workspaceId))
+        if(await workspaceService.DeleteWorkspaceAsync(workspaceId))
             return Ok();
         else
             return NotFound(ConstantResponceMessages.NoWorkspaceWasFound);
@@ -92,7 +93,7 @@ public class WorkspaceController : ControllerBase
 
         var workspaceDto = mapper.Map<WorkspaceDto>(request);
         
-        if(await workspaceService.UpdateAsync(workspaceId, workspaceDto))
+        if(await workspaceService.UpdateWorkspaceAsync(workspaceId, workspaceDto))
             return Ok();
         else
             return StatusCode(500);

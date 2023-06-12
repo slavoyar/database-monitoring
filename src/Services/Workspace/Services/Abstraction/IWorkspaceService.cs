@@ -17,21 +17,21 @@ public interface IWorkspaceService
     /// </summary>
     /// <param name="id">Workspace identifier</param>
     /// <returns><see cref="WorkspaceDto"/> or null</returns>
-    Task<WorkspaceDto> GetByIdAsync(Guid id);
+    Task<WorkspaceDto> GetWorkspaceByIdAsync(Guid id);
 
     /// <summary>
     /// Add new workspace to database asynchronous
     /// </summary>
     /// <param name="workspaceDto">Worksapce DTO</param>
     /// <returns>Generated identifier</returns>
-    Task<Guid> CreateAsync(WorkspaceDto workspaceDto);
+    Task<Guid> CreateWorkspaceAsync(WorkspaceDto workspaceDto);
 
     /// <summary>
     /// Delete workspace from databasy by id asynchronous
     /// </summary>
     /// <param name="id">Workspace identifier</param>
     /// <returns>True if entity was deleted successfully, otherwise false</returns>
-    Task<bool> DeleteAsync(Guid id);
+    Task<bool> DeleteWorkspaceAsync(Guid id);
 
     /// <summary>
     /// Update workspace asynchronous
@@ -39,7 +39,7 @@ public interface IWorkspaceService
     /// <param name="id">Workspace identifier</param>
     /// <param name="workspaceDto">Updated worksapce DTO</param>
     /// <returns>True if update was successfull, otherwise false</returns>
-    Task<bool> UpdateAsync(Guid id, WorkspaceDto workspaceDto);
+    Task<bool> UpdateWorkspaceAsync(Guid id, WorkspaceDto workspaceDto);
 
     /// <summary>
     /// Get wokrspace server asynchronous

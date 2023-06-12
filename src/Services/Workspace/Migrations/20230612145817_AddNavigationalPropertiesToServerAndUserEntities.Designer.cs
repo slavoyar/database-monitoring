@@ -3,6 +3,7 @@ using System;
 using DatabaseMonitoring.Services.Workspace.Infrustructure.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Workspace.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230612145817_AddNavigationalPropertiesToServerAndUserEntities")]
+    partial class AddNavigationalPropertiesToServerAndUserEntities
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -28,8 +31,8 @@ namespace Workspace.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("OuterId")
-                        .HasColumnType("uuid");
+                    b.Property<DateTime>("CreationDate")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<Guid?>("WorkspaceId")
                         .HasColumnType("uuid");
@@ -47,8 +50,8 @@ namespace Workspace.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("OuterId")
-                        .HasColumnType("uuid");
+                    b.Property<DateTime>("CreationDate")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<Guid?>("WorkspaceId")
                         .HasColumnType("uuid");
@@ -65,6 +68,9 @@ namespace Workspace.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreationDate")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Description")
                         .HasMaxLength(250)
@@ -83,8 +89,7 @@ namespace Workspace.Migrations
                 {
                     b.HasOne("DatabaseMonitoring.Services.Workspace.Core.Domain.Entity.WorkspaceEntity", "Workspace")
                         .WithMany("Servers")
-                        .HasForeignKey("WorkspaceId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("WorkspaceId");
 
                     b.Navigation("Workspace");
                 });
@@ -93,8 +98,7 @@ namespace Workspace.Migrations
                 {
                     b.HasOne("DatabaseMonitoring.Services.Workspace.Core.Domain.Entity.WorkspaceEntity", "Workspace")
                         .WithMany("Users")
-                        .HasForeignKey("WorkspaceId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("WorkspaceId");
 
                     b.Navigation("Workspace");
                 });

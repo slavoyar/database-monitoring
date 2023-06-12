@@ -9,8 +9,4 @@ public abstract class BaseEntity
     /// Identifier
     /// </summary>
     public Guid Id { get; set; }
-    /// <summary>
-    /// Date of creation
-    /// </summary>
-    public DateTime CreationDate { get; set; }
 }
