@@ -8,7 +8,7 @@ namespace Agregation.Domain.Models
     public class Log : AbstractEntity
     {
 
-        public bool CriticalStatus { get; set; }
+        public string CriticalStatus { get; set; } = null!;
 
         [Required]
         public string ErrorState { get; set; } = null!;
@@ -24,6 +24,8 @@ namespace Agregation.Domain.Models
 
         public string Message { get; set; } = null!;
 
-        public ServerPatient Server { get; set; } = null!;
+        public Guid ServerId { get; set; }
+
+        public virtual ServerPatient Server { get; set; } = null!;
     }
 }

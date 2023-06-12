@@ -4,6 +4,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Agregation.Infrastructure.DataAccess.Repositories
 {
+    /// <summary>
+    /// <inheritdoc/>
+    /// </summary>
     public class LogRepository : AbstractRepository<Log>, ILogRepository
     {
         public LogRepository(DbContext context) : base(context)
@@ -11,7 +14,7 @@ namespace Agregation.Infrastructure.DataAccess.Repositories
         }
         private IQueryable<Log> GetQueryPageLogsOfServers(string serverId, int page, int itemsPerPage) { 
             return GetAll()
-                    .Where(log => log.ServerId == serverId)
+                    .Where(log => log.Server.Id.ToString() == serverId)
                     .Skip((page - 1) * itemsPerPage)
                     .Take(itemsPerPage);
         }

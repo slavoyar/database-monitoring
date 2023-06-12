@@ -23,6 +23,6 @@ namespace Agregation.Domain.Models
 
         public string IconName { get; set; } = null!;
 
-        ICollection<Log> Logs { get; set; } = null!;
+        public virtual List<Log> Logs { get; set; } = new List<Log>();
     }
 }
