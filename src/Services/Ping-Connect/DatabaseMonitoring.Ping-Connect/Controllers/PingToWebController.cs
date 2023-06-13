@@ -2,6 +2,7 @@ using DatabaseMonitoring.Ping_Connect.CustomEvents;
 using Microsoft.AspNetCore.Mvc;
 using DatabaseMonitoring.Ping_Connect.Services;
 using DatabaseMonitoring.BuildingBlocks.EventBus.Abstractions;
+using DatabaseMonitoring.Ping_Connect.Models;
 
 namespace DatabaseMonitoring.Ping_Connect.Controllers;
 
@@ -25,11 +26,11 @@ public class PingToWebController : ControllerBase
     /// Проверка доступа к Web ресурсу
     /// </summary>
     /// <param name="nameOrAddress">Адрес ресурса</param>
-    /// <returns>JSON</returns>
     [HttpGet(Name = "GetPingHost")]
-    public async Task<string> GetPingHost(string nameOrAddress)
+    public async Task<ServerPingStatusPublished> GetPingHost(string nameOrAddress)
     {
         var result = await PingToWebServices.GetPingHostAsync(nameOrAddress);
+        if (result.Status != "Error") return result;
         var @event = new PingToWebEvents(result);
         eventBus.Publish(@event);
 

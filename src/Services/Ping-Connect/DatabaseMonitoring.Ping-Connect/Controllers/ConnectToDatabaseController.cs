@@ -2,6 +2,7 @@ using DatabaseMonitoring.Ping_Connect.CustomEvents;
 using Microsoft.AspNetCore.Mvc;
 using DatabaseMonitoring.Ping_Connect.Services;
 using DatabaseMonitoring.BuildingBlocks.EventBus.Abstractions;
+using DatabaseMonitoring.Ping_Connect.Models;
 
 namespace DatabaseMonitoring.Ping_Connect.Controllers;
 
@@ -29,13 +30,14 @@ public class ConnectToDatabaseController : ControllerBase
     /// <param name="username">Логин</param>
     /// <param name="password">Пароль</param>
     /// <param name="database">База данных</param>
-    /// <returns>JSON</returns>
     [HttpGet(Name = "GetConnectToDatabase")]
-    public async Task<string> GetConnectToDatabase(string bd, string host, string username, string password, string database)
+    public async Task<ServerPingStatusPublished> GetConnectToDatabase(string bd, string host, string username, string password, string database)
     {
         var result = await ConnectToDatabaseServices.GetConnectToDatabaseAsync(bd, host, username, password, database);
+        if (result.Status != "Error") return result;
         var @event = new ConnectToDatabaseEvents(result);
         eventBus.Publish(@event);
+        
         return result;
     }
 }

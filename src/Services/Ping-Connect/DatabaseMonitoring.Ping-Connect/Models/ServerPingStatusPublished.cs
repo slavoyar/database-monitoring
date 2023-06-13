@@ -7,8 +7,7 @@ namespace DatabaseMonitoring.Ping_Connect.Models;
 /// </summary>
 public class ServerPingStatusPublished
 {
-    public DateTime Time { get; set; }
-    public string Info { get; set; }
-    public string PingStatus { get; set; }
-    public string ServerId { get; set; }
+    public string Id { get; set; }
+    public string Status { get; set; }
+    public string Error { get; set; }
 }

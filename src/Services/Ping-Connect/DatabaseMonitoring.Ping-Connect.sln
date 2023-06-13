@@ -6,10 +6,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PublishStatusWeb", "Publish
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PublishStatusBD", "PublishStatusBD\PublishStatusBD.csproj", "{EA1BC99E-8975-465A-81D7-ACC439FA6307}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventBus", "EventBus\EventBus.csproj", "{EDE100C3-F36F-4BF0-80F6-603E0BA856CA}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventBusRabbitMQ", "EventBusRabbitMQ\EventBusRabbitMQ.csproj", "{0B1FDD5D-B9BF-4B01-87FB-E4453B0BF34B}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -28,13 +24,5 @@ Global
 		{EA1BC99E-8975-465A-81D7-ACC439FA6307}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EA1BC99E-8975-465A-81D7-ACC439FA6307}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EA1BC99E-8975-465A-81D7-ACC439FA6307}.Release|Any CPU.Build.0 = Release|Any CPU
-		{EDE100C3-F36F-4BF0-80F6-603E0BA856CA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{EDE100C3-F36F-4BF0-80F6-603E0BA856CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{EDE100C3-F36F-4BF0-80F6-603E0BA856CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{EDE100C3-F36F-4BF0-80F6-603E0BA856CA}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0B1FDD5D-B9BF-4B01-87FB-E4453B0BF34B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0B1FDD5D-B9BF-4B01-87FB-E4453B0BF34B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0B1FDD5D-B9BF-4B01-87FB-E4453B0BF34B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0B1FDD5D-B9BF-4B01-87FB-E4453B0BF34B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
