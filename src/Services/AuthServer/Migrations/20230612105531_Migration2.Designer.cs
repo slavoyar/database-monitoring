@@ -4,6 +4,7 @@ using Auth.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Auth.Migrations
 {
     [DbContext(typeof(AuthDbContext))]
-    partial class AuthDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230612105531_Migration2")]
+    partial class Migration2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -101,7 +104,7 @@ namespace Auth.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "a21c54d7-d571-42e2-b3d3-d78ab5cd7f6a",
+                            Id = "06680121-c4b0-4ccf-b676-443bd780a77f",
                             AccessFailedCount = 0,
                             Email = "admin@admin",
                             EmailConfirmed = false,
@@ -110,12 +113,12 @@ namespace Auth.Migrations
                             NormalizedEmail = "ADMIN@ADMIN",
                             NormalizedUserName = "ADMIN@ADMIN",
                             Password = "Qwe123!@#",
-                            PasswordHash = "AQAAAAIAAYagAAAAEMKvATDYYU2rrjnM7pq/Ljt6vXhtXtqz7MR4XFKdZ+GGmzIn4kuXJy6R8gRHgy2Ckg==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEHfGr5foRsSTZE2l8kUcvmVVQWZUpAA5Wnx3lfvOYk5pqB4G2kGqWMXU6bHXoNivRg==",
                             PhoneNumber = "1234567890",
                             PhoneNumberConfirmed = false,
                             RefreshTokenExpiryTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Role = "Admin",
-                            SecurityStamp = "8be37c9d-2662-4a4d-85aa-9e8591206962",
+                            SecurityStamp = "7e11493c-6981-4a86-9be4-824429085189",
                             TwoFactorEnabled = false,
                             UserName = "admin@admin"
                         });
@@ -323,21 +326,21 @@ namespace Auth.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "0913c32a-abc0-498e-b5be-6ca166bb5a48",
+                            Id = "15f7bbe1-0395-4a47-bec8-b7426bdc5e2a",
                             ConcurrencyStamp = "1",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "2204be7c-6e3d-4b38-bdc2-d49e0eff2910",
+                            Id = "6eeb9117-31d1-4a1e-8a43-23518e9818cd",
                             ConcurrencyStamp = "2",
                             Name = "Engineer",
                             NormalizedName = "ENGINEER"
                         },
                         new
                         {
-                            Id = "df88ba4b-c8e1-4003-8a54-cf4b5d6d0a08",
+                            Id = "8545f06f-0340-4af1-837c-ec2d7f7ba6b1",
                             ConcurrencyStamp = "3",
                             Name = "Manager",
                             NormalizedName = "MANAGER"
@@ -433,8 +436,8 @@ namespace Auth.Migrations
                     b.HasData(
                         new
                         {
-                            UserId = "a21c54d7-d571-42e2-b3d3-d78ab5cd7f6a",
-                            RoleId = "0913c32a-abc0-498e-b5be-6ca166bb5a48"
+                            UserId = "06680121-c4b0-4ccf-b676-443bd780a77f",
+                            RoleId = "15f7bbe1-0395-4a47-bec8-b7426bdc5e2a"
                         });
                 });
 

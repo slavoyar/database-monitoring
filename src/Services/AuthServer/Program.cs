@@ -14,9 +14,10 @@ using System.Text.Json.Serialization;
 var builder = WebApplication.CreateBuilder(args);
 ConfigurationManager configuration = builder.Configuration;
 
-//--- Add Connection to SqlLite
+//--- Add Connection to Sql
+var startPath = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location);
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-builder.Services.AddDbContext<AuthDbContext>(options => options.UseSqlite(connectionString));
+builder.Services.AddDbContext<AuthDbContext>(options => options.UseSqlServer(connectionString));
 
 //--- Add Identity and some beauty Razor Pages
 builder.Services.AddIdentity<AuthUser, IdentityRole>(options =>
@@ -109,6 +110,12 @@ builder.Services.AddSwaggerGen(option =>
 //-------------------------------------------------------------------
 
 var app = builder.Build();
+
+using ( var scope = app.Services.CreateScope() )
+{
+    var dbContext = scope.ServiceProvider.GetService<AuthDbContext>();
+    dbContext?.Database.Migrate();
+}
 
 if ( !app.Environment.IsDevelopment() )
 {
