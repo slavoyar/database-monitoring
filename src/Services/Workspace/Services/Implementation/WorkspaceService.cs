@@ -71,10 +71,11 @@ public class WorkspaceService : IWorkspaceService
     {
         var users = await unitOfWork.Workspaces.GetAll()
             .Include(w => w.Servers)
+            .Where(w => w.Servers.Any(s => s.OuterId == serverId))
             .Include(w => w.Users)
-            .Where(w => w.Servers.Any(s => s.Id == serverId))
-            .Select(w => w.Users.Select(u => u.OuterId)).ToListAsync();
-        return (IEnumerable<Guid>)users;
+            .Select(w => w.Users.Select(u => u.OuterId))
+            .SelectMany(id => id).ToListAsync();
+        return users;
     }
 
     /// <inheritdoc/>
