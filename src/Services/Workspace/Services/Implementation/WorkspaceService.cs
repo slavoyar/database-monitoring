@@ -1,3 +1,5 @@
+
+
 namespace DatabaseMonitoring.Services.Workspace.Services.Implementation;
 
 /// <summary>
@@ -7,19 +9,23 @@ public class WorkspaceService : IWorkspaceService
 {
     private readonly IMapper mapper;
     private readonly IUnitOfWork unitOfWork;
+    private readonly IApplicationEventService applicationEventSerivce;
 
     /// <summary>
     /// Contructor
     /// </summary>
     /// <param name="mapper">Mapper with configured profiles</param>
-    /// <param name="unitOfWork">Unit of work</param>
+    /// <param name="unitOfWork">Unit of work impl</param>
+    /// <param name="applicationEventSerivce">Event bus impl</param>
     public WorkspaceService(
         IMapper mapper,
-        IUnitOfWork unitOfWork
+        IUnitOfWork unitOfWork,
+        IApplicationEventService applicationEventSerivce
     )
     {
         this.mapper = mapper;
         this.unitOfWork = unitOfWork;
+        this.applicationEventSerivce = applicationEventSerivce;
     }
 
     ///<inheritdoc/>
@@ -29,6 +35,13 @@ public class WorkspaceService : IWorkspaceService
         var newServer = new Server{OuterId = serverId, Workspace = workspace};
         await unitOfWork.Servers.CreateAsync(newServer);
         await unitOfWork.Workspaces.SaveChangesAsync();
+    
+        var @event = new ServerAddedToWorkspaceAppEvent
+        {
+            ServerId = newServer.OuterId,
+            WorkspaceId = workspace.Id 
+        };
+        applicationEventSerivce.PublishThroughEventBusAsync(@event);
     }
 
     /// <inheritdoc/>
@@ -39,6 +52,12 @@ public class WorkspaceService : IWorkspaceService
         await unitOfWork.Users.CreateAsync(newUser);
         await unitOfWork.Workspaces.SaveChangesAsync();
 
+        var @event = new UserAddedToWorkspaceAppEvent
+        {
+            UserId = newUser.OuterId,
+            WorkspaceId = workspace.Id 
+        };
+        applicationEventSerivce.PublishThroughEventBusAsync(@event);
     }
 
     /// <inheritdoc/>
@@ -106,7 +125,18 @@ public class WorkspaceService : IWorkspaceService
         var workspace = await unitOfWork.Workspaces.GetAll().Where(w => w.Id == workspaceId).Include(w => w.Servers).FirstAsync();
         var server = workspace.Servers.First(x => x.OuterId == serverId);
         await unitOfWork.Servers.DeleteAsync(server.Id);
-        return await unitOfWork.Servers.SaveChangesAsync();
+
+        if(!await unitOfWork.Servers.SaveChangesAsync())
+            return false;
+
+        var @event = new ServerRemovedFromWorkspaceAppEvent
+            {
+                ServerId = server.OuterId,
+                WorkspaceId = workspace.Id 
+            };
+        applicationEventSerivce.PublishThroughEventBusAsync(@event);
+
+        return true;
     }
 
     /// <inheritdoc/>
@@ -115,7 +145,17 @@ public class WorkspaceService : IWorkspaceService
         var workspace = await unitOfWork.Workspaces.GetAll().Where(w => w.Id == workspaceId).Include(w => w.Users).FirstAsync();
         var user = workspace.Users.First(x => x.OuterId == userId);
         await unitOfWork.Servers.DeleteAsync(user.Id);
-        return await unitOfWork.Servers.SaveChangesAsync();
+        if(!await unitOfWork.Servers.SaveChangesAsync())
+            return false;
+
+        var @event = new UserRemovedFromWorkspaceAppEvent
+            {
+                UserId = user.OuterId,
+                WorkspaceId = workspace.Id 
+            };
+        applicationEventSerivce.PublishThroughEventBusAsync(@event);
+
+        return true;
     }
 
     /// <inheritdoc/>

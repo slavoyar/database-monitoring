@@ -18,4 +18,9 @@
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\BuildingBlocks\EventBus\EventBus.csproj" />
+    <ProjectReference Include="..\..\BuildingBlocks\EventBusRabbitMQ\EventBusRabbitMQ.csproj" />
+  </ItemGroup>
+
 </Project>

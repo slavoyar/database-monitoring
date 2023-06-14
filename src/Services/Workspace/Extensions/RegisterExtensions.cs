@@ -1,4 +1,5 @@
 
+
 namespace DatabaseMonitoring.Services.Workspace.Extensions;
 
 /// <summary>
@@ -14,11 +15,13 @@ public static class RegisterExtensions
     {
         services.AddApplicationConfigurations(configuration);
         services.AddDatabaseContext(configuration);
+        services.RegisterRabbitMQ(configuration);
         services.RegisterServices();
         services.RegisterUnitOfWork();
         services.RegisterRepositories();
         services.ConfigureSwaggerGen();
         services.AddAutomapperProfiles();
+
         return services;
     }
 
@@ -105,4 +108,38 @@ public static class RegisterExtensions
         });
         return services;
     }
+
+
+    /// <summary>
+    /// RabbitMQ event bus configuration method
+    /// </summary>
+    public static IServiceCollection RegisterRabbitMQ(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.AddSingleton<IEventBusSubscriptionsManager, InMemoryEventBusSubscriptionsManager>();
+
+        services.AddSingleton<IRabbitMQPersistentConnection>(sp => {
+                var logger = sp.GetRequiredService<ILogger<DefaultRabbitMQPersistentConnection>>();
+                var factory = new ConnectionFactory(){
+                        HostName = configuration["EventBusConfiguration:Connection"] ,
+                        DispatchConsumersAsync = true
+                        };
+                var retryCount = 5;
+                return new DefaultRabbitMQPersistentConnection(factory, logger, retryCount);
+        });
+
+        services.AddSingleton<IEventBus, EventBusRabbitMQ>(sp => {
+            var clientName = configuration["EventBusConfiguration:SubscriptionClientName"];
+            var logger = sp.GetRequiredService<ILogger<EventBusRabbitMQ>>();
+            var subManager = sp.GetRequiredService<IEventBusSubscriptionsManager>();
+            var persistentConnection = sp.GetRequiredService<IRabbitMQPersistentConnection>();
+            var retryCount = 5;
+
+            return new EventBusRabbitMQ(persistentConnection,logger,sp,subManager,clientName,retryCount);
+        });
+
+        services.AddTransient<IApplicationEventService, ApplicationEventService>();
+
+        return services;
+    }
+
 }
