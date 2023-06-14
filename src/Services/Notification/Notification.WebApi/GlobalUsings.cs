@@ -9,3 +9,8 @@ global using DatabaseMonitoring.Services.Notification.Infrastructure.Configurati
 global using DatabaseMonitoring.Services.Notification.Infrastructure.Services.Interfaces;
 global using Microsoft.AspNetCore.Mvc;
 global using DatabaseMonitoring.Services.Notification.WebApi.ViewModels;
+global using DatabaseMonitoring.Services.Notification.WebApi.Extensions;
+global using Polly;
+global using Polly.Retry;
+global using DatabaseMonitoring.Services.Notification.Infrastructure.Repository;
+global using DatabaseMonitoring.Services.Notification.WebApi.Services;
