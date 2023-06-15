@@ -39,8 +39,6 @@ namespace MIAUDataBase
                 cfg.AddProfile<ProfileServerPatientDtoEntity>();
                 cfg.AddProfile<ProfileLogDtoModel>();
                 cfg.AddProfile<ProfileServerPatientDtoModel>();
-                //cfg.AddProfile<ProfileLogModels>();
-                //TODO: delete
             });
             configuration.AssertConfigurationIsValid();
             services.AddSingleton<IMapper>(new Mapper(configuration));
