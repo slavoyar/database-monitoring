@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Agregation.Domain.Intefaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace Agregation.Domain.Interfaces
 {
@@ -6,7 +7,7 @@ namespace Agregation.Domain.Interfaces
     /// Репозиторий чтения и записи
     /// </summary>
     /// <typeparam name="T">Тип сущности</typeparam>
-    public abstract class AbstractRepository<T> : IAbstractRepository<T> where T : AbstractEntity
+    public abstract class AbstractRepository<T> : IAbstractRepository<T> where T : class, IEntity
     {
         protected readonly DbContext Context;
         protected readonly DbSet<T> _entitySet;

@@ -9,9 +9,11 @@ namespace Agregation.Controllers.Mappers
         public ProfileLogDtoModel() 
         {
             CreateMap<LogDto, LogViewModel>();
-            CreateMap<LogEditModel, LogDto>();
-            CreateMap<LogCreateModel, LogDto>()
-                .ForMember(d => d.Id, map => map.Ignore());
+            //CreateMap<LogEditModel, LogDto>();
+            //CreateMap<LogCreateModel, LogDto>()
+            //    .ForMember(d => d.Id, map => map.Ignore());
         }
     }
 }
+
+//TODO: Delete

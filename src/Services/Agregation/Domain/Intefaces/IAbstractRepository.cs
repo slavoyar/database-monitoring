@@ -1,11 +1,13 @@
 ﻿
+using Agregation.Domain.Intefaces;
+
 namespace Agregation.Domain.Interfaces
 {
     /// <summary>
     /// 
     /// </summary>
     /// <typeparam name="T"> AbstractEntity нужен для использования Id и указания, что это объект из бд </typeparam>
-    public interface IAbstractRepository<T> where T : AbstractEntity
+    public interface IAbstractRepository<T> where T : IEntity
     {
         #region Get
         public T? Get(Guid id);

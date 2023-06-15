@@ -23,7 +23,7 @@ namespace Agregation.Controllers
         /// <param name="page">Номер страницы</param>
         /// <param name="itemsPerPage">Количесвто логов на страницу</param>
         /// <returns>Возвращает список логов данного сервера в пагинированном виде</returns>
-        [HttpGet("Aggregation/Log/{LogsRequest}")]
+        [HttpGet("Aggregation/Log/{serverId}/{page}/{itemsPerPage}")]
         public async Task<IResult> GetAllById(string serverId, int page, int itemsPerPage)
         {
             var dtos = await logSetService.GetAllForServerAsync(serverId, page, itemsPerPage);

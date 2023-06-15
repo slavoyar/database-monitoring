@@ -1,9 +1,13 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Agregation.Domain.Intefaces;
 
 namespace Agregation.Domain.Models
 {
-    public class ServerPatient : AbstractEntity
+    public class ServerPatient : IEntity
     {
+        [Key]
+        public Guid Id { get; set; }
+
         [Required]
         public string Name { get; set; } = null!;
 
@@ -19,10 +23,10 @@ namespace Agregation.Domain.Models
         [Required]
         public string IdAddress { get; set; } = null!;
 
-        public DateTime LastSuccessLog { get; set; } = DateTime.Now;
+        public string LastSuccessLog { get; set; } = DateTime.Now.ToString();
 
         public string IconId { get; set; } = null!;
 
-        public virtual List<Log> Logs { get; set; } = new List<Log>();
+        public virtual ICollection<Log> Logs { get; set; } = new List<Log>();
     }
 }

@@ -8,8 +8,8 @@
         public string ErrorState { get; set; } = null!;
         public string ServiceType { get; set; } = null!;
         public string ServiceName { get; set; } = null!;
-        public string CreatedAt { get; set; } = null!;
-        public string RecievedAt { get; set; } = null!;
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
+        public DateTime RecievedAt { get; set; } = DateTime.Now;
         public string Message { get; set; } = null!;
     }
 }

@@ -14,7 +14,7 @@ namespace Agregation.Infrastructure.DataAccess.Repositories
         }
         private IQueryable<Log> GetQueryPageLogsOfServers(string serverId, int page, int itemsPerPage) { 
             return GetAll()
-                    .Where(log => log.Server.Id.ToString() == serverId)
+                    .Where(log => log.ServerPatient.Id.ToString() == serverId)
                     .Skip((page - 1) * itemsPerPage)
                     .Take(itemsPerPage);
         }
