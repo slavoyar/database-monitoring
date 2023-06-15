@@ -43,5 +43,3 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
-
-//TODO: После переноса не совпадают пространства имён с их местоположением.

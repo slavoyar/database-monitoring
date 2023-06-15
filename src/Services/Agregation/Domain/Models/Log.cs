@@ -1,13 +1,16 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using Agregation.Domain.Intefaces;
 
 namespace Agregation.Domain.Models
 {
     /// <summary>
     /// Лог для сервера пациента
     /// </summary>
-    public class Log : AbstractEntity
+    public class Log : IEntity
     {
-
+        [Key]
+        public Guid Id { get; set; }
         public string CriticalStatus { get; set; } = null!;
 
         [Required]
@@ -18,14 +21,15 @@ namespace Agregation.Domain.Models
 
         public string ServiceName { get; set; } = null!;
 
-        public DateTime CreationDate { get; set; } = DateTime.Now;
+        public string CreationDate { get; set; } = DateTime.Now.ToString();
 
         public string RecievedAt { get; set; } = null!;
 
         public string Message { get; set; } = null!;
 
-        public Guid ServerId { get; set; }
+        public Guid ServerPatientId { get; set; }
+        [ForeignKey("ServerPatientId")]
+        public virtual ServerPatient ServerPatient { get; set; } = null!;
 
-        public virtual ServerPatient Server { get; set; } = null!;
     }
 }

@@ -59,7 +59,7 @@ namespace Agregation.Controllers
         /// </summary>
         /// <param name="ServerCreateRequest">Информация о сервере пациенте для создания.</param>
         /// <returns>Возвращает информацию о сервере с его идентификатором.</returns>
-        [HttpPost("Aggregation/Server/{ServerCreateRequest}")]
+        [HttpPost("Aggregation/Server")]
         public async Task<IResult> Create(ServerPatientCreateModel ServerCreateRequest)
         {
             var dto = mapper.Map<ServerPatientDto>(ServerCreateRequest);
@@ -101,7 +101,7 @@ namespace Agregation.Controllers
         /// </summary>
         /// <param name="ServerUpdateRequest"></param>
         /// <returns></returns>
-        [HttpPut("Aggregation/Server/{ServerUpdateRequest}")]
+        [HttpPut("Aggregation/Server")]
         public async Task<IResult> Edit(ServerPatientEditModel ServerUpdateRequest)
         {
             var dto = mapper.Map<ServerPatientDto>(ServerUpdateRequest);
