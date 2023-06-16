@@ -28,7 +28,7 @@ public class ServersController : ControllerBase
     }
 
     /// <summary>
-    /// Get workspace servers identifiers by id
+    /// Get servers identifiers by workspace id
     /// </summary>
     /// <param name="workspaceId">Workspace identifier</param>
     /// <returns>Array of server identifiers</returns>

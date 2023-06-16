@@ -28,7 +28,7 @@ public class UsersController : ControllerBase
     }
 
     /// <summary>
-    /// Get workspace users identifiers by id
+    /// Get users identifiers by workspace id
     /// </summary>
     /// <param name="workspaceId">Workspace identifier</param>
     /// <returns>Array of users identifiers</returns>
