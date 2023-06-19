@@ -6,7 +6,7 @@ namespace Agregation.Infrastructure.DataAccess.Repositories
 {
     public class ServerPatientRepository : AbstractRepository<ServerPatient>, IServerPatientRepository
     {
-        public ServerPatientRepository(DbContext context) : base(context)
+        public ServerPatientRepository(ApplicationContext context) : base(context)
         {
         }
     }
