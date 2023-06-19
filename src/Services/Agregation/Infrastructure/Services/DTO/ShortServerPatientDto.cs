@@ -1,7 +1,7 @@
 ﻿namespace Agregation.Infrastructure.Services.DTO
 {
     /// <summary>
-    /// Короткое описание сервера пациента
+    /// Short description of server patient
     /// </summary>
     public class ShortServerPatientDto
     {

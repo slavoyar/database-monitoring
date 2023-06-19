@@ -3,7 +3,7 @@
 namespace Agregation.Infrastructure.Services.Abstracts
 {
     /// <summary>
-    /// Нужен для DI. 
+    /// Used in DI. 
     /// </summary>
     public interface ILogSetService
     {

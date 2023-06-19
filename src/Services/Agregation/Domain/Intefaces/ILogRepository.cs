@@ -4,7 +4,7 @@ using Agregation.Domain.Models;
 namespace Agregation.Domain.Interfaces
 {
     /// <summary>
-    /// Нужен для DI. 
+    /// Used in DI. 
     /// </summary>
     public interface ILogRepository : IAbstractRepository<Log>
     {

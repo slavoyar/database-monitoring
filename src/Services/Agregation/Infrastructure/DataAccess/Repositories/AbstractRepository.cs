@@ -1,13 +1,14 @@
 ﻿using Agregation.Domain.Intefaces;
+using Agregation.Domain.Interfaces;
 using Agregation.Infrastructure.DataAccess;
 using Microsoft.EntityFrameworkCore;
 
-namespace Agregation.Domain.Interfaces
+namespace Agregation.Infrastructure.DataAccess.Repositories
 {
     /// <summary>
-    /// Репозиторий чтения и записи
+    /// Abstract repository
     /// </summary>
-    /// <typeparam name="T">Тип сущности</typeparam>
+    /// <typeparam name="T">Type of entity</typeparam>
     public abstract class AbstractRepository<T> : IAbstractRepository<T> where T : class, IEntity
     {
         protected readonly ApplicationContext context;

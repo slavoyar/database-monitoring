@@ -6,7 +6,7 @@ namespace Agregation.Domain.Interfaces
     /// <summary>
     /// 
     /// </summary>
-    /// <typeparam name="T"> AbstractEntity нужен для использования Id и указания, что это объект из бд </typeparam>
+    /// <typeparam name="T"> AbstractEntity is needed to use the Id and indicate that it is an object from the database </typeparam>
     public interface IAbstractRepository<T> where T : IEntity
     {
         #region Get

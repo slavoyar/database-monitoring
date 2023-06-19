@@ -3,7 +3,7 @@
 namespace Agregation.Domain.Intefaces
 {
     /// <summary>
-    /// Содержит Id и указывает, что этот объект получается из бд
+    /// Contains an Id and indicates that this object is obtained from the database
     /// </summary>
     public interface IEntity
     {
