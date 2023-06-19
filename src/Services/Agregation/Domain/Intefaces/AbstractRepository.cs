@@ -9,13 +9,13 @@ namespace Agregation.Domain.Interfaces
     /// <typeparam name="T">Тип сущности</typeparam>
     public abstract class AbstractRepository<T> : IAbstractRepository<T> where T : class, IEntity
     {
-        protected readonly DbContext Context;
-        protected readonly DbSet<T> _entitySet;
+        protected readonly DbContext context;
+        protected readonly DbSet<T> entitySet;
 
         protected AbstractRepository(DbContext context)
         {
-            Context = context;
-            _entitySet = Context.Set<T>();
+            this.context = context;
+            entitySet = this.context.Set<T>();
         }
 
         #region Get
@@ -27,7 +27,7 @@ namespace Agregation.Domain.Interfaces
         /// <returns>сущность</returns>
         public T? Get(Guid id)
         {
-            return _entitySet.Find(id);
+            return entitySet.Find(id);
         }
 
         /// <summary>
@@ -37,7 +37,7 @@ namespace Agregation.Domain.Interfaces
         /// <returns>сущность</returns>
         public virtual async Task<T?> GetAsync(Guid id)
         {
-            return await _entitySet.FindAsync(id);
+            return await entitySet.FindAsync(id);
         }
 
         #endregion
@@ -51,7 +51,7 @@ namespace Agregation.Domain.Interfaces
         /// <returns>IQueryable массив сущностей</returns>
         public virtual IQueryable<T> GetAll(bool asNoTracking = false)
         {
-            return asNoTracking ? _entitySet.AsNoTracking() : _entitySet;
+            return asNoTracking ? entitySet.AsNoTracking() : entitySet;
         }
 
         /// <summary>
@@ -67,7 +67,7 @@ namespace Agregation.Domain.Interfaces
 
         public List<T> GetPaged(int page, int itemsPerPage)
         {
-            var query = _entitySet
+            var query = entitySet
                 .Skip((page - 1) * itemsPerPage)
                 .Take(itemsPerPage);
             return query.ToList();
@@ -89,7 +89,9 @@ namespace Agregation.Domain.Interfaces
         /// <returns>добавленная сущность</returns>
         public T Add(T entity)
         {
-            var objToReturn = _entitySet.Add(entity);
+            var objToReturn = entitySet.Add(entity);
+            context.SaveChanges();
+            objToReturn.State = EntityState.Detached;
             return objToReturn.Entity;
         }
 
@@ -100,7 +102,7 @@ namespace Agregation.Domain.Interfaces
         /// <returns>добавленная сущность</returns>
         public async Task<T> AddAsync(T entity)
         {
-            return (await _entitySet.AddAsync(entity)).Entity;
+            return await Task.Run(() => Add(entity));
         }
 
         /// <summary>
@@ -110,7 +112,7 @@ namespace Agregation.Domain.Interfaces
         public void AddRange(List<T> entities)
         {
             var enumerable = entities as IList<T> ?? entities.ToList();
-            _entitySet.AddRange(enumerable);
+            entitySet.AddRange(enumerable);
         }
 
         /// <summary>
@@ -123,7 +125,7 @@ namespace Agregation.Domain.Interfaces
             {
                 return;
             }
-            await _entitySet.AddRangeAsync(entities);
+            await entitySet.AddRangeAsync(entities);
         }
 
         #endregion
@@ -136,11 +138,14 @@ namespace Agregation.Domain.Interfaces
         /// <param name="entity">сущность для изменения</param>
         public bool TryUpdate(T entity)
         {
-            if (_entitySet.Find(entity.Id) == null)
+            var entFromDb = entitySet.Find(entity.Id);
+            if (entFromDb == null)
                 return false;
-            Context.Entry(entity).State = EntityState.Modified;
+            context.Entry(entFromDb).State = EntityState.Detached;
+            context.Entry(entity).State = EntityState.Modified;
             return true;
         }
+        //TODO: Не удаётся обновить сущность
 
         #endregion
 
@@ -153,12 +158,12 @@ namespace Agregation.Domain.Interfaces
         /// <returns>была ли сущность удалена</returns>
         public bool TryDelete(Guid id)
         {
-            var obj = _entitySet.Find(id);
+            var obj = entitySet.Find(id);
             if (obj == null)
             {
                 return false;
             }
-            _entitySet.Remove(obj);
+            entitySet.Remove(obj);
             return true;
         }
 
@@ -173,7 +178,7 @@ namespace Agregation.Domain.Interfaces
             {
                 return false;
             }
-            Context.Entry(entity).State = EntityState.Deleted;
+            context.Entry(entity).State = EntityState.Deleted;
             return true;
         }
 
@@ -188,7 +193,7 @@ namespace Agregation.Domain.Interfaces
             {
                 return false;
             }
-            _entitySet.RemoveRange(entities);
+            entitySet.RemoveRange(entities);
             return true;
         }
 
@@ -201,7 +206,8 @@ namespace Agregation.Domain.Interfaces
         /// </summary>
         public void SaveChanges()
         {
-            Context.SaveChanges();
+            context.SaveChanges();
+            context.ChangeTracker.Clear();
         }
 
         /// <summary>
@@ -209,7 +215,9 @@ namespace Agregation.Domain.Interfaces
         /// </summary>
         public async Task SaveChangesAsync(CancellationToken cancellationToken = default)
         {
-            await Context.SaveChangesAsync(cancellationToken);
+            await context.SaveChangesAsync(cancellationToken);
+            context.ChangeTracker.Clear();
+
         }
         #endregion
     }
