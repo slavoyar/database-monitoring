@@ -1,4 +1,5 @@
 ﻿using Agregation.Domain.Intefaces;
+using Agregation.Infrastructure.DataAccess;
 using Microsoft.EntityFrameworkCore;
 
 namespace Agregation.Domain.Interfaces
@@ -9,10 +10,10 @@ namespace Agregation.Domain.Interfaces
     /// <typeparam name="T">Тип сущности</typeparam>
     public abstract class AbstractRepository<T> : IAbstractRepository<T> where T : class, IEntity
     {
-        protected readonly DbContext context;
+        protected readonly ApplicationContext context;
         protected readonly DbSet<T> entitySet;
 
-        protected AbstractRepository(DbContext context)
+        protected AbstractRepository(ApplicationContext context)
         {
             this.context = context;
             entitySet = this.context.Set<T>();

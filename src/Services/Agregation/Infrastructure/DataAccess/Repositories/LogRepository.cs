@@ -9,7 +9,7 @@ namespace Agregation.Infrastructure.DataAccess.Repositories
     /// </summary>
     public class LogRepository : AbstractRepository<Log>, ILogRepository
     {
-        public LogRepository(DbContext context) : base(context)
+        public LogRepository(ApplicationContext context) : base(context)
         {
         }
         private IQueryable<Log> GetQueryPageLogsOfServers(string serverId, int page, int itemsPerPage) { 

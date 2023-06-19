@@ -50,8 +50,8 @@ namespace MIAUDataBase
         {
             string? connection = configuration.GetConnectionString("Postgre");
             services
-                .AddDbContext<ApplicationContext>(options => options.UseNpgsql(connection))
-                .AddTransient<DbContext, ApplicationContext>();
+                .AddDbContext<ApplicationContext>(options => options.UseNpgsql(connection));
+                //.AddTransient<DbContext, ApplicationContext>();
             return services;
         }
 
