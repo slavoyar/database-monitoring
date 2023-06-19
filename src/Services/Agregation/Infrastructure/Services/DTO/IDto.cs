@@ -1,7 +1,7 @@
 ﻿namespace Agregation.Infrastructure.Services.DTO
 {
     /// <summary>
-    /// Нужен для информирования о том, что этот объект -- это Dto
+    /// It is needed to inform that this object is a Dto
     /// </summary>
     public interface IDto{}
 }

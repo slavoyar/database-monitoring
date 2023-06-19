@@ -5,7 +5,7 @@ using Agregation.Domain.Intefaces;
 namespace Agregation.Domain.Models
 {
     /// <summary>
-    /// Лог для сервера пациента
+    /// Log for the server patient
     /// </summary>
     public class Log : IEntity
     {
