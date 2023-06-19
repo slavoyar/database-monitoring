@@ -26,7 +26,6 @@ namespace Agregation.Infrastructure.DataAccess
         //    modelBuilder.Entity<ServerPatient>().HasData(new ServerPatient[] { serverPatient });
         //    var logList = fakeDataFactory.GenerateFakeLogs(serverPatient);
         //    modelBuilder.Entity<Log>().HasData(logList);
-
         //}
     }
 }
