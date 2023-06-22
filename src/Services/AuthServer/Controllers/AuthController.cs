@@ -43,10 +43,10 @@ namespace Auth.Controllers
 
         #endregion Constructor and Common vars
 
-        #region GetAccessToken
+        #region Login
 
         /// <summary>
-        /// Get JWT Access token for further login
+        /// Get JWT Access token + RefreshToken for further login
         /// </summary>
         /// <param name="model">Model of data for Login</param>
         /// <response code="200">JWT Access token + expiration Date </response>
@@ -57,8 +57,8 @@ namespace Auth.Controllers
         [ProducesResponseType(typeof(WebResponce), 401)]
         [AllowAnonymous]
         [HttpPost]
-        [Route("GetAccessToken")]
-        public async Task<IActionResult> GetAccessToken([FromBody] AuthLoginModel model)
+        [Route("Login")]
+        public async Task<IActionResult> Login([FromBody] AuthLoginModel model)
         {
             var modelEmail = model.Email;
             var modelPass = model.Password;
@@ -154,9 +154,9 @@ namespace Auth.Controllers
             return Unauthorized(WebResponcesAuth.authResponceErrorUnauthorized);
         }
 
-        #endregion GetAccessToken
+        #endregion Login
 
-        #region GetRefreshToken
+        #region UpdateAccessToken
 
         /// <summary>
         /// Get JWT refresh token for further login
@@ -170,8 +170,8 @@ namespace Auth.Controllers
         [ProducesResponseType(typeof(WebResponce), 401)]
         [Authorize]
         [HttpPost]
-        [Route("GetRefreshToken")]
-        public async Task<IActionResult> GetRefreshToken(TokenModel tokenModel)
+        [Route("UpdateAccessToken")]
+        public async Task<IActionResult> UpdateAccessToken(TokenModel tokenModel)
         {
             //--- Check Input Data
             if ( tokenModel is null )
@@ -235,7 +235,7 @@ namespace Auth.Controllers
             return Unauthorized(WebResponcesAuth.authResponceErrorUnauthorized);
         }
 
-        #endregion GetRefreshToken
+        #endregion UpdateAccessToken
 
         #region Usefull Methods
 
