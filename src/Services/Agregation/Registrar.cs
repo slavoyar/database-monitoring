@@ -1,16 +1,16 @@
-﻿using AutoMapper;
-using MIAUDataBase.Controllers.Mappers;
-using MIAUDataBase.Infrastructure;
-using MIAUDataBase.Infrastructure.Repositories.Abstracts;
-using MIAUDataBase.Infrastructure.Repositories.Implementation;
-using MIAUDataBase.Services.Abstracts;
-using MIAUDataBase.Services.Implementations;
-using MIAUDataBase.Services.Mappers;
+﻿using Agregation.Controllers.Mappers;
+using Agregation.Domain.Interfaces;
+using Agregation.Infrastructure.DataAccess;
+using Agregation.Infrastructure.DataAccess.Repositories;
+using Agregation.Infrastructure.Services.Abstracts;
+using Agregation.Infrastructure.Services.Implementations;
+using Agregation.Infrastructure.Services.Mappers;
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 
 namespace MIAUDataBase
 {
-    /// <summary>
+    /// <summary> 
     /// Класс для расширения builder.Services из Program.cs, работает с IServiceCollection
     /// </summary>
     public static class Registrar
@@ -39,7 +39,6 @@ namespace MIAUDataBase
                 cfg.AddProfile<ProfileServerPatientDtoEntity>();
                 cfg.AddProfile<ProfileLogDtoModel>();
                 cfg.AddProfile<ProfileServerPatientDtoModel>();
-                cfg.AddProfile<ProfileLogModels>();
             });
             configuration.AssertConfigurationIsValid();
             services.AddSingleton<IMapper>(new Mapper(configuration));
@@ -51,8 +50,8 @@ namespace MIAUDataBase
         {
             string? connection = configuration.GetConnectionString("Postgre");
             services
-                .AddDbContext<ApplicationContext>(options => options.UseNpgsql(connection))
-                .AddTransient<DbContext, ApplicationContext>();
+                .AddDbContext<ApplicationContext>(options => options.UseNpgsql(connection));
+                //.AddTransient<DbContext, ApplicationContext>();
             return services;
         }
 
