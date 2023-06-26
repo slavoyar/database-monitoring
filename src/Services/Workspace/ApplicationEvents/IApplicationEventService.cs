@@ -9,5 +9,5 @@ public interface IApplicationEventService
     /// Description
     /// </summary>
     /// <param name="event">Event to publish</param>
-    void PublishThroughEventBusAsync(BaseEvent @event);
+    void PublishThroughEventBus(BaseEvent @event);
 }

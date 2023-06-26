@@ -31,33 +31,42 @@ public class WorkspaceService : IWorkspaceService
     ///<inheritdoc/>
     public async Task AddServerToWorkspaceAsync(Guid workspaceId, Guid serverId)
     {
-        var workspace = await unitOfWork.Workspaces.GetAll().Where(x => x.Id == workspaceId).Include(x => x.Servers).FirstOrDefaultAsync();
+        var workspace = await unitOfWork.Workspaces.GetAll().Where(x => x.Id == workspaceId).Include(x => x.Servers).Include(x => x.Users).FirstOrDefaultAsync();
         var newServer = new Server{OuterId = serverId, Workspace = workspace};
         await unitOfWork.Servers.CreateAsync(newServer);
         await unitOfWork.Workspaces.SaveChangesAsync();
     
+        if(!workspace.Users.Any())
+            return;
+
         var @event = new ServerAddedToWorkspaceAppEvent
         {
             ServerId = newServer.OuterId,
-            WorkspaceId = workspace.Id 
+            WorkspaceId = workspace.Id,
+            UsersId = workspace.Users.Select(x => x.OuterId)
         };
-        applicationEventSerivce.PublishThroughEventBusAsync(@event);
+        applicationEventSerivce.PublishThroughEventBus(@event);
     }
 
     /// <inheritdoc/>
     public async Task AddUserToWorkspaceAsync(Guid workspaceId, Guid userId)
     {
         var workspace = await unitOfWork.Workspaces.GetAll().Where(x => x.Id == workspaceId).Include(x => x.Users).FirstOrDefaultAsync();
+        bool noUsersInWorkspace = !workspace.Users.Any();
         var newUser = new User{OuterId = userId, Workspace = workspace};
         await unitOfWork.Users.CreateAsync(newUser);
         await unitOfWork.Workspaces.SaveChangesAsync();
 
+        if(noUsersInWorkspace)
+            return;
+
         var @event = new UserAddedToWorkspaceAppEvent
         {
             UserId = newUser.OuterId,
-            WorkspaceId = workspace.Id 
+            WorkspaceId = workspace.Id,
+            UsersId = workspace.Users.Select(x => x.OuterId)
         };
-        applicationEventSerivce.PublishThroughEventBusAsync(@event);
+        applicationEventSerivce.PublishThroughEventBus(@event);
     }
 
     /// <inheritdoc/>
@@ -115,26 +124,31 @@ public class WorkspaceService : IWorkspaceService
             .Where(w => w.Id == workspaceId)
             .Include(w => w.Users)
             .FirstAsync();
-        var servers = workspace.Users.Select(s => s.Id);
+        var servers = workspace.Users.Select(s => s.OuterId);
         return servers;
     }
 
     /// <inheritdoc/>
     public async Task<bool> RemoveServerFromWorkspaceAsync(Guid workspaceId, Guid serverId)
     {
-        var workspace = await unitOfWork.Workspaces.GetAll().Where(w => w.Id == workspaceId).Include(w => w.Servers).FirstAsync();
-        var server = workspace.Servers.First(x => x.OuterId == serverId);
+        var workspace = await unitOfWork.Workspaces.GetAll().Where(w => w.Id == workspaceId).Include(w => w.Servers).Include(x => x.Users).FirstAsync();
+        var server = workspace.Servers.FirstOrDefault(x => x.OuterId == serverId);
+        if(server == null)
+            return false;
         await unitOfWork.Servers.DeleteAsync(server.Id);
 
-        if(!await unitOfWork.Servers.SaveChangesAsync())
-            return false;
+        await unitOfWork.Servers.SaveChangesAsync();
+
+        if (!workspace.Users.Any())
+            return true;
 
         var @event = new ServerRemovedFromWorkspaceAppEvent
             {
                 ServerId = server.OuterId,
-                WorkspaceId = workspace.Id 
+                WorkspaceId = workspace.Id,
+                UsersId = workspace.Users.Select(x => x.OuterId)
             };
-        applicationEventSerivce.PublishThroughEventBusAsync(@event);
+        applicationEventSerivce.PublishThroughEventBus(@event);
 
         return true;
     }
@@ -143,17 +157,23 @@ public class WorkspaceService : IWorkspaceService
     public async Task<bool> RemoveUserFromWorkspaceAsync(Guid workspaceId, Guid userId)
     {
         var workspace = await unitOfWork.Workspaces.GetAll().Where(w => w.Id == workspaceId).Include(w => w.Users).FirstAsync();
-        var user = workspace.Users.First(x => x.OuterId == userId);
-        await unitOfWork.Servers.DeleteAsync(user.Id);
-        if(!await unitOfWork.Servers.SaveChangesAsync())
+        var user = workspace.Users.FirstOrDefault(x => x.OuterId == userId);
+        if(user == null)
             return false;
+        await unitOfWork.Users.DeleteAsync(user.Id);
+
+        await unitOfWork.Servers.SaveChangesAsync();
+
+        if(!workspace.Users.Any())
+            return true;
 
         var @event = new UserRemovedFromWorkspaceAppEvent
             {
                 UserId = user.OuterId,
-                WorkspaceId = workspace.Id 
+                WorkspaceId = workspace.Id,
+                UsersId = workspace.Users.Select(x => x.OuterId)
             };
-        applicationEventSerivce.PublishThroughEventBusAsync(@event);
+        applicationEventSerivce.PublishThroughEventBus(@event);
 
         return true;
     }
@@ -171,5 +191,6 @@ public class WorkspaceService : IWorkspaceService
     /// <inheritdoc/>
     public async Task<bool> WorkspaceExists(Guid id)
         => (await unitOfWork.Workspaces.GetAsync(id)) != null;
+
 
 }
