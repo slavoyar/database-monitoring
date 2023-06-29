@@ -124,8 +124,8 @@ public class WorkspaceService : IWorkspaceService
             .Where(w => w.Id == workspaceId)
             .Include(w => w.Users)
             .FirstAsync();
-        var servers = workspace.Users.Select(s => s.OuterId);
-        return servers;
+        var users = workspace.Users.Select(s => s.OuterId);
+        return users;
     }
 
     /// <inheritdoc/>
