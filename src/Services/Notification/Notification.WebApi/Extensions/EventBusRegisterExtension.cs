@@ -28,7 +28,10 @@ public static class EventBusRegisterExtension
             return new EventBusRabbitMQ(persistentConnection,logger,sp,subManager,clientName,retryCount);
         });
 
+        services.AddTransient<ServerRemovedFromWorkspaceAppEventHandler>();
         services.AddTransient<ServerAddedToWorkspaceAppEventHandler>();
+        services.AddTransient<UserAddedToWorkspaceAppEventHandler>();
+        services.AddTransient<UserRemovedFromWorkspaceAppEventHandler>();
 
         return services;
     }
@@ -36,7 +39,10 @@ public static class EventBusRegisterExtension
     public static IServiceProvider EventBusSubscribeToEvents(this IServiceProvider services)
     {
         var eventbus = services.GetRequiredService<IEventBus>();
+        eventbus.Subscribe<ServerRemovedFromWorkspaceAppEvent, ServerRemovedFromWorkspaceAppEventHandler>();
         eventbus.Subscribe<ServerAddedToWorkspaceAppEvent, ServerAddedToWorkspaceAppEventHandler>();
+        eventbus.Subscribe<UserAddedToWorkspaceAppEvent, UserAddedToWorkspaceAppEventHandler>();
+        eventbus.Subscribe<UserRemovedFromWorkspaceAppEvent, UserRemovedFromWorkspaceAppEventHandler>();
         return services;
     }
 }

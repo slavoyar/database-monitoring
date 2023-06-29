@@ -1,6 +1,6 @@
 namespace DatabaseMonitoring.Services.Notification.WebApi.ApplicationEvents.EventHandling;
 
-public class UserAddedToWorkspaceAppEventHandler : WorkspaceAppEventsHandler, IBaseEventHandler<ServerAddedToWorkspaceAppEvent>
+public class UserAddedToWorkspaceAppEventHandler : WorkspaceAppEventsHandler, IBaseEventHandler<UserAddedToWorkspaceAppEvent>
 {
     public UserAddedToWorkspaceAppEventHandler(
         INotificationService notificationService,
@@ -8,7 +8,7 @@ public class UserAddedToWorkspaceAppEventHandler : WorkspaceAppEventsHandler, IB
         ) : base(notificationService, logger)
     {     
     }
-    public async Task Handle(ServerAddedToWorkspaceAppEvent @event)
+    public async Task Handle(UserAddedToWorkspaceAppEvent @event)
     {
         await HandleWorkspaceEvent(@event);
     }
