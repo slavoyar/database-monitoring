@@ -31,7 +31,7 @@ public class WorkspaceAppEventsHandler
             var notificationDto = new NotificationDto()
             {
                 Data = data,
-                UsersReceived = @event.UsersId.ToList(),
+                Receivers = @event.UsersId.ToList(),
                 WorkspacesId = new List<Guid>{@event.WorkspaceId},
                 CreationDate = @event.CreationDate,
             };
