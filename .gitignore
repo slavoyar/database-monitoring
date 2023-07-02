@@ -284,3 +284,7 @@ src/**/inf.yaml
 
 *launch.json
 *tasks.json
+
+# Ignore Rabbitmq logs,data,conf
+src/rabbitmq/
+src/etc/rabbitmq
