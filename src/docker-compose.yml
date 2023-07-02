@@ -10,23 +10,21 @@ services:
 
   # -------------------------------------------------------
   front:
-    container_name: ${COMPOSE_PROJECT_NAME}-front-web-c
-    image: ${COMPOSE_PROJECT_NAME}-front-web-i
+    container_name: ${COMPOSE_PROJECT_NAME}-front-web
+    image: ${COMPOSE_PROJECT_NAME}-front-web
     build:
       context: ../src/Webapp/
       dockerfile: Dockerfile    
     ports:
       - "3000:8080"
-    #tty: true
-    #restart: on-failure
-    #volumes:
-    #  - front:/app/${COMPOSE_PROJECT_NAME}/front
   ## -------------------------------------------------------
   auth:
-    container_name: ${COMPOSE_PROJECT_NAME}-back-auth-c
-    image: ${COMPOSE_PROJECT_NAME}-back-auth-i
+    container_name: ${COMPOSE_PROJECT_NAME}-auth
+    image: ${COMPOSE_PROJECT_NAME}-auth
     ports:
       - "5000:80"
+    environment: 
+      - ConnectionStrings__DefaultConnection=Initial Catalog=AuthUsers; Data Source=host.docker.internal; Persist Security Info=True; User ID=SA; Password=Qwe123!@#; Trusted_Connection=True; MultipleActiveResultSets=true; TrustServerCertificate=True; Integrated Security=false
     depends_on: 
       - auth-sqlserver
     build:
@@ -34,11 +32,9 @@ services:
       dockerfile: Dockerfile
     tty: true
     restart: on-failure
-    #volumes:
-    #  - auth:/app/${COMPOSE_PROJECT_NAME}/auth
 
   auth-sqlserver:
-    container_name: ${COMPOSE_PROJECT_NAME}-back-auth-sqlserver-c
+    container_name: ${COMPOSE_PROJECT_NAME}-auth-sqlserver
     image: "mcr.microsoft.com/mssql/server:2022-latest"
     ports:
       - "1433:1433" 
@@ -51,13 +47,14 @@ services:
       - auth-db:/app/${COMPOSE_PROJECT_NAME}/auth/db
   ## -------------------------------------------------------
   notification:
-    container_name: ${COMPOSE_PROJECT_NAME}-back-notification-c
-    image: ${COMPOSE_PROJECT_NAME}-back-notification-i
+    container_name: ${COMPOSE_PROJECT_NAME}-notification
+    image: ${COMPOSE_PROJECT_NAME}-notification
     ports:
       - "5001:5280"
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:5280
+      - MongoDbConfiguration__ConnectionString=mongodb://host.docker.internal:27017
+      - WorkspaceConfiguration__Endpoint=host.docker.internal:1412/workspaces/getworkspacesbyserverid
     build:
       context: ../src/Services/Notification/
       dockerfile: Dockerfile
@@ -65,17 +62,12 @@ services:
       - notification-mongodb
     tty: true
     restart: on-failure
-    #volumes:
-    #  - notification:/app/${COMPOSE_PROJECT_NAME}/notification
 
   notification-mongodb:
-    container_name: ${COMPOSE_PROJECT_NAME}-back-notification-mongodb-c
+    container_name: ${COMPOSE_PROJECT_NAME}-notification-mongodb
     image: mongo
     ports:
       - '27017:27017'
-    #environment:
-    #  - MONGO_INITDB_ROOT_USERNAME=***
-    #  - MONGO_INITDB_ROOT_PASSWORD=***
     volumes:
       - notification-db_data:/data/db
       - notification-db_config:/data/configdb
@@ -83,8 +75,8 @@ services:
     restart: on-failure
   ## -------------------------------------------------------
   agregation:
-    container_name: ${COMPOSE_PROJECT_NAME}-back-agregation-c
-    image: ${COMPOSE_PROJECT_NAME}-back-agregation-i
+    container_name: ${COMPOSE_PROJECT_NAME}-agregation
+    image: ${COMPOSE_PROJECT_NAME}-agregation
     build:
       context: ../src/Services/Agregation/
       dockerfile: Dockerfile
@@ -95,13 +87,12 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:5278
+      - ConnectionStrings__Postgre=Host=host.docker.internal;Port=5432;Database=MIAY;Username=postgres;Password=admin;Pooling=True;TrustServerCertificate=True
     tty: true
     restart: on-failure
-    #volumes:
-    #  - agregation:/app/${COMPOSE_PROJECT_NAME}/agregation
 
   agregation-postgresserver:
-    container_name: ${COMPOSE_PROJECT_NAME}-back-agregation-postgresserver-c
+    container_name: ${COMPOSE_PROJECT_NAME}-agregation-postgresserver
     image: postgres
     ports:
       - "5432:5432" 
@@ -115,7 +106,7 @@ services:
       - agregation-db:/var/lib/postgresql/data
   
   pgadmin:
-    container_name: ${COMPOSE_PROJECT_NAME}-back-pgadmin4-c
+    container_name: ${COMPOSE_PROJECT_NAME}-pgadmin4
     image: dpage/pgadmin4
     restart: on-failure
     environment:
@@ -128,8 +119,8 @@ services:
       - pgadmin-data:/var/lib/pgadmin
   # -------------------------------------------------------
   workspace:
-    container_name: ${COMPOSE_PROJECT_NAME}-back-workspace-c
-    image: ${COMPOSE_PROJECT_NAME}-back-workspace-i
+    container_name: ${COMPOSE_PROJECT_NAME}-workspace
+    image: ${COMPOSE_PROJECT_NAME}-workspace
     ports:
       - "5009:5165"
     depends_on: 
@@ -140,13 +131,13 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:5165
+      - PostgreConfiguration__ConnectionString=Username=postgres;Password=admin;Host=host.docker.internal;Port=5433;Database=Workspace;Pooling=true;TrustServerCertificate=True 
+      - EventBusConfiguration__Connection=host.docker.internal
     tty: true
     restart: on-failure
-    #volumes:
-    #  - workspace:/app/${COMPOSE_PROJECT_NAME}/workspace
 
   workspace-postgresserver:
-    container_name: ${COMPOSE_PROJECT_NAME}-back-workspace-postgresserver-c
+    container_name: ${COMPOSE_PROJECT_NAME}-workspace-postgresserver
     image: postgres
     ports:
       - "5433:5432" 
@@ -159,9 +150,31 @@ services:
     volumes:
       - workspace-db:/var/lib/postgresql/data
   # -------------------------------------------------------
+  rabbitmq:
+    container_name: ${COMPOSE_PROJECT_NAME}-rabbitmq
+    image: rabbitmq
+    command: rabbitmq-server
+    restart: always
+    environment:
+      - RABBITMQ_DEFAULT_USER=rmuser
+      - RABBITMQ_DEFAULT_PASS=rmpassword
+      - RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS=-rabbit log_levels [{connection,error},{default,error}] disk_free_limit 2147483648
+    ports:
+      - 15672:15672
+      - 5672:5672
+    volumes:
+        - ./etc/rabbitmq/conf:/etc/rabbitmq/
+        - ./etc/rabbitmq/data/:/var/lib/rabbitmq/
+        - ./etc/rabbitmq/logs/:/var/log/rabbitmq/
+    healthcheck:
+      test: [ "CMD", "nc", "-z", "localhost", "5672" ]
+      interval: 5s
+      timeout: 10s
+      retries: 3
+  # -------------------------------------------------------
   #web-aggregator:
-  #  container_name: ${COMPOSE_PROJECT_NAME}-back-web-aggregator-c
-  #  image: ${COMPOSE_PROJECT_NAME}-back-web-aggregator-i
+  #  container_name: ${COMPOSE_PROJECT_NAME}-web-aggregator
+  #  image: ${COMPOSE_PROJECT_NAME}-web-aggregator
   #  build:
   #    context: ../src/ApiGateways/WebAggregator/
   #    dockerfile: Dockerfile    
@@ -180,10 +193,3 @@ volumes:
   agregation-db: 
   workspace-db:
   pgadmin-data:
-
-  #front:  
-  #auth:  
-  #notification:   
-  #agregation: 
-  #workspace:  
-  #web-aggregator:  
