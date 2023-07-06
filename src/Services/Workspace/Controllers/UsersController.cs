@@ -6,6 +6,7 @@ namespace DatabaseMonitoring.Services.Workspace.Controllers;
 /// </summary>
 [ApiController]
 [Route("api/v1/workspace/{workspaceId}/users")]
+[Authorize]
 public class UsersController : ControllerBase
 {
     private readonly ILogger<UsersController> logger;
@@ -52,6 +53,7 @@ public class UsersController : ControllerBase
     [HttpPost("{userId}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [Authorize(Roles = "Admin")]
     public async Task<ActionResult> AddUserToWorkspace(Guid workspaceId, Guid userId)
     {
         if(await workspaceService.WorkspaceExists(workspaceId) == false)
@@ -68,6 +70,7 @@ public class UsersController : ControllerBase
     [HttpDelete("{userId}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [Authorize(Roles = "Admin")]
     public async Task<ActionResult> RemoveUserFromWorkspaceAsync(Guid workspaceId, Guid userId)
     {
         if(await workspaceService.WorkspaceExists(workspaceId) == false)

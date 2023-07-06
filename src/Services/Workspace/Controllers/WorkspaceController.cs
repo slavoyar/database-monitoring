@@ -1,5 +1,3 @@
-
-
 namespace DatabaseMonitoring.Services.Workspace.Controllers;
 
 /// <summary>
@@ -7,6 +5,7 @@ namespace DatabaseMonitoring.Services.Workspace.Controllers;
 /// </summary>
 [ApiController]
 [Route("api/v1/[controller]")]
+[Authorize(Roles = "Admin")]
 public class WorkspaceController : ControllerBase
 {
     private readonly ILogger<WorkspaceController> logger;
