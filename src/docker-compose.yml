@@ -1,0 +1,197 @@
+version: "3.4"
+
+# front        http://localhost:3000/dashboard
+# auth         http://localhost:5000/index.html
+# notification http://localhost:5001/swagger/index.html
+# agregation   http://localhost:5002/swagger/index.html
+# workspace    http://localhost:5009/swagger/index.html
+
+services:
+
+  # -------------------------------------------------------
+  front:
+    container_name: ${COMPOSE_PROJECT_NAME}-front-web
+    image: ${COMPOSE_PROJECT_NAME}-front-web
+    build:
+      context: ../src/Webapp/
+      dockerfile: Dockerfile    
+    ports:
+      - "3000:8080"
+  ## -------------------------------------------------------
+  auth:
+    container_name: ${COMPOSE_PROJECT_NAME}-auth
+    image: ${COMPOSE_PROJECT_NAME}-auth
+    ports:
+      - "5000:80"
+    environment: 
+      - ConnectionStrings__DefaultConnection=Initial Catalog=AuthUsers; Data Source=host.docker.internal; Persist Security Info=True; User ID=SA; Password=Qwe123!@#; Trusted_Connection=True; MultipleActiveResultSets=true; TrustServerCertificate=True; Integrated Security=false
+    depends_on: 
+      - auth-sqlserver
+    build:
+      context: ../src/Services/AuthServer/
+      dockerfile: Dockerfile
+    tty: true
+    restart: on-failure
+
+  auth-sqlserver:
+    container_name: ${COMPOSE_PROJECT_NAME}-auth-sqlserver
+    image: "mcr.microsoft.com/mssql/server:2022-latest"
+    ports:
+      - "1433:1433" 
+    environment:
+      - SA_PASSWORD=Qwe123!@#
+      - ACCEPT_EULA=Y
+    tty: true
+    restart: on-failure
+    volumes:
+      - auth-db:/app/${COMPOSE_PROJECT_NAME}/auth/db
+  ## -------------------------------------------------------
+  notification:
+    container_name: ${COMPOSE_PROJECT_NAME}-notification
+    image: ${COMPOSE_PROJECT_NAME}-notification
+    ports:
+      - "5001:5280"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:5280
+      - MongoDbConfiguration__ConnectionString=mongodb://host.docker.internal:27017
+      - WorkspaceConfiguration__Endpoint=host.docker.internal:1412/workspaces/getworkspacesbyserverid
+      - EventBusConfiguration__Connection=host.docker.internal
+    build:
+      context: ../src
+      dockerfile: Services/Notification/Dockerfile
+    depends_on: 
+      - notification-mongodb
+    tty: true
+    restart: on-failure
+
+  notification-mongodb:
+    container_name: ${COMPOSE_PROJECT_NAME}-notification-mongodb
+    image: mongo
+    ports:
+      - '27017:27017'
+    volumes:
+      - notification-db_data:/data/db
+      - notification-db_config:/data/configdb
+    tty: true
+    restart: on-failure
+  ## -------------------------------------------------------
+  agregation:
+    container_name: ${COMPOSE_PROJECT_NAME}-agregation
+    image: ${COMPOSE_PROJECT_NAME}-agregation
+    build:
+      context: ../src/Services/Agregation/
+      dockerfile: Dockerfile
+    depends_on: 
+      - agregation-postgresserver
+    ports:
+      - "5002:5278"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:5278
+      - ConnectionStrings__Postgre=Host=host.docker.internal;Port=5432;Database=MIAY;Username=postgres;Password=admin;Pooling=True;TrustServerCertificate=True
+    tty: true
+    restart: on-failure
+
+  agregation-postgresserver:
+    container_name: ${COMPOSE_PROJECT_NAME}-agregation-postgresserver
+    image: postgres
+    ports:
+      - "5432:5432" 
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_DB=MIAY
+    tty: true
+    restart: on-failure
+    volumes:
+      - agregation-db:/var/lib/postgresql/data
+  
+  pgadmin:
+    container_name: ${COMPOSE_PROJECT_NAME}-pgadmin4
+    image: dpage/pgadmin4
+    restart: on-failure
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+      PGADMIN_LISTEN_PORT: 80
+    ports:
+      - "8009:80"
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+  # -------------------------------------------------------
+  workspace:
+    container_name: ${COMPOSE_PROJECT_NAME}-workspace
+    image: ${COMPOSE_PROJECT_NAME}-workspace
+    ports:
+      - "5009:5165"
+    depends_on: 
+      - workspace-postgresserver
+    build:
+      context: ../src
+      dockerfile: Services/Workspace/Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:5165
+      - PostgreConfiguration__ConnectionString=Username=postgres;Password=admin;Host=host.docker.internal;Port=5433;Database=Workspace;Pooling=true;TrustServerCertificate=True 
+      - EventBusConfiguration__Connection=host.docker.internal
+    tty: true
+    restart: on-failure
+
+  workspace-postgresserver:
+    container_name: ${COMPOSE_PROJECT_NAME}-workspace-postgresserver
+    image: postgres
+    ports:
+      - "5433:5432" 
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_DB=Workspace
+    tty: true
+    restart: on-failure
+    volumes:
+      - workspace-db:/var/lib/postgresql/data
+  # -------------------------------------------------------
+  rabbitmq:
+    container_name: ${COMPOSE_PROJECT_NAME}-rabbitmq
+    image: rabbitmq
+    command: ["bash", "-c", "chmod 400 /var/lib/rabbitmq/.erlang.cookie; rabbitmq-server"]
+    restart: always
+    environment:
+      - RABBITMQ_DEFAULT_USER=rmuser
+      - RABBITMQ_DEFAULT_PASS=rmpassword
+      - RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS=-rabbit log_levels [{connection,error},{default,error}] disk_free_limit 2147483648
+    ports:
+      - 15672:15672
+      - 5672:5672
+    volumes:
+        - ./etc/rabbitmq/conf:/etc/rabbitmq/
+        - ./etc/rabbitmq/data/:/var/lib/rabbitmq/
+        - ./etc/rabbitmq/logs/:/var/log/rabbitmq/
+    healthcheck:
+      test: [ "CMD", "nc", "-z", "localhost", "5672" ]
+      interval: 5s
+      timeout: 10s
+      retries: 3
+  # -------------------------------------------------------
+  #web-aggregator:
+  #  container_name: ${COMPOSE_PROJECT_NAME}-web-aggregator
+  #  image: ${COMPOSE_PROJECT_NAME}-web-aggregator
+  #  build:
+  #    context: ../src/ApiGateways/WebAggregator/
+  #    dockerfile: Dockerfile    
+  #  ports:
+  #    - "3001:8080"
+  #  tty: true
+  #  restart: on-failure
+  #  volumes:
+  #    - web-aggregator:/app/${COMPOSE_PROJECT_NAME}/web-aggregator
+# ---------------------------------------------------------
+
+volumes:
+  auth-db:
+  notification-db_data:  
+  notification-db_config:
+  agregation-db: 
+  workspace-db:
+  pgadmin-data:
