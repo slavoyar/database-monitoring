@@ -5,6 +5,7 @@ builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 builder.Services.AddCustomAuthentication(builder.Configuration);
 builder.Services.AddAuthorization();
+builder.Services.ConfigureSwaggerGen();
 
 // Add services to the container.
 builder.Services.Configure<MailConfiguration>(builder.Configuration.GetSection(nameof(MailConfiguration)));
