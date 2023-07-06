@@ -1,5 +1,6 @@
 FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS base
 WORKDIR /app/miau/workspace
+
 EXPOSE 5165
 
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
@@ -23,4 +24,5 @@ RUN dotnet publish "./Services/Workspace/Workspace.csproj" -c Release -o /app/mi
 FROM base AS final
 WORKDIR /app/miau/workspace
 COPY --from=publish /app/miau/workspace/publish .
+
 ENTRYPOINT ["dotnet", "Workspace.dll"]

@@ -52,13 +52,14 @@ services:
     ports:
       - "5001:5280"
     environment:
+      - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:5280
       - MongoDbConfiguration__ConnectionString=mongodb://host.docker.internal:27017
       - WorkspaceConfiguration__Endpoint=host.docker.internal:1412/workspaces/getworkspacesbyserverid
       - EventBusConfiguration__Connection=host.docker.internal
     build:
-      context: ../src/Services/Notification/
-      dockerfile: Dockerfile
+      context: ../src
+      dockerfile: /Services/Notification/Dockerfile
     depends_on: 
       - notification-mongodb
     tty: true
@@ -154,7 +155,7 @@ services:
   rabbitmq:
     container_name: ${COMPOSE_PROJECT_NAME}-rabbitmq
     image: rabbitmq
-    command: rabbitmq-server
+    command: ["bash", "-c", "chmod 400 /var/lib/rabbitmq/.erlang.cookie; rabbitmq-server"]
     restart: always
     environment:
       - RABBITMQ_DEFAULT_USER=rmuser
