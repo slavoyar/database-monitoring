@@ -34,8 +34,8 @@ public class GetUnreadNotificationsTests
         var workspaceId = Guid.NewGuid();
         var notificationEntities = new List<NotificationEntity>
         {
-            new NotificationEntity{Data="1", UsersReceived = new List<Guid>{userId}, WorkspacesId = new List<Guid>{workspaceId}},
-            new NotificationEntity{Data="2", UsersReceived = new List<Guid>{userId}, WorkspacesId = new List<Guid>{workspaceId}}
+            new NotificationEntity{Data="1", Receivers = new List<Guid>{userId}, WorkspacesId = new List<Guid>{workspaceId}},
+            new NotificationEntity{Data="2", Receivers = new List<Guid>{userId}, WorkspacesId = new List<Guid>{workspaceId}}
         };
 
         notificationRepositoryMock

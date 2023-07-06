@@ -1,14 +1,14 @@
-namespace DatabaseMonitoring.Services.Workspace.ApplicationEvents.Events;
+namespace DatabaseMonitoring.Services.Notification.WebApi.ApplicationEvents.Events;
 
 /// <summary>
-/// This event represents situation when server was added to workspaces
+/// This event represents situation when user was removed to workspaces
 /// </summary>
-public record ServerAddedToWorkspaceAppEvent : BaseEvent
+public record UserRemovedFromWorkspaceAppEvent : BaseEvent, IWorkspaceAppEvent
 {
     /// <summary>
-    /// Server identifer
+    /// User id identifer
     /// </summary>
-    public Guid ServerId { get; init; }
+    public Guid UserId { get; init; }
 
     /// <summary>
     /// Identifiers of all users in affected workspace

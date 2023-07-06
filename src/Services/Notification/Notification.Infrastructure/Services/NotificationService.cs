@@ -9,10 +9,17 @@ public class NotificationService : INotificationService
         this.repository = repository;
     }
 
+    public async Task<string> CreateNewNotificationAsync(NotificationDto notificationDto)
+    {
+        var entity = NotificationDto.MapToNotificationEntity(notificationDto);
+        var id = await repository.CreateAsync(entity);
+        return id;
+    }
+
     public async Task<IEnumerable<NotificationDto>> GetUnreadNotifications(Guid userId, Guid workspaceId)
     {
         var result = await repository
-            .GetAllAsync(n => n.WorkspacesId.Contains(workspaceId) && n.UsersReceived != null && n.UsersReceived.Contains(userId));
+            .GetAllAsync(n => n.WorkspacesId.Contains(workspaceId) && n.Receivers != null && n.Receivers.Contains(userId));
         if (!result.Any())
             return new List<NotificationDto>();
         return result.Select(entity => NotificationDto.MapFrom(entity));
@@ -24,11 +31,11 @@ public class NotificationService : INotificationService
         if (!result.Any())
             return;
 
-        var groups = result.GroupBy(n => n.UsersReceived == null || n.UsersReceived.Count() == 0);
+        var groups = result.GroupBy(n => n.Receivers == null || n.Receivers.Count() == 0);
 
         foreach (var notification in groups.First(n => !n.Key).Select(x => x))
         {
-            notification.UsersReceived.Remove(userId);
+            notification.Receivers.Remove(userId);
             await repository.UpdateAsync(notification);
         }
 

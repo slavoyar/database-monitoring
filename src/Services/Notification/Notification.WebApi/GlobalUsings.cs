@@ -9,3 +9,13 @@ global using DatabaseMonitoring.Services.Notification.Infrastructure.Configurati
 global using DatabaseMonitoring.Services.Notification.Infrastructure.Services.Interfaces;
 global using Microsoft.AspNetCore.Mvc;
 global using DatabaseMonitoring.Services.Notification.WebApi.ViewModels;
+global using DatabaseMonitoring.BuildingBlocks.EventBus.Events;
+global using DatabaseMonitoring.BuildingBlocks.EventBus.Abstractions;
+global using DatabaseMonitoring.Services.Notification.WebApi.ApplicationEvents.Events;
+global using DatabaseMonitoring.Services.Notification.Core.Models;
+global using DatabaseMonitoring.BuildingBlocks.EventBus;
+global using DatabaseMonitoring.BuildingBlocks.EventBusRabbitMQ;
+global using RabbitMQ.Client;
+global using DatabaseMonitoring.Services.Notification.WebApi.ApplicationEvents.EventHandling;
+global using DatabaseMonitoring.Services.Notification.Infrastructure.Repository;
+global using DatabaseMonitoring.Services.Notification.WebApi.Extensions;

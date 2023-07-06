@@ -20,7 +20,7 @@ public class ApplicationEventService : IApplicationEventService
         this.eventBus = eventBus;
     }
     ///<inheritdoc />
-    public void PublishThroughEventBusAsync(BaseEvent @event)
+    public void PublishThroughEventBus(BaseEvent @event)
     {
         try
         {

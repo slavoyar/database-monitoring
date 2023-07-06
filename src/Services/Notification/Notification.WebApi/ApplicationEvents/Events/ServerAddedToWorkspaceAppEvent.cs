@@ -1,9 +1,9 @@
-namespace DatabaseMonitoring.Services.Workspace.ApplicationEvents.Events;
+namespace DatabaseMonitoring.Services.Notification.WebApi.ApplicationEvents.Events;
 
 /// <summary>
 /// This event represents situation when server was added to workspaces
 /// </summary>
-public record ServerAddedToWorkspaceAppEvent : BaseEvent
+public record ServerAddedToWorkspaceAppEvent : BaseEvent, IWorkspaceAppEvent
 {
     /// <summary>
     /// Server identifer
