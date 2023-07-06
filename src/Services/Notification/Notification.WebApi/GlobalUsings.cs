@@ -19,3 +19,6 @@ global using RabbitMQ.Client;
 global using DatabaseMonitoring.Services.Notification.WebApi.ApplicationEvents.EventHandling;
 global using DatabaseMonitoring.Services.Notification.Infrastructure.Repository;
 global using DatabaseMonitoring.Services.Notification.WebApi.Extensions;
+global using System.Text;
+global using Microsoft.AspNetCore.Authentication.JwtBearer;
+global using Microsoft.IdentityModel.Tokens;
