@@ -1,9 +1,10 @@
 
-
-
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddAutoMapper(typeof(MappingProfile));
+
+builder.Services.AddCustomAuthentication(builder.Configuration);
+builder.Services.AddAuthorization();
 
 // Add services to the container.
 builder.Services.Configure<MailConfiguration>(builder.Configuration.GetSection(nameof(MailConfiguration)));
@@ -34,7 +35,9 @@ if ( app.Environment.IsDevelopment() )
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
+
 
 app.MapControllers();
 
