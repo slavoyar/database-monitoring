@@ -1,5 +1,5 @@
 
-using DatabaseMonitoring.Services.Notification.Infrastructure.Repository;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,12 +18,13 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-
-
 builder.Services.AddScoped<IMailService, MailService>();
 
+builder.Services.RegisterRabbitMq(builder.Configuration);
 
 var app = builder.Build();
+
+app.Services.EventBusSubscribeToEvents();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

@@ -24,14 +24,14 @@ public class MarkAsReadTests
 
         await notificationService.MarkAsRead(userId, notificationsId);
 
-        notifications.Where(n => n.UsersReceived.Contains(userId)).Should().BeEmpty();
+        notifications.Where(n => n.Receivers.Contains(userId)).Should().BeEmpty();
     }
 
     [Fact]
     public async void MarkAsReadTests_UsersReceivedIsEmpty_DeleteNotificationsFromDb()
     {
         var notifications = GetTestListOfNotificationEntities(Guid.NewGuid());
-        var userId = notifications.Last().UsersReceived.First();
+        var userId = notifications.Last().Receivers.First();
         var notificationsId = notifications.Select(x => x.Id);
 
         notificationRepositoryMock
@@ -51,7 +51,7 @@ public class MarkAsReadTests
             new NotificationEntity
             {
                 Id = Guid.NewGuid().ToString(),
-                UsersReceived = new List<Guid>
+                Receivers = new List<Guid>
                 {
                     Guid.NewGuid(),
                     userId
@@ -64,7 +64,7 @@ public class MarkAsReadTests
             new NotificationEntity
             {
                 Id = Guid.NewGuid().ToString(),
-                UsersReceived = new List<Guid>
+                Receivers = new List<Guid>
                 {
                     Guid.NewGuid(),
                     userId
@@ -77,7 +77,7 @@ public class MarkAsReadTests
             new NotificationEntity
             {
                 Id = Guid.NewGuid().ToString(),
-                UsersReceived = new List<Guid>
+                Receivers = new List<Guid>
                 {
                     Guid.NewGuid(),
                 },
