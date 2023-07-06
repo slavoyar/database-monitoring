@@ -59,7 +59,7 @@ services:
       - EventBusConfiguration__Connection=host.docker.internal
     build:
       context: ../src
-      dockerfile: /Services/Notification/Dockerfile
+      dockerfile: Services/Notification/Dockerfile
     depends_on: 
       - notification-mongodb
     tty: true
@@ -129,7 +129,7 @@ services:
       - workspace-postgresserver
     build:
       context: ../src
-      dockerfile: /Services/Workspace/Dockerfile
+      dockerfile: Services/Workspace/Dockerfile
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:5165
