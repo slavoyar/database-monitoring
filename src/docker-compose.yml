@@ -55,6 +55,7 @@ services:
       - ASPNETCORE_URLS=http://+:5280
       - MongoDbConfiguration__ConnectionString=mongodb://host.docker.internal:27017
       - WorkspaceConfiguration__Endpoint=host.docker.internal:1412/workspaces/getworkspacesbyserverid
+      - EventBusConfiguration__Connection=host.docker.internal
     build:
       context: ../src/Services/Notification/
       dockerfile: Dockerfile
