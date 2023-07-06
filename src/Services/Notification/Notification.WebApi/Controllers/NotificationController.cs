@@ -2,6 +2,7 @@ namespace DatabaseMonitoring.Services.Notification.WebApi.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize]
 public class NotificationController : ControllerBase
 {
     private readonly INotificationService notificationService;
