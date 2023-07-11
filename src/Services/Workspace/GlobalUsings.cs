@@ -15,7 +15,6 @@ global using DatabaseMonitoring.Services.Workspace.Infrustructure.Repository.Imp
 global using DatabaseMonitoring.Services.Workspace.Services.Implementation;
 global using DatabaseMonitoring.Services.Workspace.Extensions;
 global using DatabaseMonitoring.Services.Workspace.Infrustructure.Repository;
-global using DatabaseMonitoring.Services.Workspace.Options;
 global using DatabaseMonitoring.BuildingBlocks.EventBus.Events;
 global using DatabaseMonitoring.BuildingBlocks.EventBus;
 global using DatabaseMonitoring.BuildingBlocks.EventBus.Abstractions;
@@ -23,3 +22,7 @@ global using DatabaseMonitoring.BuildingBlocks.EventBusRabbitMQ;
 global using RabbitMQ.Client;
 global using DatabaseMonitoring.Services.Workspace.ApplicationEvents.Events;
 global using DatabaseMonitoring.Services.Workspace.ApplicationEvents;
+global using Microsoft.AspNetCore.Authentication.JwtBearer;
+global using Microsoft.IdentityModel.Tokens;
+global using System.Text;
+global using Microsoft.AspNetCore.Authorization;

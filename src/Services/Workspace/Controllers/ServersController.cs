@@ -6,6 +6,7 @@ namespace DatabaseMonitoring.Services.Workspace.Controllers;
 /// </summary>
 [ApiController]
 [Route("api/v1/workspace/{workspaceId}/servers")]
+[Authorize]
 public class ServersController : ControllerBase
 {
     private readonly ILogger<ServersController> logger;
@@ -53,6 +54,7 @@ public class ServersController : ControllerBase
     [HttpPost("{serverId}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [Authorize(Roles = "Admin")]
     public async Task<ActionResult> AddServerToWorkspaceAsync(Guid workspaceId, Guid serverId)
     {
         if(await workspaceService.WorkspaceExists(workspaceId) == false)
@@ -70,6 +72,7 @@ public class ServersController : ControllerBase
     [HttpDelete("{serverId}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [Authorize(Roles = "Admin")]
     public async Task<ActionResult> RemoveServerFromWorkspaceAsync(Guid workspaceId, Guid serverId)
     {
         if(await workspaceService.WorkspaceExists(workspaceId) == false)
