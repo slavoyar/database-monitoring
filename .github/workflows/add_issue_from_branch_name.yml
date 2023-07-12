@@ -9,7 +9,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
+
+      - name: Install node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
 
       - name: Set up environment variable for token
         run: echo "GITHUB_TOKEN=${{ secrets.PERSONAL_TOKEN }}" >> $GITHUB_ENV
