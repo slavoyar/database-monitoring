@@ -14,7 +14,7 @@ services:
     image: ${COMPOSE_PROJECT_NAME}-front-web
     build:
       context: ../src/Webapp/
-      dockerfile: Dockerfile    
+      dockerfile: Dockerfile
     ports:
       - "3000:8080"
   ## -------------------------------------------------------
@@ -23,9 +23,9 @@ services:
     image: ${COMPOSE_PROJECT_NAME}-auth
     ports:
       - "5000:80"
-    environment: 
-      - ConnectionStrings__DefaultConnection=Initial Catalog=AuthUsers; Data Source=host.docker.internal; Persist Security Info=True; User ID=SA; Password=Qwe123!@#; Trusted_Connection=True; MultipleActiveResultSets=true; TrustServerCertificate=True; Integrated Security=false
-    depends_on: 
+    environment:
+      - ConnectionStrings__DefaultConnection=Initial Catalog=AuthUsers; Data Source=auth-sqlserver; Persist Security Info=True; User ID=SA; Password=Qwe123!@#; Trusted_Connection=True; MultipleActiveResultSets=true; TrustServerCertificate=True; Integrated Security=false
+    depends_on:
       - auth-sqlserver
     build:
       context: ../src/Services/AuthServer/
@@ -37,7 +37,7 @@ services:
     container_name: ${COMPOSE_PROJECT_NAME}-auth-sqlserver
     image: "mcr.microsoft.com/mssql/server:2022-latest"
     ports:
-      - "1433:1433" 
+      - "1433:1433"
     environment:
       - SA_PASSWORD=Qwe123!@#
       - ACCEPT_EULA=Y
@@ -54,14 +54,16 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:5280
-      - MongoDbConfiguration__ConnectionString=mongodb://host.docker.internal:27017
-      - WorkspaceConfiguration__Endpoint=host.docker.internal:1412/workspaces/getworkspacesbyserverid
-      - EventBusConfiguration__Connection=host.docker.internal
+      - MongoDbConfiguration__ConnectionString=mongodb://notification-mongodb:27017
+      - WorkspaceConfiguration__Endpoint=workspace:1412/workspaces/getworkspacesbyserverid
+      - EventBusConfiguration__Connection=rabbitmq
     build:
       context: ../src
       dockerfile: Services/Notification/Dockerfile
-    depends_on: 
+    depends_on:
       - notification-mongodb
+      - rabbitmq
+      - workspace
     tty: true
     restart: on-failure
 
@@ -82,14 +84,14 @@ services:
     build:
       context: ../src/Services/Agregation/
       dockerfile: Dockerfile
-    depends_on: 
+    depends_on:
       - agregation-postgresserver
     ports:
       - "5002:5278"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:5278
-      - ConnectionStrings__Postgre=Host=host.docker.internal;Port=5432;Database=MIAY;Username=postgres;Password=admin;Pooling=True;TrustServerCertificate=True
+      - ConnectionStrings__Postgre=Host=agregation-postgresserver;Port=5432;Database=MIAY;Username=postgres;Password=admin;Pooling=True;TrustServerCertificate=True
     tty: true
     restart: on-failure
 
@@ -97,7 +99,7 @@ services:
     container_name: ${COMPOSE_PROJECT_NAME}-agregation-postgresserver
     image: postgres
     ports:
-      - "5432:5432" 
+      - "5432:5432"
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=admin
@@ -106,7 +108,7 @@ services:
     restart: on-failure
     volumes:
       - agregation-db:/var/lib/postgresql/data
-  
+
   pgadmin:
     container_name: ${COMPOSE_PROJECT_NAME}-pgadmin4
     image: dpage/pgadmin4
@@ -125,16 +127,17 @@ services:
     image: ${COMPOSE_PROJECT_NAME}-workspace
     ports:
       - "5009:5165"
-    depends_on: 
+    depends_on:
       - workspace-postgresserver
+      - rabbitmq
     build:
       context: ../src
       dockerfile: Services/Workspace/Dockerfile
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:5165
-      - PostgreConfiguration__ConnectionString=Username=postgres;Password=admin;Host=host.docker.internal;Port=5433;Database=Workspace;Pooling=true;TrustServerCertificate=True 
-      - EventBusConfiguration__Connection=host.docker.internal
+      - PostgreConfiguration__ConnectionString=Host=workspace-postgresserver;Port=5433;Username=postgres;Password=admin;Database=Workspace;Pooling=true;TrustServerCertificate=True
+      - EventBusConfiguration__Connection=rabbitmq
     tty: true
     restart: on-failure
 
@@ -142,7 +145,7 @@ services:
     container_name: ${COMPOSE_PROJECT_NAME}-workspace-postgresserver
     image: postgres
     ports:
-      - "5433:5432" 
+      - "5433:5432"
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=admin
@@ -154,20 +157,14 @@ services:
   # -------------------------------------------------------
   rabbitmq:
     container_name: ${COMPOSE_PROJECT_NAME}-rabbitmq
-    image: rabbitmq
-    command: ["bash", "-c", "chmod 400 /var/lib/rabbitmq/.erlang.cookie; rabbitmq-server"]
+    image: rabbitmq:3-management-alpine
     restart: always
     environment:
-      - RABBITMQ_DEFAULT_USER=rmuser
-      - RABBITMQ_DEFAULT_PASS=rmpassword
-      - RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS=-rabbit log_levels [{connection,error},{default,error}] disk_free_limit 2147483648
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
     ports:
       - 15672:15672
       - 5672:5672
-    volumes:
-        - ./etc/rabbitmq/conf:/etc/rabbitmq/
-        - ./etc/rabbitmq/data/:/var/lib/rabbitmq/
-        - ./etc/rabbitmq/logs/:/var/log/rabbitmq/
     healthcheck:
       test: [ "CMD", "nc", "-z", "localhost", "5672" ]
       interval: 5s
@@ -186,12 +183,12 @@ services:
   #  restart: on-failure
   #  volumes:
   #    - web-aggregator:/app/${COMPOSE_PROJECT_NAME}/web-aggregator
-# ---------------------------------------------------------
+  # ---------------------------------------------------------
 
 volumes:
   auth-db:
-  notification-db_data:  
+  notification-db_data:
   notification-db_config:
-  agregation-db: 
+  agregation-db:
   workspace-db:
   pgadmin-data:

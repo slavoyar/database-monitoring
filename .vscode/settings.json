@@ -1,6 +1,8 @@
 {
   "npm.enableRunFromFolder": true,
-  "eslint.workingDirectories": ["./src/Webapp"],
+  "eslint.workingDirectories": [
+    "./src/Webapp"
+  ],
   "typescript.validate.enable": false,
   "typescript.preferences.includePackageJsonAutoImports": "on",
   "editor.formatOnSave": true,

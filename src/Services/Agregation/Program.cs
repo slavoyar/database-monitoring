@@ -19,10 +19,11 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
-    options.SwaggerDoc("v1", new OpenApiInfo {
+    options.SwaggerDoc("v1", new OpenApiInfo
+    {
         Version = "v1",
-        Title = "WorkspaceApi",
-        Description = "ASP.NET Core Web Api for managing workspaces"
+        Title = "AgreregationApi",
+        Description = "ASP.NET Core Web Api for Agregation service"
     });
 
     var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
@@ -34,7 +35,8 @@ var app = builder.Build();
 await UpdateDatabaseAsync(app);
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment()) {
+if (app.Environment.IsDevelopment())
+{
     app.UseSwagger();
     app.UseSwaggerUI();
 }
