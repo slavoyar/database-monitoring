@@ -1,24 +1,23 @@
 import React, { FC } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { AuthLoginModel, useLoginUserMutation } from '@stores/api/authApi'
 import { Button, Form, Input, Layout } from 'antd'
 import { ValidateErrorEntity } from 'rc-field-form/es/interface'
 
 import '@css/LoginPage.css'
 
-interface LoginForm {
-  login: string
-  password: string
-}
-
 const LoginPage: FC = () => {
   const navigate = useNavigate()
 
-  const onFinish = (values: LoginForm) => {
+  const [loginUser] = useLoginUserMutation();
+
+  const onFinish = (values: AuthLoginModel) => {
+    loginUser(values)
     console.log('LOGIN', values)
     navigate('/')
   }
 
-  const onFinishFailed = (errorInfo: ValidateErrorEntity<LoginForm>) => {
+  const onFinishFailed = (errorInfo: ValidateErrorEntity<AuthLoginModel>) => {
     console.error('ERROR in fields', errorInfo)
   }
 
@@ -37,9 +36,9 @@ const LoginPage: FC = () => {
           onFinishFailed={onFinishFailed}
         >
           <Form.Item
-            label='Логин'
-            name='login'
-            rules={[{ required: true, message: 'Пожалуйста введите логин!' }]}
+            label='Email'
+            name='email'
+            rules={[{ required: true, message: 'Введите email!' }]}
           >
             <Input />
           </Form.Item>
@@ -47,7 +46,7 @@ const LoginPage: FC = () => {
           <Form.Item
             label='Пароль'
             name='password'
-            rules={[{ required: true, message: 'Пожалуйста введите пароль!' }]}
+            rules={[{ required: true, message: 'Введите пароль!' }]}
           >
             <Input.Password />
           </Form.Item>
