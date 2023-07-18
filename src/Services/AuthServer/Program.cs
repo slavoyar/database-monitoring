@@ -1,3 +1,6 @@
+using System.Reflection;
+using System.Text;
+using System.Text.Json.Serialization;
 using Auth.Data;
 using Auth.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -5,9 +8,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using System.Reflection;
-using System.Text;
-using System.Text.Json.Serialization;
 
 //-------------------------------------------------------------------
 
@@ -38,7 +38,7 @@ builder.Services.AddIdentityServer()
 //--- Add Jwt
 var jwtSecret = configuration["JWT:Secret"];
 
-if ( jwtSecret != null )
+if (jwtSecret != null)
 {
     builder.Services.AddAuthentication(options =>
     {
@@ -106,18 +106,27 @@ builder.Services.AddSwaggerGen(option =>
             }
     });
 });
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(builder =>
+    {
+        builder.SetIsOriginAllowed(origin => new Uri(origin).Host == "localhost")
+        .AllowAnyHeader()
+        .AllowAnyMethod();
+    });
+});
 
 //-------------------------------------------------------------------
 
 var app = builder.Build();
 
-using ( var scope = app.Services.CreateScope() )
+using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetService<AuthDbContext>();
     dbContext?.Database.Migrate();
 }
 
-if ( !app.Environment.IsDevelopment() )
+if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error");
     app.UseHsts();
@@ -134,6 +143,7 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+app.UseCors();
 
 app.UseAuthentication();
 app.UseAuthorization();
