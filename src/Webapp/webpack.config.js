@@ -77,5 +77,10 @@ module.exports = {
       directory: path.join(__dirname, 'public'),
     },
     historyApiFallback: true,
+    proxy: {
+      '/api': {
+        target: 'http://localhost:5000/',
+      },
+    }
   },
 }

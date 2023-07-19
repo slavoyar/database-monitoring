@@ -1,24 +1,20 @@
 import React, { FC } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { AuthLoginModel, useLoginUserMutation } from '@stores/api/authApi'
+import { AuthLoginModel, useLoginMutation } from '@redux/api/authApi'
 import { Button, Form, Input, Layout } from 'antd'
-import { ValidateErrorEntity } from 'rc-field-form/es/interface'
 
 import '@css/LoginPage.css'
 
 const LoginPage: FC = () => {
   const navigate = useNavigate()
 
-  const [loginUser] = useLoginUserMutation();
+  const [loginUser, { isSuccess }] = useLoginMutation();
 
-  const onFinish = (values: AuthLoginModel) => {
-    loginUser(values)
-    console.log('LOGIN', values)
-    navigate('/')
-  }
-
-  const onFinishFailed = (errorInfo: ValidateErrorEntity<AuthLoginModel>) => {
-    console.error('ERROR in fields', errorInfo)
+  const onFinish = async (values: AuthLoginModel) => {
+    await loginUser(values)
+    if (isSuccess) {
+      navigate('/')
+    }
   }
 
   return (
@@ -33,7 +29,6 @@ const LoginPage: FC = () => {
           autoComplete='off'
           className='login-form'
           onFinish={onFinish}
-          onFinishFailed={onFinishFailed}
         >
           <Form.Item
             label='Email'
