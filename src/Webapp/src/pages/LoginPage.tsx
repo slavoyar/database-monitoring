@@ -1,4 +1,4 @@
-import React, { FC } from 'react'
+import React, { FC, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { AuthLoginModel, useLoginMutation } from '@redux/api/authApi'
 import { Button, Form, Input, Layout } from 'antd'
@@ -7,14 +7,23 @@ import '@css/LoginPage.css'
 
 const LoginPage: FC = () => {
   const navigate = useNavigate()
+  const [error, setError] = useState<string>('')
 
-  const [loginUser, { isSuccess }] = useLoginMutation();
+  const [loginUser] = useLoginMutation();
 
   const onFinish = async (values: AuthLoginModel) => {
-    await loginUser(values)
-    if (isSuccess) {
+    try {
+      await loginUser(values).unwrap()
       navigate('/')
+    } catch (e) {
+      if (e.data.message) {
+        setError(e.data.message as string)
+      }
     }
+  }
+
+  const onValuesChange = () => {
+    setError('')
   }
 
   return (
@@ -29,6 +38,7 @@ const LoginPage: FC = () => {
           autoComplete='off'
           className='login-form'
           onFinish={onFinish}
+          onValuesChange={onValuesChange}
         >
           <Form.Item
             label='Email'
@@ -45,14 +55,18 @@ const LoginPage: FC = () => {
           >
             <Input.Password />
           </Form.Item>
-          <Form.Item wrapperCol={{ span: 24 }}>
+          <Form.Item
+            wrapperCol={{ span: 24 }}
+            validateStatus={error ? 'error' : ''}
+            help={error}
+          >
             <Button type='primary' htmlType='submit'>
               Войти
             </Button>
           </Form.Item>
         </Form>
       </div>
-    </Layout>
+    </Layout >
   )
 }
 

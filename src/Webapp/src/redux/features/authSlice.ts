@@ -14,7 +14,15 @@ export const authSlice = createSlice({
         refreshToken: localStorage.getItem('refreshToken') ?? undefined,
         isLogin: !!localStorage.getItem('accessToken')
     } as AuthState,
-    reducers: {},
+    reducers: {
+        logout: (state) => {
+            state.isLogin = false
+            state.accessToken = undefined
+            state.refreshToken = undefined
+            localStorage.removeItem('accessToken')
+            localStorage.removeItem('refreshToken')
+        }
+    },
     extraReducers: (builder) => {
         builder.addMatcher(
             authApi.endpoints.login.matchFulfilled,
@@ -30,3 +38,4 @@ export const authSlice = createSlice({
 })
 
 export default authSlice.reducer
+export const { logout } = authSlice.actions
