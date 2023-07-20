@@ -1,5 +1,6 @@
 import React, { FC, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { Path } from '@models'
 import { AuthLoginModel, useLoginMutation } from '@redux/api/authApi'
 import { Button, Form, Input, Layout } from 'antd'
 
@@ -14,7 +15,8 @@ const LoginPage: FC = () => {
   const onFinish = async (values: AuthLoginModel) => {
     try {
       await loginUser(values).unwrap()
-      navigate('/')
+      console.log('navigate to dashboard')
+      navigate(`/${Path.dashboard}`)
     } catch (e) {
       if (e.data.message) {
         setError(e.data.message as string)
