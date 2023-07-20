@@ -9,7 +9,7 @@ version: "3.4"
 services:
 
   elasticsearch:
-    container_name: elastic
+    container_name: ${COMPOSE_PROJECT_NAME}-elastic
     image: docker.elastic.co/elasticsearch/elasticsearch:8.8.2
     ports:
       - 9200:9200
@@ -24,7 +24,7 @@ services:
       - elastic
 
   kibana:
-    container_name: kibana
+    container_name: ${COMPOSE_PROJECT_NAME}-kibana
     image: docker.elastic.co/kibana/kibana:8.8.2
     ports:
       - 5601:5601
@@ -172,7 +172,7 @@ services:
     container_name: ${COMPOSE_PROJECT_NAME}-workspace-postgresserver
     image: postgres
     ports:
-      - "5433:5432"
+      - "5433:5433"
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=admin
@@ -181,6 +181,7 @@ services:
     restart: on-failure
     volumes:
       - workspace-db:/var/lib/postgresql/data
+    command: -p 5433
   # -------------------------------------------------------
   rabbitmq:
     container_name: ${COMPOSE_PROJECT_NAME}-rabbitmq
