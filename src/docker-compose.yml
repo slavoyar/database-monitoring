@@ -8,6 +8,33 @@ version: "3.4"
 
 services:
 
+  elasticsearch:
+    container_name: elastic
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.8.2
+    ports:
+      - 9200:9200
+    volumes:
+      - elasticsearch-db:/usr/share/elasticsearch/data
+    environment:
+      - xpack.security.enabled=false
+      - discovery.type=single-node
+      - xpack.watcher.enabled=false
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    networks:
+      - elastic
+
+  kibana:
+    container_name: kibana
+    image: docker.elastic.co/kibana/kibana:8.8.2
+    ports:
+      - 5601:5601
+    depends_on:
+      - elasticsearch
+    environment:
+      - ELASTICSEARCH_URL=http://localhost:9200
+    networks:
+      - elastic
+
   # -------------------------------------------------------
   front:
     container_name: ${COMPOSE_PROJECT_NAME}-front-web
@@ -192,3 +219,9 @@ volumes:
   agregation-db:
   workspace-db:
   pgadmin-data:
+  elasticsearch-db:
+
+
+networks:
+  elastic:
+    driver: bridge
