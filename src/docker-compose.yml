@@ -5,7 +5,9 @@ version: "3.4"
 # notification http://localhost:5001/swagger/index.html
 # agregation   http://localhost:5002/swagger/index.html
 # workspace    http://localhost:5009/swagger/index.html
-
+# testpatient1 http://localhost:5003/swagger/index.html
+# testpatient2 http://localhost:5004/swagger/index.html
+# testpatient3 http://localhost:5005/swagger/index.html
 services:
 
   # -------------------------------------------------------
@@ -17,24 +19,24 @@ services:
       dockerfile: Dockerfile
     ports:
       - "3000:8080"
-  ## -------------------------------------------------------
+  # -------------------------------------------------------
   auth:
     container_name: ${COMPOSE_PROJECT_NAME}-auth
     image: ${COMPOSE_PROJECT_NAME}-auth
     ports:
       - "5000:80"
     environment:
-      - ConnectionStrings__DefaultConnection=Initial Catalog=AuthUsers; Data Source=auth-sqlserver; Persist Security Info=True; User ID=SA; Password=Qwe123!@#; Trusted_Connection=True; MultipleActiveResultSets=true; TrustServerCertificate=True; Integrated Security=false
+      - ConnectionStrings__DefaultConnection=Initial Catalog=AuthUsers; Data Source=auth-sql; Persist Security Info=True; User ID=SA; Password=Qwe123!@#; Trusted_Connection=True; MultipleActiveResultSets=true; TrustServerCertificate=True; Integrated Security=false
     depends_on:
-      - auth-sqlserver
+      - auth-sql
     build:
       context: ../src/Services/AuthServer/
       dockerfile: Dockerfile
     tty: true
     restart: on-failure
 
-  auth-sqlserver:
-    container_name: ${COMPOSE_PROJECT_NAME}-auth-sqlserver
+  auth-sql:
+    container_name: ${COMPOSE_PROJECT_NAME}-auth-sql
     image: "mcr.microsoft.com/mssql/server:2022-latest"
     ports:
       - "1433:1433"
@@ -45,7 +47,7 @@ services:
     restart: on-failure
     volumes:
       - auth-db:/app/${COMPOSE_PROJECT_NAME}/auth/db
-  ## -------------------------------------------------------
+  # -------------------------------------------------------
   notification:
     container_name: ${COMPOSE_PROJECT_NAME}-notification
     image: ${COMPOSE_PROJECT_NAME}-notification
@@ -54,21 +56,21 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:5280
-      - MongoDbConfiguration__ConnectionString=mongodb://notification-mongodb:27017
+      - MongoDbConfiguration__ConnectionString=mongo://notification-mongo:27017
       - WorkspaceConfiguration__Endpoint=workspace:1412/workspaces/getworkspacesbyserverid
       - EventBusConfiguration__Connection=rabbitmq
     build:
       context: ../src
       dockerfile: Services/Notification/Dockerfile
     depends_on:
-      - notification-mongodb
+      - notification-mongo
       - rabbitmq
       - workspace
     tty: true
     restart: on-failure
 
-  notification-mongodb:
-    container_name: ${COMPOSE_PROJECT_NAME}-notification-mongodb
+  notification-mongo:
+    container_name: ${COMPOSE_PROJECT_NAME}-notification-mongo
     image: mongo
     ports:
       - '27017:27017'
@@ -77,7 +79,7 @@ services:
       - notification-db_config:/data/configdb
     tty: true
     restart: on-failure
-  ## -------------------------------------------------------
+  # -------------------------------------------------------
   agregation:
     container_name: ${COMPOSE_PROJECT_NAME}-agregation
     image: ${COMPOSE_PROJECT_NAME}-agregation
@@ -85,18 +87,18 @@ services:
       context: ../src/Services/Agregation/
       dockerfile: Dockerfile
     depends_on:
-      - agregation-postgresserver
+      - agregation-postgre
     ports:
       - "5002:5278"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:5278
-      - ConnectionStrings__Postgre=Host=agregation-postgresserver;Port=5432;Database=MIAY;Username=postgres;Password=admin;Pooling=True;TrustServerCertificate=True
+      - ConnectionStrings__Postgre=Host=agregation-postgre;Port=5432;Database=MIAY;Username=postgres;Password=admin;Pooling=True;TrustServerCertificate=True
     tty: true
     restart: on-failure
 
-  agregation-postgresserver:
-    container_name: ${COMPOSE_PROJECT_NAME}-agregation-postgresserver
+  agregation-postgre:
+    container_name: ${COMPOSE_PROJECT_NAME}-agregation-postgre
     image: postgres
     ports:
       - "5432:5432"
@@ -108,19 +110,6 @@ services:
     restart: on-failure
     volumes:
       - agregation-db:/var/lib/postgresql/data
-
-  pgadmin:
-    container_name: ${COMPOSE_PROJECT_NAME}-pgadmin4
-    image: dpage/pgadmin4
-    restart: on-failure
-    environment:
-      PGADMIN_DEFAULT_EMAIL: admin@admin.com
-      PGADMIN_DEFAULT_PASSWORD: admin
-      PGADMIN_LISTEN_PORT: 80
-    ports:
-      - "8009:80"
-    volumes:
-      - pgadmin-data:/var/lib/pgadmin
   # -------------------------------------------------------
   workspace:
     container_name: ${COMPOSE_PROJECT_NAME}-workspace
@@ -128,7 +117,7 @@ services:
     ports:
       - "5009:5165"
     depends_on:
-      - workspace-postgresserver
+      - workspace-postgre
       - rabbitmq
     build:
       context: ../src
@@ -136,16 +125,16 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:5165
-      - PostgreConfiguration__ConnectionString=Host=workspace-postgresserver;Port=5433;Username=postgres;Password=admin;Database=Workspace;Pooling=true;TrustServerCertificate=True
+      - PostgreConfiguration__ConnectionString=Host=workspace-postgre;Port=5433;Username=postgres;Password=admin;Database=Workspace;Pooling=true;TrustServerCertificate=True
       - EventBusConfiguration__Connection=rabbitmq
     tty: true
     restart: on-failure
 
-  workspace-postgresserver:
-    container_name: ${COMPOSE_PROJECT_NAME}-workspace-postgresserver
+  workspace-postgre:
+    container_name: ${COMPOSE_PROJECT_NAME}-workspace-postgre
     image: postgres
     ports:
-      - "5433:5432"
+      - "5433:5433"
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=admin
@@ -154,11 +143,12 @@ services:
     restart: on-failure
     volumes:
       - workspace-db:/var/lib/postgresql/data
+    command: -p 5433
   # -------------------------------------------------------
   rabbitmq:
     container_name: ${COMPOSE_PROJECT_NAME}-rabbitmq
     image: rabbitmq:3-management-alpine
-    restart: always
+    restart: on-failure
     environment:
       - RABBITMQ_DEFAULT_USER=guest
       - RABBITMQ_DEFAULT_PASS=guest
@@ -170,6 +160,21 @@ services:
       interval: 5s
       timeout: 10s
       retries: 3
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq
+  # -------------------------------------------------------
+  #pgadmin:
+  #  container_name: ${COMPOSE_PROJECT_NAME}-pgadmin4
+  #  image: dpage/pgadmin4
+  #  restart: on-failure
+  #  environment:
+  #    PGADMIN_DEFAULT_EMAIL: admin@admin.com
+  #    PGADMIN_DEFAULT_PASSWORD: admin
+  #    PGADMIN_LISTEN_PORT: 80
+  #  ports:
+  #    - "8009:80"
+  #  volumes:
+  #    - pgadmin-data:/var/lib/pgadmin
   # -------------------------------------------------------
   #web-aggregator:
   #  container_name: ${COMPOSE_PROJECT_NAME}-web-aggregator
@@ -184,7 +189,105 @@ services:
   #  volumes:
   #    - web-aggregator:/app/${COMPOSE_PROJECT_NAME}/web-aggregator
   # ---------------------------------------------------------
+  testpatient-1:
+    container_name: ${COMPOSE_PROJECT_NAME}-testpatient-1
+    image: ${COMPOSE_PROJECT_NAME}-testpatient-1
+    ports:
+      - "5003:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:80
+      - ConnectionStrings__DBConnection=Server=testpatient-1-postgre;Port=5434;Database=MIAY;Username=postgres;Password=admin;Pooling=True;TrustServerCertificate=True
+      - HostId=TestPatient1.com
+    depends_on:
+      - testpatient-1-postgre
+    build:
+      context: ../src
+      dockerfile: Services/TestPatient/Dockerfile
+    tty: true
+    restart: on-failure
 
+  testpatient-1-postgre:
+    container_name: ${COMPOSE_PROJECT_NAME}-testpatient-1-postgre
+    image: postgres
+    ports:
+      - "5434:5434"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_DB=MIAY
+    tty: true
+    restart: on-failure
+    volumes:
+      - testpatient-1-db:/var/lib/postgresql/data
+    command: -p 5434
+  # ---------------------------------------------------------
+  testpatient-2:
+    container_name: ${COMPOSE_PROJECT_NAME}-testpatient-2
+    image: ${COMPOSE_PROJECT_NAME}-testpatient-2
+    ports:
+      - "5004:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:80
+      - ConnectionStrings__DBConnection=Server=testpatient-2-postgre;Port=5435;Database=MIAY;Username=postgres;Password=admin;Pooling=True;TrustServerCertificate=True
+      - HostId=TestPatient2.com
+    depends_on:
+      - testpatient-2-postgre
+    build:
+      context: ../src
+      dockerfile: Services/TestPatient/Dockerfile
+    tty: true
+    restart: on-failure
+
+  testpatient-2-postgre:
+    container_name: ${COMPOSE_PROJECT_NAME}-testpatient-2-postgre
+    image: postgres
+    ports:
+      - "5435:5435"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_DB=MIAY
+    tty: true
+    restart: on-failure
+    volumes:
+      - testpatient-2-db:/var/lib/postgresql/data
+    command: -p 5435
+  # ---------------------------------------------------------
+  testpatient-3:
+    container_name: ${COMPOSE_PROJECT_NAME}-testpatient-3
+    image: ${COMPOSE_PROJECT_NAME}-testpatient-3
+    ports:
+      - "5005:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:80
+      - ConnectionStrings__DBConnection=Server=testpatient-3-postgre;Port=5436;Database=MIAY;Username=postgres;Password=admin;Pooling=True;TrustServerCertificate=True
+      - HostId=TestPatient3.com
+    depends_on:
+      - testpatient-3-postgre
+    build:
+      context: ../src
+      dockerfile: Services/TestPatient/Dockerfile
+    tty: true
+    restart: on-failure
+
+  testpatient-3-postgre:
+    container_name: ${COMPOSE_PROJECT_NAME}-testpatient-3-postgre
+    image: postgres
+    ports:
+      - "5436:5436"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_DB=MIAY
+    tty: true
+    restart: on-failure
+    volumes:
+      - testpatient-3-db:/var/lib/postgresql/data
+    command: -p 5436
+  # ---------------------------------------------------------
 volumes:
   auth-db:
   notification-db_data:
@@ -192,3 +295,7 @@ volumes:
   agregation-db:
   workspace-db:
   pgadmin-data:
+  rabbitmq-data:
+  testpatient-1-db:
+  testpatient-2-db:
+  testpatient-3-db:
