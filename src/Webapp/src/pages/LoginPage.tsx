@@ -1,7 +1,8 @@
 import React, { FC, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Navigate, useNavigate } from 'react-router-dom'
 import { Path } from '@models'
 import { AuthLoginModel, useLoginMutation } from '@redux/api/authApi'
+import { store } from '@redux/store'
 import { Button, Form, Input, Layout } from 'antd'
 
 import '@css/LoginPage.css'
@@ -11,11 +12,11 @@ const LoginPage: FC = () => {
   const [error, setError] = useState<string>('')
 
   const [loginUser] = useLoginMutation();
+  const { isLoggedIn } = store.getState().authState
 
   const onFinish = async (values: AuthLoginModel) => {
     try {
       await loginUser(values).unwrap()
-      console.log('navigate to dashboard')
       navigate(`/${Path.dashboard}`)
     } catch (e) {
       if (e.data.message) {
@@ -28,7 +29,7 @@ const LoginPage: FC = () => {
     setError('')
   }
 
-  return (
+  return isLoggedIn ? <Navigate to={`/${Path.dashboard}`} /> : (
     <Layout className='login-layout'>
       <div className='login-container'>
         <h1>Авторизация</h1>
