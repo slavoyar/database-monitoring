@@ -40,26 +40,26 @@ namespace Auth.Controllers
         /// <response code="400">Data has missing/invalid values</response>
         /// <response code="500">Database data error</response>
         /// <response code="401">Error while authorizing user, maybe you are not authorized</response>
-        [ProducesResponseType(typeof(WebResponce), 200)]
-        [ProducesResponseType(typeof(WebResponce), 400)]
-        [ProducesResponseType(typeof(WebResponce), 401)]
-        [ProducesResponseType(typeof(WebResponce), 500)]
+        [ProducesResponseType(typeof(WebResponse), 200)]
+        [ProducesResponseType(typeof(WebResponse), 400)]
+        [ProducesResponseType(typeof(WebResponse), 401)]
+        [ProducesResponseType(typeof(WebResponse), 500)]
         [HttpPost]
         [Route("Create")]
         public async Task<IActionResult> Create([FromBody] AuthRegisterModel model)
         {
             //--- Check Input Data
             var modelEmail = model.Email;
-            if ( modelEmail == null )
-                return BadRequest(WebResponcesAuth.authResponceErrorEmail);
+            if (modelEmail == null)
+                return BadRequest(WebResponsesAuth.authResponseErrorEmail);
 
             var modelPassword = model.Password;
-            if ( modelPassword == null )
-                return BadRequest(WebResponcesAuth.authResponceErrorPassword);
+            if (modelPassword == null)
+                return BadRequest(WebResponsesAuth.authResponseErrorPassword);
 
             var userExists = await _userManager.FindByEmailAsync(modelEmail);
-            if ( userExists != null )
-                return StatusCode(StatusCodes.Status500InternalServerError, WebResponcesAuth.authResponceErrorUserExist);
+            if (userExists != null)
+                return StatusCode(StatusCodes.Status500InternalServerError, WebResponsesAuth.authResponseErrorUserExist);
 
             //--- Create User + Add Role to User
             AuthUser user = new()
@@ -74,15 +74,15 @@ namespace Auth.Controllers
 
             var result = await _userManager.CreateAsync(user, modelPassword);
 
-            if ( !result.Succeeded )
-                return StatusCode(StatusCodes.Status500InternalServerError, WebResponcesAuth.authResponceErrorUserCreate);
+            if (!result.Succeeded)
+                return StatusCode(StatusCodes.Status500InternalServerError, WebResponsesAuth.authResponseErrorUserCreate);
 
             //--- Add Role to User
             await AddRoleToUser(user, UserRoles.Admin);
             await AddRoleToUser(user, UserRoles.Engineer);
             await AddRoleToUser(user, UserRoles.Manager);
 
-            return Ok(WebResponcesAuth.authResponceSuccessUserCreate);
+            return Ok(WebResponsesAuth.authResponseSuccessUserCreate);
         }
 
         #endregion Create
@@ -96,9 +96,9 @@ namespace Auth.Controllers
         /// <response code="200">Success reading</response>
         /// <response code="400">Data has missing/invalid values</response>
         /// <response code="401">Error while authorizing user, maybe you are not authorized</response>
-        [ProducesResponseType(typeof(WebResponce), 200)]
-        [ProducesResponseType(typeof(WebResponce), 400)]
-        [ProducesResponseType(typeof(WebResponce), 401)]
+        [ProducesResponseType(typeof(WebResponse), 200)]
+        [ProducesResponseType(typeof(WebResponse), 400)]
+        [ProducesResponseType(typeof(WebResponse), 401)]
         [HttpGet]
         [Route("Read")]
         public async Task<IActionResult> Read()
@@ -108,8 +108,8 @@ namespace Auth.Controllers
                 .Users
                 .ToList();
 
-            if ( foundedUsers == null )
-                return BadRequest(WebResponcesAuth.authResponceErrorUser);
+            if (foundedUsers == null)
+                return BadRequest(WebResponsesAuth.authResponseErrorUser);
 
             //--- Return found Users
             return Ok(foundedUsers);
@@ -123,9 +123,9 @@ namespace Auth.Controllers
         /// <response code="200">Success reading</response>
         /// <response code="400">Data has missing/invalid values</response>
         /// <response code="401">Error while authorizing user, maybe you are not authorized</response>
-        [ProducesResponseType(typeof(WebResponce), 200)]
-        [ProducesResponseType(typeof(WebResponce), 400)]
-        [ProducesResponseType(typeof(WebResponce), 401)]
+        [ProducesResponseType(typeof(WebResponse), 200)]
+        [ProducesResponseType(typeof(WebResponse), 400)]
+        [ProducesResponseType(typeof(WebResponse), 401)]
         [HttpPost]
         [Route("Read")]
         public async Task<IActionResult> Read([FromBody] string userMail)
@@ -133,8 +133,8 @@ namespace Auth.Controllers
             //--- Check Input Data
             var foundedUser = await _userManager.FindByEmailAsync(userMail);
 
-            if ( foundedUser == null )
-                return BadRequest(WebResponcesAuth.authResponceErrorUser);
+            if (foundedUser == null)
+                return BadRequest(WebResponsesAuth.authResponseErrorUser);
 
             //--- Return found user
             return Ok(foundedUser);
@@ -153,9 +153,9 @@ namespace Auth.Controllers
         /// <response code="200">Success updating</response>
         /// <response code="400">Data has missing/invalid values</response>
         /// <response code="401">Error while authorizing user, maybe you are not authorized</response>
-        [ProducesResponseType(typeof(WebResponce), 200)]
-        [ProducesResponseType(typeof(WebResponce), 400)]
-        [ProducesResponseType(typeof(WebResponce), 401)]
+        [ProducesResponseType(typeof(WebResponse), 200)]
+        [ProducesResponseType(typeof(WebResponse), 400)]
+        [ProducesResponseType(typeof(WebResponse), 401)]
         [HttpPost]
         [Route("Update")]
         public async Task<IActionResult> Update(string userMail, [FromBody] AuthRegisterModel inputUser)
@@ -163,16 +163,16 @@ namespace Auth.Controllers
             //--- Check Input Data
             var foundedUser = await _userManager.FindByEmailAsync(userMail);
 
-            if ( foundedUser == null )
-                return BadRequest(WebResponcesAuth.authResponceErrorUser);
+            if (foundedUser == null)
+                return BadRequest(WebResponsesAuth.authResponseErrorUser);
 
             //--- Check Input Data
             var userRole = inputUser.Role;
-            if ( userRole == null )
-                return BadRequest(WebResponcesAuth.authResponceErrorRole);
+            if (userRole == null)
+                return BadRequest(WebResponsesAuth.authResponseErrorRole);
 
-            if ( !await _roleManager.RoleExistsAsync(userRole) )
-                return StatusCode(StatusCodes.Status500InternalServerError, WebResponcesAuth.authResponceErrorNoRoleInDb);
+            if (!await _roleManager.RoleExistsAsync(userRole))
+                return StatusCode(StatusCodes.Status500InternalServerError, WebResponsesAuth.authResponseErrorNoRoleInDb);
 
             //--- Updating data of user
 
@@ -185,7 +185,7 @@ namespace Auth.Controllers
 
             var result = await _userManager.UpdateAsync(foundedUser);
 
-            return Ok(WebResponcesAuth.authResponceErrorUserUpdate);
+            return Ok(WebResponsesAuth.authResponseErrorUserUpdate);
         }
 
         #endregion Update
@@ -200,9 +200,9 @@ namespace Auth.Controllers
         /// <response code="200">Success deleting</response>
         /// <response code="400">Data has missing/invalid values</response>
         /// <response code="401">Error while authorizing user, maybe you are not authorized</response>
-        [ProducesResponseType(typeof(WebResponce), 200)]
-        [ProducesResponseType(typeof(WebResponce), 400)]
-        [ProducesResponseType(typeof(WebResponce), 401)]
+        [ProducesResponseType(typeof(WebResponse), 200)]
+        [ProducesResponseType(typeof(WebResponse), 400)]
+        [ProducesResponseType(typeof(WebResponse), 401)]
         [HttpPost]
         [Route("Delete")]
         public async Task<IActionResult> Delete([FromBody] string userMail)
@@ -210,15 +210,15 @@ namespace Auth.Controllers
             //--- Check Input Data
             var foundedUser = await _userManager.FindByEmailAsync(userMail);
 
-            if ( foundedUser == null )
-                return BadRequest(WebResponcesAuth.authResponceErrorUser);
+            if (foundedUser == null)
+                return BadRequest(WebResponsesAuth.authResponseErrorUser);
 
             var result = await _userManager.DeleteAsync(foundedUser);
 
-            if ( !result.Succeeded )
-                return StatusCode(StatusCodes.Status500InternalServerError, WebResponcesAuth.authResponceSuccessUserDelete);
+            if (!result.Succeeded)
+                return StatusCode(StatusCodes.Status500InternalServerError, WebResponsesAuth.authResponseSuccessUserDelete);
 
-            return Ok(WebResponcesAuth.authResponceSuccessUserDelete);
+            return Ok(WebResponsesAuth.authResponseSuccessUserDelete);
         }
 
         #endregion Delete
@@ -234,9 +234,9 @@ namespace Auth.Controllers
         /// <response code="200">Success updating</response>
         /// <response code="400">Data has missing/invalid values</response>
         /// <response code="401">Error while authorizing user, maybe you are not authorized</response>
-        [ProducesResponseType(typeof(WebResponce), 200)]
-        [ProducesResponseType(typeof(WebResponce), 400)]
-        [ProducesResponseType(typeof(WebResponce), 401)]
+        [ProducesResponseType(typeof(WebResponse), 200)]
+        [ProducesResponseType(typeof(WebResponse), 400)]
+        [ProducesResponseType(typeof(WebResponse), 401)]
         [HttpPost]
         [Route("AddToWorkspace")]
         public async Task<IActionResult> AddToWorkspace(string userMail, string workspaceName)
@@ -247,32 +247,32 @@ namespace Auth.Controllers
                 .Where(workspace => workspace.Name == workspaceName)
                 .FirstOrDefault();
 
-            if ( foundedWorkspace is null )
-                return BadRequest(WebResponcesWorkspaces.WebResponceErrorNotFound);
+            if (foundedWorkspace is null)
+                return BadRequest(WebResponsesWorkspaces.WebResponseErrorNotFound);
 
             var foundedUser = await _userManager.FindByEmailAsync(userMail);
 
             // User cannot found Admin user
-            if ( foundedUser == null )
-                return BadRequest(WebResponcesAuth.authResponceErrorUser);
+            if (foundedUser == null)
+                return BadRequest(WebResponsesAuth.authResponseErrorUser);
 
-            if ( foundedUser.Role == UserRoles.Admin )
-                return BadRequest(WebResponcesAuth.authResponceErrorUser);
+            if (foundedUser.Role == UserRoles.Admin)
+                return BadRequest(WebResponsesAuth.authResponseErrorUser);
 
             var checkWorkspace = foundedWorkspace
                 .Users
                 .Where(user => user.Email == userMail)
                 .FirstOrDefault();
 
-            if ( checkWorkspace != null )
-                return BadRequest(WebResponcesAuth.authResponceErrorUserAddToWorkspace);
+            if (checkWorkspace != null)
+                return BadRequest(WebResponsesAuth.authResponseErrorUserAddToWorkspace);
 
             foundedWorkspace.Users.Add(foundedUser);
 
             _authWebApplicationDbContext.Workspaces.Update(foundedWorkspace);
             await _authWebApplicationDbContext.SaveChangesAsync();
 
-            return Ok(WebResponcesAuth.authResponceSuccessUserAddToWorkspace);
+            return Ok(WebResponsesAuth.authResponseSuccessUserAddToWorkspace);
         }
 
         #endregion AddToWorkspace
@@ -288,9 +288,9 @@ namespace Auth.Controllers
         /// <response code="200">Success updating</response>
         /// <response code="400">Data has missing/invalid values</response>
         /// <response code="401">Error while authorizing user, maybe you are not authorized</response>
-        [ProducesResponseType(typeof(WebResponce), 200)]
-        [ProducesResponseType(typeof(WebResponce), 400)]
-        [ProducesResponseType(typeof(WebResponce), 401)]
+        [ProducesResponseType(typeof(WebResponse), 200)]
+        [ProducesResponseType(typeof(WebResponse), 400)]
+        [ProducesResponseType(typeof(WebResponse), 401)]
         [HttpPost]
         [Route("RemoveFromWorkspace")]
         public async Task<IActionResult> RemoveFromWorkspace(string userMail, string workspaceName)
@@ -301,32 +301,32 @@ namespace Auth.Controllers
                 .Where(workspace => workspace.Name == workspaceName)
                 .FirstOrDefault();
 
-            if ( foundedWorkspace is null )
-                return BadRequest(WebResponcesWorkspaces.WebResponceErrorNotFound);
+            if (foundedWorkspace is null)
+                return BadRequest(WebResponsesWorkspaces.WebResponseErrorNotFound);
 
             var foundedUser = await _userManager.FindByEmailAsync(userMail);
 
             // User cannot found Admin user
-            if ( foundedUser == null )
-                return BadRequest(WebResponcesAuth.authResponceErrorUser);
+            if (foundedUser == null)
+                return BadRequest(WebResponsesAuth.authResponseErrorUser);
 
-            if ( foundedUser.Role == UserRoles.Admin )
-                return BadRequest(WebResponcesAuth.authResponceErrorUser);
+            if (foundedUser.Role == UserRoles.Admin)
+                return BadRequest(WebResponsesAuth.authResponseErrorUser);
 
             var checkWorkspace = foundedWorkspace
                 .Users
                 .Where(user => user.Email == userMail)
                 .FirstOrDefault();
 
-            if ( checkWorkspace == null )
-                return BadRequest(WebResponcesAuth.authResponceErrorUserRemoveFromWorkspace);
+            if (checkWorkspace == null)
+                return BadRequest(WebResponsesAuth.authResponseErrorUserRemoveFromWorkspace);
 
             foundedWorkspace.Users.Remove(foundedUser);
 
             _authWebApplicationDbContext.Workspaces.Update(foundedWorkspace);
             await _authWebApplicationDbContext.SaveChangesAsync();
 
-            return Ok(WebResponcesAuth.authResponceSuccessUserRemoveFromWorkspace);
+            return Ok(WebResponsesAuth.authResponseSuccessUserRemoveFromWorkspace);
         }
 
         #endregion RemoveFromWorkspace
@@ -341,7 +341,7 @@ namespace Auth.Controllers
         /// <returns></returns>
         private async Task AddRoleToUser(AuthUser user, string userRole)
         {
-            if ( await _roleManager.RoleExistsAsync(userRole) )
+            if (await _roleManager.RoleExistsAsync(userRole))
                 await _userManager.AddToRoleAsync(user, userRole);
         }
 

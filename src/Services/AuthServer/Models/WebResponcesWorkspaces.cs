@@ -1,15 +1,15 @@
 ﻿namespace Auth.Models
 {
-    public class WebResponcesWorkspaces
+    public class WebResponsesWorkspaces
     {
-        public static WebResponce WebResponceSuccessCreate = new() { Status = "Success", Message = "Workspace successfully created" };
+        public static WebResponse WebResponseSuccessCreate = new() { Status = "Success", Message = "Workspace successfully created" };
 
-        public static WebResponce WebResponceSuccessUpdate = new() { Status = "Success", Message = "Workspace successfully updated" };
+        public static WebResponse WebResponseSuccessUpdate = new() { Status = "Success", Message = "Workspace successfully updated" };
 
-        public static WebResponce WebResponceSuccessDelete = new() { Status = "Success", Message = "Workspace successfully deleted" };
+        public static WebResponse WebResponseSuccessDelete = new() { Status = "Success", Message = "Workspace successfully deleted" };
 
-        public static WebResponce WebResponceErrorAlreadyExist = new() { Status = "Error", Message = "Workspace with input name is already exist" };
+        public static WebResponse WebResponseErrorAlreadyExist = new() { Status = "Error", Message = "Workspace with input name is already exist" };
 
-        public static WebResponce WebResponceErrorNotFound = new() { Status = "Error", Message = "Workspace with input name is not found" };
+        public static WebResponse WebResponseErrorNotFound = new() { Status = "Error", Message = "Workspace with input name is not found" };
     }
 }

@@ -10,7 +10,7 @@ const NotFound: FC = () => (
             <Result
                 status="404"
                 title="404"
-                subTitle="Страница с таким путем не существует"
+                subTitle="Страницы с таким путем не существует"
             />
         </Layout.Content>
     </Layout>

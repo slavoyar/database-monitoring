@@ -38,9 +38,9 @@ public class UsersController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<IEnumerable<Guid>>> GetWorkspaceUsersAsync(Guid workspaceId)
     {
-        if(await workspaceService.WorkspaceExists(workspaceId) == false)
-            return NotFound(ConstantResponceMessages.NoWorkspaceWasFound);
-            
+        if (await workspaceService.WorkspaceExists(workspaceId) == false)
+            return NotFound(ConstantResponseMessages.NoWorkspaceWasFound);
+
         var serverIds = await workspaceService.GetWorkspaceUsersAsync(workspaceId);
         return Ok(serverIds);
     }
@@ -56,8 +56,8 @@ public class UsersController : ControllerBase
     [Authorize(Roles = "Admin")]
     public async Task<ActionResult> AddUserToWorkspace(Guid workspaceId, Guid userId)
     {
-        if(await workspaceService.WorkspaceExists(workspaceId) == false)
-            return NotFound(ConstantResponceMessages.NoWorkspaceWasFound);
+        if (await workspaceService.WorkspaceExists(workspaceId) == false)
+            return NotFound(ConstantResponseMessages.NoWorkspaceWasFound);
         await workspaceService.AddUserToWorkspaceAsync(workspaceId, userId);
         return Ok();
     }
@@ -73,11 +73,11 @@ public class UsersController : ControllerBase
     [Authorize(Roles = "Admin")]
     public async Task<ActionResult> RemoveUserFromWorkspaceAsync(Guid workspaceId, Guid userId)
     {
-        if(await workspaceService.WorkspaceExists(workspaceId) == false)
-            return NotFound(ConstantResponceMessages.NoWorkspaceWasFound);
-        if(await workspaceService.RemoveUserFromWorkspaceAsync(workspaceId, userId))
+        if (await workspaceService.WorkspaceExists(workspaceId) == false)
+            return NotFound(ConstantResponseMessages.NoWorkspaceWasFound);
+        if (await workspaceService.RemoveUserFromWorkspaceAsync(workspaceId, userId))
             return Ok();
         else
-            return NotFound(ConstantResponceMessages.NoUserInWorkspaceWasFound);
+            return NotFound(ConstantResponseMessages.NoUserInWorkspaceWasFound);
     }
 }
