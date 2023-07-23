@@ -6,7 +6,7 @@ import {
   SettingOutlined,
   UserOutlined,
 } from '@ant-design/icons'
-import { Path, Role } from '@models'
+import { Path } from '@models'
 import { Layout, Menu } from 'antd'
 import { MenuItemType } from 'antd/es/menu/hooks/useItems'
 import { MenuInfo } from 'rc-menu/lib/interface'
