@@ -12,6 +12,8 @@ services:
   front:
     container_name: ${COMPOSE_PROJECT_NAME}-front-web
     image: ${COMPOSE_PROJECT_NAME}-front-web
+    environment:
+      - NODE_ENV=production
     build:
       context: ../src/Webapp/
       dockerfile: Dockerfile
