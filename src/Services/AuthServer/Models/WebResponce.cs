@@ -3,18 +3,18 @@
 namespace Auth.Models
 {
     /// <summary>
-    /// Model for Authentication Responce
+    /// Model for Authentication Response
     /// </summary>
-    public class WebResponce
+    public class WebResponse
     {
         /// <summary>
-        /// Common status of responce, usually Success|Error
+        /// Common status of response, usually Success|Error
         /// </summary>
         [Required(ErrorMessage = "Status is required")]
         public string? Status { get; set; }
 
         /// <summary>
-        /// Main string data for responce message
+        /// Main string data for response message
         /// </summary>
         [Required(ErrorMessage = "Message is required")]
         public string? Message { get; set; }

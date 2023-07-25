@@ -1,7 +1,9 @@
 import React, { FC } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { DashboardOutlined, LineChartOutlined, SettingOutlined } from '@ant-design/icons'
+import { DashboardOutlined, LineChartOutlined, LogoutOutlined, SettingOutlined } from '@ant-design/icons'
 import { Path } from '@models'
+import { logout } from '@redux/features/authSlice'
+import { store } from '@redux/store'
 import { Layout, Menu, Select } from 'antd'
 
 import '@css/Navbar.css'
@@ -11,11 +13,13 @@ const { Header } = Layout
 const Navbar: FC = () => {
   const navigate = useNavigate()
   const location = useLocation()
+
   const onLogoClick = () => {
     if (!location.pathname.includes(Path.dashboard)) {
       navigate(`/${Path.dashboard}`)
     }
   }
+
   return (
     <Header className='header'>
       <button type='button' className='logo' onClick={onLogoClick}>
@@ -44,6 +48,9 @@ const Navbar: FC = () => {
         <Select placeholder='Workspace' className='navbar-workspace-select' />
         <Link to={`/${Path.admin}/${Path.user}`}>
           <SettingOutlined />
+        </Link>
+        <Link to={`/${Path.login}`} onClick={() => store.dispatch(logout())}>
+          <LogoutOutlined />
         </Link>
       </div>
     </Header>
