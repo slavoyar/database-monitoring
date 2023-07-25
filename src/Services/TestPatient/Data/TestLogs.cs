@@ -52,8 +52,8 @@ namespace TestPatient.Data
                         ServiceType = "App",
                         ServiceName = lastEntry.MachineName,
                         CreatedAt = lastEntry.TimeGenerated.ToString(),
-                        ReceivedAt = DateTime.Now.ToString(),
-                        Message = text
+                        Message = text,
+                        Sended = 0
                     };
 
                     logsList.Add(newLog);
@@ -88,8 +88,8 @@ namespace TestPatient.Data
                     ServiceType = "App",
                     ServiceName = "TestMachine",
                     CreatedAt = DateTime.Now.ToString(),
-                    ReceivedAt = DateTime.Now.ToString(),
-                    Message = text
+                    Message = text,
+                    Sended = 0
                 };
 
                 logsList.Add(newLog);

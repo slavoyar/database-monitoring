@@ -1,13 +1,14 @@
 version: "3.4"
 
+# miau         docker-compose up
+# logs         docker-compose -f docker-compose-logs.yml up
+
 # front        http://localhost:3000/dashboard
 # auth         http://localhost:5000/index.html
 # notification http://localhost:5001/swagger/index.html
 # agregation   http://localhost:5002/swagger/index.html
 # workspace    http://localhost:5009/swagger/index.html
-# testpatient1 http://localhost:5003/swagger/index.html
-# testpatient2 http://localhost:5004/swagger/index.html
-# testpatient3 http://localhost:5005/swagger/index.html
+
 services:
 
   # -------------------------------------------------------
@@ -189,105 +190,7 @@ services:
   #  volumes:
   #    - web-aggregator:/app/${COMPOSE_PROJECT_NAME}/web-aggregator
   # ---------------------------------------------------------
-  testpatient-1:
-    container_name: ${COMPOSE_PROJECT_NAME}-testpatient-1
-    image: ${COMPOSE_PROJECT_NAME}-testpatient-1
-    ports:
-      - "5003:80"
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=http://+:80
-      - ConnectionStrings__DBConnection=Server=testpatient-1-postgre;Port=5434;Database=MIAY;Username=postgres;Password=admin;Pooling=True;TrustServerCertificate=True
-      - HostId=TestPatient1.com
-    depends_on:
-      - testpatient-1-postgre
-    build:
-      context: ../src
-      dockerfile: Services/TestPatient/Dockerfile
-    tty: true
-    restart: on-failure
 
-  testpatient-1-postgre:
-    container_name: ${COMPOSE_PROJECT_NAME}-testpatient-1-postgre
-    image: postgres
-    ports:
-      - "5434:5434"
-    environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=admin
-      - POSTGRES_DB=MIAY
-    tty: true
-    restart: on-failure
-    volumes:
-      - testpatient-1-db:/var/lib/postgresql/data
-    command: -p 5434
-  # ---------------------------------------------------------
-  testpatient-2:
-    container_name: ${COMPOSE_PROJECT_NAME}-testpatient-2
-    image: ${COMPOSE_PROJECT_NAME}-testpatient-2
-    ports:
-      - "5004:80"
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=http://+:80
-      - ConnectionStrings__DBConnection=Server=testpatient-2-postgre;Port=5435;Database=MIAY;Username=postgres;Password=admin;Pooling=True;TrustServerCertificate=True
-      - HostId=TestPatient2.com
-    depends_on:
-      - testpatient-2-postgre
-    build:
-      context: ../src
-      dockerfile: Services/TestPatient/Dockerfile
-    tty: true
-    restart: on-failure
-
-  testpatient-2-postgre:
-    container_name: ${COMPOSE_PROJECT_NAME}-testpatient-2-postgre
-    image: postgres
-    ports:
-      - "5435:5435"
-    environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=admin
-      - POSTGRES_DB=MIAY
-    tty: true
-    restart: on-failure
-    volumes:
-      - testpatient-2-db:/var/lib/postgresql/data
-    command: -p 5435
-  # ---------------------------------------------------------
-  testpatient-3:
-    container_name: ${COMPOSE_PROJECT_NAME}-testpatient-3
-    image: ${COMPOSE_PROJECT_NAME}-testpatient-3
-    ports:
-      - "5005:80"
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=http://+:80
-      - ConnectionStrings__DBConnection=Server=testpatient-3-postgre;Port=5436;Database=MIAY;Username=postgres;Password=admin;Pooling=True;TrustServerCertificate=True
-      - HostId=TestPatient3.com
-    depends_on:
-      - testpatient-3-postgre
-    build:
-      context: ../src
-      dockerfile: Services/TestPatient/Dockerfile
-    tty: true
-    restart: on-failure
-
-  testpatient-3-postgre:
-    container_name: ${COMPOSE_PROJECT_NAME}-testpatient-3-postgre
-    image: postgres
-    ports:
-      - "5436:5436"
-    environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=admin
-      - POSTGRES_DB=MIAY
-    tty: true
-    restart: on-failure
-    volumes:
-      - testpatient-3-db:/var/lib/postgresql/data
-    command: -p 5436
-  # ---------------------------------------------------------
 volumes:
   auth-db:
   notification-db_data:
@@ -296,6 +199,3 @@ volumes:
   workspace-db:
   pgadmin-data:
   rabbitmq-data:
-  testpatient-1-db:
-  testpatient-2-db:
-  testpatient-3-db:

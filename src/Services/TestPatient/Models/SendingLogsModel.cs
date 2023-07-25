@@ -1,8 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 
 namespace TestPatient.Models
 {
-    public class LogModel
+    public class SendingLogsModel
     {
         [Key]
         public string? Id { get; set; }
@@ -14,6 +14,5 @@ namespace TestPatient.Models
         public string? ServiceName { get; set; }
         public string? CreatedAt { get; set; }
         public string? Message { get; set; }
-        public byte? Sended { get; set; }
     }
 }

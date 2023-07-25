@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using TestPatient.Data;
@@ -11,9 +12,11 @@ using TestPatient.Data;
 namespace TestPatient.Migrations
 {
     [DbContext(typeof(HangfireContext))]
-    partial class HangfireContextModelSnapshot : ModelSnapshot
+    [Migration("20230725155918_LogsModel-Delete-ReceivedAt-Add-Sended")]
+    partial class LogsModelDeleteReceivedAtAddSended
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
