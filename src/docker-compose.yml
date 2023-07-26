@@ -1,6 +1,6 @@
 version: "3.4"
 
-# front        http://localhost:3000/dashboard
+# front        http://localhost/dashboard
 # auth         http://localhost:5000/index.html
 # notification http://localhost:5001/swagger/index.html
 # agregation   http://localhost:5002/swagger/index.html
@@ -12,13 +12,24 @@ services:
   front:
     container_name: ${COMPOSE_PROJECT_NAME}-front-web
     image: ${COMPOSE_PROJECT_NAME}-front-web
-    environment:
-      - NODE_ENV=production
     build:
       context: ../src/Webapp/
       dockerfile: Dockerfile
     ports:
       - "3000:8080"
+    volumes:
+      - front_build:/usr/src/miau/Webapp/dist
+  ## -------------------------------------------------------
+  nginx:
+    image: nginx:latest
+    ports:
+      - 80:8080
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - front_build:/var/www/miau
+    depends_on:
+      - front
+      - auth
   ## -------------------------------------------------------
   auth:
     container_name: ${COMPOSE_PROJECT_NAME}-auth
@@ -172,20 +183,6 @@ services:
       interval: 5s
       timeout: 10s
       retries: 3
-  # -------------------------------------------------------
-  #web-aggregator:
-  #  container_name: ${COMPOSE_PROJECT_NAME}-web-aggregator
-  #  image: ${COMPOSE_PROJECT_NAME}-web-aggregator
-  #  build:
-  #    context: ../src/ApiGateways/WebAggregator/
-  #    dockerfile: Dockerfile    
-  #  ports:
-  #    - "3001:8080"
-  #  tty: true
-  #  restart: on-failure
-  #  volumes:
-  #    - web-aggregator:/app/${COMPOSE_PROJECT_NAME}/web-aggregator
-  # ---------------------------------------------------------
 
 volumes:
   auth-db:
@@ -194,3 +191,4 @@ volumes:
   agregation-db:
   workspace-db:
   pgadmin-data:
+  front_build:
