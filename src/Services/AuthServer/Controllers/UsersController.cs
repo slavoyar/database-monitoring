@@ -42,7 +42,7 @@ namespace Auth.Controllers
         [ProducesResponseType(typeof(WebResponse), 401)]
         [ProducesResponseType(typeof(WebResponse), 500)]
         [HttpPost]
-        [Route("Create")]
+        [Route("create")]
         public async Task<IActionResult> Create([FromBody] AuthRegisterModel model)
         {
             //--- Check Input Data
@@ -102,7 +102,7 @@ namespace Auth.Controllers
         [ProducesResponseType(typeof(WebResponse), 400)]
         [ProducesResponseType(typeof(WebResponse), 401)]
         [HttpGet]
-        [Route("Read")]
+        [Route("get")]
         public async Task<IActionResult> Read()
         {
             //--- Check Input Data
@@ -130,7 +130,7 @@ namespace Auth.Controllers
         [ProducesResponseType(typeof(WebResponse), 400)]
         [ProducesResponseType(typeof(WebResponse), 401)]
         [HttpPost]
-        [Route("Read")]
+        [Route("get")]
         public async Task<IActionResult> Read([FromBody] string userMail)
         {
             //--- Check Input Data
@@ -161,7 +161,7 @@ namespace Auth.Controllers
         [ProducesResponseType(typeof(WebResponse), 400)]
         [ProducesResponseType(typeof(WebResponse), 401)]
         [HttpPost]
-        [Route("Update")]
+        [Route("update")]
         public async Task<IActionResult> Update(string userMail, [FromBody] AuthRegisterModel inputUser)
         {
             //--- Check Input Data
@@ -215,7 +215,7 @@ namespace Auth.Controllers
         [ProducesResponseType(typeof(WebResponse), 400)]
         [ProducesResponseType(typeof(WebResponse), 401)]
         [HttpPost]
-        [Route("Delete")]
+        [Route("delete")]
         public async Task<IActionResult> Delete([FromBody] string userMail)
         {
             //--- Check Input Data

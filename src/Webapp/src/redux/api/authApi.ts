@@ -15,7 +15,7 @@ export interface TokenModel {
 export const authApi = createApi({
   reducerPath: 'authApi',
   baseQuery: fetchBaseQuery({
-    baseUrl: '/api',
+    baseUrl: '/api/auth',
     prepareHeaders: (headers, { getState }) => {
       const token = (getState() as RootState).authState.accessToken
       if (token) {
@@ -28,7 +28,7 @@ export const authApi = createApi({
     login: builder.mutation<TokenModel, AuthLoginModel>({
       query(data) {
         return {
-          url: 'auth/login',
+          url: 'login',
           method: 'POST',
           body: data,
         };
