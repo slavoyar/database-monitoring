@@ -10,7 +10,7 @@ builder.Services.AddEndpointsApiExplorer();
 
 var app = builder.Build();
 
-// await UpdateDatabaseAsync(app);
+await UpdateDatabaseAsync(app);
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
