@@ -8,8 +8,8 @@ export interface AuthResponse {
     message: string
 }
 
-export function isAuthResponse(value: AuthResponse | User): value is AuthResponse {
-    return !!value.status;
+export function isAuthResponse(value: AuthResponse | User[]): value is AuthResponse {
+    return (value as AuthResponse).status !== undefined
 }
 
 export const userApi = createApi({
@@ -25,12 +25,8 @@ export const userApi = createApi({
         },
     }),
     endpoints: (builder) => ({
-        fetch: builder.query<User[] | AuthResponse>({
-            query() {
-                return {
-                    url: 'get',
-                }
-            }
+        fetch: builder.query<User[] | AuthResponse, void>({
+            query: () => ({ url: 'get' })
         }),
         create: builder.mutation<AuthResponse, User>({
             query(user: User) {

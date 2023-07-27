@@ -3,7 +3,7 @@ import Role from './Role'
 type UserId = string
 
 interface User {
-  id?: UserId
+  id: UserId
   name: string
   email: string
   phone?: string

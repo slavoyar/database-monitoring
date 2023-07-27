@@ -80,12 +80,12 @@ module.exports = {
       directory: path.join(__dirname, 'public'),
     },
     historyApiFallback: true,
-    proxy: {
-      '/api': {
-        target: 'http://localhost:5000/',
-        changeOrigin: true,
-      },
-    }
+    proxy: [
+      {
+        context: ['/api/auth', '/api/users'],
+        target: 'http://localhost:5000/'
+      }
+    ],
   },
   performance: {
     hints: false,
