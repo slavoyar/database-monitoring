@@ -10,7 +10,6 @@ if (process.env.NODE_ENV === 'production') {
 
 const isProduction = mode === 'production'
 const devtool = isProduction ? false : 'inline-source-map'
-const authApi = isProduction ? 'auth:80' : 'localhost:5000'
 
 module.exports = {
   entry: './src/index.tsx',
@@ -83,7 +82,7 @@ module.exports = {
     historyApiFallback: true,
     proxy: {
       '/api': {
-        target: `http://${authApi}/`,
+        target: 'http://localhost:5000/',
         changeOrigin: true,
       },
     }
