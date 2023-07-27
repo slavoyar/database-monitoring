@@ -1,10 +1,10 @@
-﻿using Auth.Data;
+﻿using System.Data;
+using Auth.Data;
 using Auth.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
-using System.Data;
 
 namespace Auth.Controllers
 {
@@ -34,9 +34,9 @@ namespace Auth.Controllers
         /// <response code="200">Success creating</response>
         /// <response code="400">Data has missing/invalid values</response>
         /// <response code="401">Error while authorizing user, maybe you are not authorized</response>
-        [ProducesResponseType(typeof(WebResponce), 200)]
-        [ProducesResponseType(typeof(WebResponce), 400)]
-        [ProducesResponseType(typeof(WebResponce), 401)]
+        [ProducesResponseType(typeof(WebResponse), 200)]
+        [ProducesResponseType(typeof(WebResponse), 400)]
+        [ProducesResponseType(typeof(WebResponse), 401)]
         [HttpPost]
         [Route("Create")]
         public async Task<IActionResult> Create([FromBody] WorkspacesTeamsInitModel inputWorkspace)
@@ -46,8 +46,8 @@ namespace Auth.Controllers
                 .Where(workspace => workspace.Name == inputWorkspace.Name)
                 .ToList();
 
-            if ( foundedWorkspace.Count != 0 )
-                return BadRequest(WebResponcesWorkspaces.WebResponceErrorAlreadyExist);
+            if (foundedWorkspace.Count != 0)
+                return BadRequest(WebResponsesWorkspaces.WebResponseErrorAlreadyExist);
 
             //--- Creating workspace
             var newWorkspace = new Workspaces()
@@ -60,7 +60,7 @@ namespace Auth.Controllers
             _authWebApplicationDbContext.Workspaces.Add(newWorkspace);
             await _authWebApplicationDbContext.SaveChangesAsync();
 
-            return Ok(WebResponcesWorkspaces.WebResponceSuccessCreate);
+            return Ok(WebResponsesWorkspaces.WebResponseSuccessCreate);
         }
 
         #endregion Create
@@ -75,9 +75,9 @@ namespace Auth.Controllers
         /// <response code="200">Success reading</response>
         /// <response code="400">Data has missing/invalid values</response>
         /// <response code="401">Error while authorizing user, maybe you are not authorized</response>
-        [ProducesResponseType(typeof(WebResponce), 200)]
-        [ProducesResponseType(typeof(WebResponce), 400)]
-        [ProducesResponseType(typeof(WebResponce), 401)]
+        [ProducesResponseType(typeof(WebResponse), 200)]
+        [ProducesResponseType(typeof(WebResponse), 400)]
+        [ProducesResponseType(typeof(WebResponse), 401)]
         [HttpPost]
         [Route("Read")]
         public async Task<IActionResult> Read([FromBody] string workspaceName)
@@ -88,8 +88,8 @@ namespace Auth.Controllers
                 .Where(workspace => workspace.Name == workspaceName)
                 .FirstOrDefault();
 
-            if ( foundedWorkspace is null )
-                return BadRequest(WebResponcesWorkspaces.WebResponceErrorNotFound);
+            if (foundedWorkspace is null)
+                return BadRequest(WebResponsesWorkspaces.WebResponseErrorNotFound);
 
             //--- Return found Workspaces
             return Ok(foundedWorkspace);
@@ -108,9 +108,9 @@ namespace Auth.Controllers
         /// <response code="200">Success updating</response>
         /// <response code="400">Data has missing/invalid values</response>
         /// <response code="401">Error while authorizing user, maybe you are not authorized</response>
-        [ProducesResponseType(typeof(WebResponce), 200)]
-        [ProducesResponseType(typeof(WebResponce), 400)]
-        [ProducesResponseType(typeof(WebResponce), 401)]
+        [ProducesResponseType(typeof(WebResponse), 200)]
+        [ProducesResponseType(typeof(WebResponse), 400)]
+        [ProducesResponseType(typeof(WebResponse), 401)]
         [HttpPost]
         [Route("Update")]
         public async Task<IActionResult> Update(string workspaceName, [FromBody] WorkspacesTeamsInitModel inputWorkspace)
@@ -120,8 +120,8 @@ namespace Auth.Controllers
                 .Where(workspace => workspace.Name == workspaceName)
                 .FirstOrDefault();
 
-            if ( foundedWorkspace is null )
-                return BadRequest(WebResponcesWorkspaces.WebResponceErrorNotFound);
+            if (foundedWorkspace is null)
+                return BadRequest(WebResponsesWorkspaces.WebResponseErrorNotFound);
 
             //--- Updating data of workspace
             foundedWorkspace.Name = inputWorkspace.Name;
@@ -130,7 +130,7 @@ namespace Auth.Controllers
             _authWebApplicationDbContext.Workspaces.Update(foundedWorkspace);
             await _authWebApplicationDbContext.SaveChangesAsync();
 
-            return Ok(WebResponcesWorkspaces.WebResponceSuccessUpdate);
+            return Ok(WebResponsesWorkspaces.WebResponseSuccessUpdate);
         }
 
         #endregion Update
@@ -145,9 +145,9 @@ namespace Auth.Controllers
         /// <response code="200">Success deleting</response>
         /// <response code="400">Data has missing/invalid values</response>
         /// <response code="401">Error while authorizing user, maybe you are not authorized</response>
-        [ProducesResponseType(typeof(WebResponce), 200)]
-        [ProducesResponseType(typeof(WebResponce), 400)]
-        [ProducesResponseType(typeof(WebResponce), 401)]
+        [ProducesResponseType(typeof(WebResponse), 200)]
+        [ProducesResponseType(typeof(WebResponse), 400)]
+        [ProducesResponseType(typeof(WebResponse), 401)]
         [HttpPost]
         [Route("Delete")]
         public async Task<IActionResult> Delete([FromBody] string workspaceName)
@@ -157,14 +157,14 @@ namespace Auth.Controllers
                 .Where(workspace => workspace.Name == workspaceName)
                 .FirstOrDefault();
 
-            if ( foundedWorkspace is null )
-                return BadRequest(WebResponcesWorkspaces.WebResponceErrorNotFound);
+            if (foundedWorkspace is null)
+                return BadRequest(WebResponsesWorkspaces.WebResponseErrorNotFound);
 
             //--- Delete found workspace
             _authWebApplicationDbContext.Workspaces.Remove(foundedWorkspace);
             await _authWebApplicationDbContext.SaveChangesAsync();
 
-            return Ok(WebResponcesWorkspaces.WebResponceSuccessDelete);
+            return Ok(WebResponsesWorkspaces.WebResponseSuccessDelete);
         }
 
         #endregion Delete

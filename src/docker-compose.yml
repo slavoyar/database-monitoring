@@ -1,5 +1,8 @@
 version: "3.4"
 
+# miau         docker-compose up
+# logs         docker-compose -f docker-compose-logs.yml up
+
 # front        http://localhost:3000/dashboard
 # auth         http://localhost:5000/index.html
 # notification http://localhost:5001/swagger/index.html
@@ -41,29 +44,31 @@ services:
   front:
     container_name: ${COMPOSE_PROJECT_NAME}-front-web
     image: ${COMPOSE_PROJECT_NAME}-front-web
+    environment:
+      - NODE_ENV=production
     build:
       context: ../src/Webapp/
       dockerfile: Dockerfile
     ports:
       - "3000:8080"
-  ## -------------------------------------------------------
+  # -------------------------------------------------------
   auth:
     container_name: ${COMPOSE_PROJECT_NAME}-auth
     image: ${COMPOSE_PROJECT_NAME}-auth
     ports:
       - "5000:80"
     environment:
-      - ConnectionStrings__DefaultConnection=Initial Catalog=AuthUsers; Data Source=auth-sqlserver; Persist Security Info=True; User ID=SA; Password=Qwe123!@#; Trusted_Connection=True; MultipleActiveResultSets=true; TrustServerCertificate=True; Integrated Security=false
+      - ConnectionStrings__DefaultConnection=Initial Catalog=AuthUsers; Data Source=auth-sql; Persist Security Info=True; User ID=SA; Password=Qwe123!@#; Trusted_Connection=True; MultipleActiveResultSets=true; TrustServerCertificate=True; Integrated Security=false
     depends_on:
-      - auth-sqlserver
+      - auth-sql
     build:
       context: ../src/Services/AuthServer/
       dockerfile: Dockerfile
     tty: true
     restart: on-failure
 
-  auth-sqlserver:
-    container_name: ${COMPOSE_PROJECT_NAME}-auth-sqlserver
+  auth-sql:
+    container_name: ${COMPOSE_PROJECT_NAME}-auth-sql
     image: "mcr.microsoft.com/mssql/server:2022-latest"
     ports:
       - "1433:1433"
@@ -74,7 +79,7 @@ services:
     restart: on-failure
     volumes:
       - auth-db:/app/${COMPOSE_PROJECT_NAME}/auth/db
-  ## -------------------------------------------------------
+  # -------------------------------------------------------
   notification:
     container_name: ${COMPOSE_PROJECT_NAME}-notification
     image: ${COMPOSE_PROJECT_NAME}-notification
@@ -83,7 +88,7 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:5280
-      - MongoDbConfiguration__ConnectionString=mongodb://notification-mongodb:27017
+      - MongoDbConfiguration__ConnectionString=mongo://notification-mongo:27017
       - WorkspaceConfiguration__Endpoint=workspace:1412/workspaces/getworkspacesbyserverid
       - EventBusConfiguration__Connection=rabbitmq
       - ELASTICSEARCH_URL=http://elasticsearch:9200
@@ -91,7 +96,7 @@ services:
       context: ../src
       dockerfile: Services/Notification/Dockerfile
     depends_on:
-      - notification-mongodb
+      - notification-mongo
       - rabbitmq
       - workspace
       - Elasticsearch 
@@ -100,8 +105,8 @@ services:
     networks:
       - app_elk
 
-  notification-mongodb:
-    container_name: ${COMPOSE_PROJECT_NAME}-notification-mongodb
+  notification-mongo:
+    container_name: ${COMPOSE_PROJECT_NAME}-notification-mongo
     image: mongo
     ports:
       - '27017:27017'
@@ -110,7 +115,7 @@ services:
       - notification-db_config:/data/configdb
     tty: true
     restart: on-failure
-  ## -------------------------------------------------------
+  # -------------------------------------------------------
   agregation:
     container_name: ${COMPOSE_PROJECT_NAME}-agregation
     image: ${COMPOSE_PROJECT_NAME}-agregation
@@ -118,18 +123,18 @@ services:
       context: ../src/Services/Agregation/
       dockerfile: Dockerfile
     depends_on:
-      - agregation-postgresserver
+      - agregation-postgre
     ports:
       - "5002:5278"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:5278
-      - ConnectionStrings__Postgre=Host=agregation-postgresserver;Port=5432;Database=MIAY;Username=postgres;Password=admin;Pooling=True;TrustServerCertificate=True
+      - ConnectionStrings__Postgre=Host=agregation-postgre;Port=5432;Database=MIAY;Username=postgres;Password=admin;Pooling=True;TrustServerCertificate=True
     tty: true
     restart: on-failure
 
-  agregation-postgresserver:
-    container_name: ${COMPOSE_PROJECT_NAME}-agregation-postgresserver
+  agregation-postgre:
+    container_name: ${COMPOSE_PROJECT_NAME}-agregation-postgre
     image: postgres
     ports:
       - "5432:5432"
@@ -141,19 +146,6 @@ services:
     restart: on-failure
     volumes:
       - agregation-db:/var/lib/postgresql/data
-
-  pgadmin:
-    container_name: ${COMPOSE_PROJECT_NAME}-pgadmin4
-    image: dpage/pgadmin4
-    restart: on-failure
-    environment:
-      PGADMIN_DEFAULT_EMAIL: admin@admin.com
-      PGADMIN_DEFAULT_PASSWORD: admin
-      PGADMIN_LISTEN_PORT: 80
-    ports:
-      - "8009:80"
-    volumes:
-      - pgadmin-data:/var/lib/pgadmin
   # -------------------------------------------------------
   workspace:
     container_name: ${COMPOSE_PROJECT_NAME}-workspace
@@ -161,7 +153,7 @@ services:
     ports:
       - "5009:5165"
     depends_on:
-      - workspace-postgresserver
+      - workspace-postgre
       - rabbitmq
     build:
       context: ../src
@@ -169,13 +161,13 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:5165
-      - PostgreConfiguration__ConnectionString=Host=workspace-postgresserver;Port=5433;Username=postgres;Password=admin;Database=Workspace;Pooling=true;TrustServerCertificate=True
+      - PostgreConfiguration__ConnectionString=Host=workspace-postgre;Port=5433;Username=postgres;Password=admin;Database=Workspace;Pooling=true;TrustServerCertificate=True
       - EventBusConfiguration__Connection=rabbitmq
     tty: true
     restart: on-failure
 
-  workspace-postgresserver:
-    container_name: ${COMPOSE_PROJECT_NAME}-workspace-postgresserver
+  workspace-postgre:
+    container_name: ${COMPOSE_PROJECT_NAME}-workspace-postgre
     image: postgres
     ports:
       - "5433:5433"
@@ -192,7 +184,7 @@ services:
   rabbitmq:
     container_name: ${COMPOSE_PROJECT_NAME}-rabbitmq
     image: rabbitmq:3-management-alpine
-    restart: always
+    restart: on-failure
     environment:
       - RABBITMQ_DEFAULT_USER=guest
       - RABBITMQ_DEFAULT_PASS=guest
@@ -204,6 +196,21 @@ services:
       interval: 5s
       timeout: 10s
       retries: 3
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq
+  # -------------------------------------------------------
+  #pgadmin:
+  #  container_name: ${COMPOSE_PROJECT_NAME}-pgadmin4
+  #  image: dpage/pgadmin4
+  #  restart: on-failure
+  #  environment:
+  #    PGADMIN_DEFAULT_EMAIL: admin@admin.com
+  #    PGADMIN_DEFAULT_PASSWORD: admin
+  #    PGADMIN_LISTEN_PORT: 80
+  #  ports:
+  #    - "8009:80"
+  #  volumes:
+  #    - pgadmin-data:/var/lib/pgadmin
   # -------------------------------------------------------
   #web-aggregator:
   #  container_name: ${COMPOSE_PROJECT_NAME}-web-aggregator
@@ -227,7 +234,7 @@ volumes:
   workspace-db:
   pgadmin-data:
   elastic_data:
-
+  rabbitmq-data:
 
 networks:
   elk:

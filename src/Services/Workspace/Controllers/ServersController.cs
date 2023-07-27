@@ -38,8 +38,8 @@ public class ServersController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<IEnumerable<Guid>>> GetWorkspaceServersAsync(Guid workspaceId)
     {
-        if(await workspaceService.WorkspaceExists(workspaceId) == false)
-            return NotFound(ConstantResponceMessages.NoWorkspaceWasFound);
+        if (await workspaceService.WorkspaceExists(workspaceId) == false)
+            return NotFound(ConstantResponseMessages.NoWorkspaceWasFound);
 
         var serverIds = await workspaceService.GetWorkspaceServersAsync(workspaceId);
         return Ok(serverIds);
@@ -57,8 +57,8 @@ public class ServersController : ControllerBase
     [Authorize(Roles = "Admin")]
     public async Task<ActionResult> AddServerToWorkspaceAsync(Guid workspaceId, Guid serverId)
     {
-        if(await workspaceService.WorkspaceExists(workspaceId) == false)
-            return NotFound(ConstantResponceMessages.NoWorkspaceWasFound);
+        if (await workspaceService.WorkspaceExists(workspaceId) == false)
+            return NotFound(ConstantResponseMessages.NoWorkspaceWasFound);
 
         await workspaceService.AddServerToWorkspaceAsync(workspaceId, serverId);
         return Ok();
@@ -75,11 +75,11 @@ public class ServersController : ControllerBase
     [Authorize(Roles = "Admin")]
     public async Task<ActionResult> RemoveServerFromWorkspaceAsync(Guid workspaceId, Guid serverId)
     {
-        if(await workspaceService.WorkspaceExists(workspaceId) == false)
-            return NotFound(ConstantResponceMessages.NoWorkspaceWasFound);
-        if(await workspaceService.RemoveServerFromWorkspaceAsync(workspaceId, serverId))
+        if (await workspaceService.WorkspaceExists(workspaceId) == false)
+            return NotFound(ConstantResponseMessages.NoWorkspaceWasFound);
+        if (await workspaceService.RemoveServerFromWorkspaceAsync(workspaceId, serverId))
             return Ok();
         else
-            return NotFound(ConstantResponceMessages.NoServerInWorkspaceWasFound);
+            return NotFound(ConstantResponseMessages.NoServerInWorkspaceWasFound);
     }
 }

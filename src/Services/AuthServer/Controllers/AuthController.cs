@@ -1,16 +1,13 @@
-﻿using Auth.Data;
+﻿using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
+using Auth.Data;
 using Auth.Models;
-using Duende.IdentityServer.Models;
-using IdentityModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
 
 namespace Auth.Controllers
 {
@@ -52,33 +49,33 @@ namespace Auth.Controllers
         /// <response code="200">JWT Access token + expiration Date </response>
         /// <response code="400">Data has missing/invalid values</response>
         /// <response code="401">Error while authorizing user, maybe you are not authorized</response>
-        [ProducesResponseType(typeof(WebResponce), 200)]
-        [ProducesResponseType(typeof(WebResponce), 400)]
-        [ProducesResponseType(typeof(WebResponce), 401)]
+        [ProducesResponseType(typeof(WebResponse), 200)]
+        [ProducesResponseType(typeof(WebResponse), 400)]
+        [ProducesResponseType(typeof(WebResponse), 401)]
         [AllowAnonymous]
         [HttpPost]
-        [Route("Login")]
+        [Route("login")]
         public async Task<IActionResult> Login([FromBody] AuthLoginModel model)
         {
             var modelEmail = model.Email;
             var modelPass = model.Password;
 
             //--- Check Input Data
-            if ( modelEmail == null )
-                return BadRequest(WebResponcesAuth.authResponceErrorEmail);
+            if (modelEmail == null)
+                return BadRequest(WebResponsesAuth.authResponseErrorEmail);
 
             var loggingUser = await _userManager.FindByEmailAsync(modelEmail);
 
-            if ( loggingUser == null )
-                return BadRequest(WebResponcesAuth.authResponceErrorUser);
+            if (loggingUser == null)
+                return BadRequest(WebResponsesAuth.authResponseErrorUser);
 
-            if ( modelPass == null )
-                return BadRequest(WebResponcesAuth.authResponceErrorPassword);
+            if (modelPass == null)
+                return BadRequest(WebResponsesAuth.authResponseErrorPassword);
 
             var checkPass = await _userManager.CheckPasswordAsync(loggingUser, modelPass);
 
-            if ( !checkPass )
-                return BadRequest(WebResponcesAuth.authResponceErrorPassword);
+            if (!checkPass)
+                return BadRequest(WebResponsesAuth.authResponseErrorPassword);
 
             //--- Delete old Tokens from Database
             await _userManager.RemoveAuthenticationTokenAsync(loggingUser, appFriendlyName, jwtAccesstokenName);
@@ -93,22 +90,22 @@ namespace Auth.Controllers
                 .SelectMany(atr => atr.Workspaces)
                 .ToList();
 
-            foreach ( var workspace in userWorkspaces )
+            foreach (var workspace in userWorkspaces)
             {
-                if ( workspace?.Name != null )
+                if (workspace?.Name != null)
                 {
                     var claimWorkSpace = new Claim(CustomClaims.WorkSpaces, workspace.Name.ToString());
                     authClaims.Add(claimWorkSpace);
                 }
             }
 
-            if ( loggingUser.FullUserName != null )
+            if (loggingUser.FullUserName != null)
             {
                 var claimFullUserName = new Claim(ClaimTypes.Name, loggingUser.FullUserName);
                 authClaims.Add(claimFullUserName);
             }
 
-            foreach ( var userRole in userRoles )
+            foreach (var userRole in userRoles)
             {
                 var claimRole = new Claim(ClaimTypes.Role, userRole);
                 authClaims.Add(claimRole);
@@ -119,7 +116,7 @@ namespace Auth.Controllers
             //--- Create JWT Access Token
             var JwtAccessToken = GenerateJwtAccessToken(authClaims);
 
-            if ( JwtAccessToken != null )
+            if (JwtAccessToken != null)
             {
                 var JwtAccessTokenHashed = new JwtSecurityTokenHandler().WriteToken(JwtAccessToken);
                 await _userManager.SetAuthenticationTokenAsync(loggingUser, appFriendlyName, jwtAccesstokenName, JwtAccessTokenHashed);
@@ -127,7 +124,7 @@ namespace Auth.Controllers
                 var timeNow = DateTime.UtcNow;
                 var restTime = loggingUser.RefreshTokenExpiryTime - timeNow;
                 _ = int.TryParse(_configuration["JWT:RefreshTokenLastValidityInHours"], out int refreshTokenLastValidityInHours);
-                if ( restTime.TotalHours <= refreshTokenLastValidityInHours )
+                if (restTime.TotalHours <= refreshTokenLastValidityInHours)
                 {
                     await _userManager.RemoveAuthenticationTokenAsync(loggingUser, appFriendlyName, jwtRefreshtokenName);
 
@@ -151,7 +148,7 @@ namespace Auth.Controllers
                 });
             }
 
-            return Unauthorized(WebResponcesAuth.authResponceErrorUnauthorized);
+            return Unauthorized(WebResponsesAuth.authResponseErrorUnauthorized);
         }
 
         #endregion Login
@@ -165,44 +162,44 @@ namespace Auth.Controllers
         /// <response code="200">JWT Access token + JWT Access expiration Date + JWT Refresh token + JWT Refresh expiration Date </response>
         /// <response code="400">Data has missing/invalid values</response>
         /// <response code="401">Error while authorizing user, maybe you are not authorized</response>
-        [ProducesResponseType(typeof(WebResponce), 200)]
-        [ProducesResponseType(typeof(WebResponce), 400)]
-        [ProducesResponseType(typeof(WebResponce), 401)]
+        [ProducesResponseType(typeof(WebResponse), 200)]
+        [ProducesResponseType(typeof(WebResponse), 400)]
+        [ProducesResponseType(typeof(WebResponse), 401)]
         [Authorize]
         [HttpPost]
-        [Route("UpdateAccessToken")]
+        [Route("refresh")]
         public async Task<IActionResult> UpdateAccessToken(TokenModel tokenModel)
         {
             //--- Check Input Data
-            if ( tokenModel is null )
-                return BadRequest(WebResponcesAuth.authResponceErrorToken);
+            if (tokenModel is null)
+                return BadRequest(WebResponsesAuth.authResponseErrorToken);
 
             string? accessToken = tokenModel.AccessToken;
-            if ( accessToken == null )
-                return BadRequest(WebResponcesAuth.authResponceErrorAccessToken);
+            if (accessToken == null)
+                return BadRequest(WebResponsesAuth.authResponseErrorAccessToken);
 
             string? refreshToken = tokenModel.RefreshToken;
-            if ( refreshToken == null )
-                return BadRequest(WebResponcesAuth.authResponceErrorRefreshToken);
+            if (refreshToken == null)
+                return BadRequest(WebResponsesAuth.authResponseErrorRefreshToken);
 
             var principal = GetPrincipalFromToken(accessToken);
             var princimalClaims = principal?.Claims.ToList();
-            if ( principal == null || princimalClaims == null )
-                return BadRequest(WebResponcesAuth.authResponceErrorAccessToken);
+            if (principal == null || princimalClaims == null)
+                return BadRequest(WebResponsesAuth.authResponseErrorAccessToken);
 
             string? username = principal?.Identity?.Name;
 
-            if ( username == null )
-                return BadRequest(WebResponcesAuth.authResponceErrorClaimsPrincipal);
+            if (username == null)
+                return BadRequest(WebResponsesAuth.authResponseErrorClaimsPrincipal);
 
             var refreshUser = await _userManager.FindByNameAsync(username);
-            if ( refreshUser == null )
-                return BadRequest(WebResponcesAuth.authResponceErrorUser);
+            if (refreshUser == null)
+                return BadRequest(WebResponsesAuth.authResponseErrorUser);
 
             var isValid = await _userManager.VerifyUserTokenAsync(refreshUser, appFriendlyName, jwtRefreshtokenName, refreshToken);
 
-            if ( !isValid || refreshUser.RefreshTokenExpiryTime <= DateTime.Now )
-                return BadRequest(WebResponcesAuth.authResponceErrorRefreshToken);
+            if (!isValid || refreshUser.RefreshTokenExpiryTime <= DateTime.Now)
+                return BadRequest(WebResponsesAuth.authResponseErrorRefreshToken);
 
             //--- Delete old Tokens from Database
             await _userManager.RemoveAuthenticationTokenAsync(refreshUser, appFriendlyName, jwtAccesstokenName);
@@ -211,7 +208,7 @@ namespace Auth.Controllers
             //--- Create JWT Access Token
             var newAccessToken = GenerateJwtAccessToken(princimalClaims);
 
-            if ( newAccessToken != null )
+            if (newAccessToken != null)
             {
                 var JwtAccessTokenHashed = new JwtSecurityTokenHandler().WriteToken(newAccessToken);
                 await _userManager.SetAuthenticationTokenAsync(refreshUser, appFriendlyName, jwtAccesstokenName, JwtAccessTokenHashed);
@@ -232,7 +229,7 @@ namespace Auth.Controllers
                     JwtRefreshTokenExpirationDate = refreshUser.RefreshTokenExpiryTime
                 });
             }
-            return Unauthorized(WebResponcesAuth.authResponceErrorUnauthorized);
+            return Unauthorized(WebResponsesAuth.authResponseErrorUnauthorized);
         }
 
         #endregion UpdateAccessToken
@@ -249,7 +246,7 @@ namespace Auth.Controllers
             //--- Get JWT Secret Token
             var jwtSecret = _configuration["JWT:Secret"];
 
-            if ( jwtSecret == null )
+            if (jwtSecret == null)
                 return null;
 
             _ = int.TryParse(_configuration["JWT:TokenValidityInMinutes"], out int tokenValidityInMinutes);
@@ -280,7 +277,7 @@ namespace Auth.Controllers
             //--- Get JWT Secret Token
             var jwtSecret = _configuration["JWT:Secret"];
 
-            if ( jwtSecret == null )
+            if (jwtSecret == null)
                 return null;
 
             //--- Parse token
@@ -295,7 +292,7 @@ namespace Auth.Controllers
 
             var tokenHandler = new JwtSecurityTokenHandler();
             var principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out SecurityToken securityToken);
-            if ( securityToken is not JwtSecurityToken jwtSecurityToken
+            if (securityToken is not JwtSecurityToken jwtSecurityToken
                 || !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase)
                 )
                 throw new SecurityTokenException("Invalid token");

@@ -1,9 +1,9 @@
 namespace DatabaseMonitoring.Services.Workspace.ViewModels;
 
 /// <summary>
-/// Get worksapce responce
+/// Get worksapce response
 /// </summary>
-public class GetWorkspaceResponce
+public class GetWorkspaceResponse
 {
     /// <summary>
     /// Name

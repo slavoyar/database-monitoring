@@ -1,4 +1,3 @@
-
 .header {
   display: flex;
   font-size: 18px;
@@ -31,6 +30,7 @@
 
 .navbar-settings a {
   color: white;
+  margin-left: 10px;
 }
 
 .navbar-workspace-select {
@@ -39,4 +39,3 @@
   align-items: center;
   margin-right: 10px;
 }
-
