@@ -8,32 +8,34 @@ version: "3.4"
 
 services:
 
-  elasticsearch:
-    container_name: ${COMPOSE_PROJECT_NAME}-elastic
-    image: docker.elastic.co/elasticsearch/elasticsearch:8.8.2
-    ports:
-      - 9200:9200
+  Elasticsearch:
+    image: elasticsearch:7.16.2
+    container_name: elasticsearch
+    restart: always
     volumes:
-      - elasticsearch-db:/usr/share/elasticsearch/data
+    - elastic_data:/usr/share/elasticsearch/data/
     environment:
-      - xpack.security.enabled=false
-      - discovery.type=single-node
-      - xpack.watcher.enabled=false
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-    networks:
-      - elastic
-
-  kibana:
-    container_name: ${COMPOSE_PROJECT_NAME}-kibana
-    image: docker.elastic.co/kibana/kibana:8.8.2
+      ES_JAVA_OPTS: "-Xmx256m -Xms256m"
+      discovery.type: single-node    
     ports:
-      - 5601:5601
-    depends_on:
-      - elasticsearch
-    environment:
-      - ELASTICSEARCH_URL=http://localhost:9200
+    - '9200:9200'
+    - '9300:9300'
     networks:
-      - elastic
+      - elk
+      - app_elk
+
+  Kibana:
+    image: kibana:7.16.2
+    container_name: kibana
+    restart: always       
+    ports:
+    - '5601:5601'
+    environment:
+      - ELASTICSEARCH_URL=http://elasticsearch:9200  
+    depends_on:
+      - Elasticsearch  
+    networks:
+      - elk
 
   # -------------------------------------------------------
   front:
@@ -84,6 +86,7 @@ services:
       - MongoDbConfiguration__ConnectionString=mongodb://notification-mongodb:27017
       - WorkspaceConfiguration__Endpoint=workspace:1412/workspaces/getworkspacesbyserverid
       - EventBusConfiguration__Connection=rabbitmq
+      - ELASTICSEARCH_URL=http://elasticsearch:9200
     build:
       context: ../src
       dockerfile: Services/Notification/Dockerfile
@@ -91,8 +94,11 @@ services:
       - notification-mongodb
       - rabbitmq
       - workspace
+      - Elasticsearch 
     tty: true
     restart: on-failure
+    networks:
+      - app_elk
 
   notification-mongodb:
     container_name: ${COMPOSE_PROJECT_NAME}-notification-mongodb
@@ -220,9 +226,9 @@ volumes:
   agregation-db:
   workspace-db:
   pgadmin-data:
-  elasticsearch-db:
+  elastic_data:
 
 
 networks:
-  elastic:
-    driver: bridge
+  elk:
+  app_elk:
