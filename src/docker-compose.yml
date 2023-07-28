@@ -20,9 +20,6 @@ services:
     ports:
     - '9200:9200'
     - '9300:9300'
-    networks:
-      - elk
-      - app_elk
 
   Kibana:
     image: kibana:7.16.2
@@ -34,8 +31,7 @@ services:
       - ELASTICSEARCH_URL=http://elasticsearch:9200  
     depends_on:
       - Elasticsearch  
-    networks:
-      - elk
+
 
   # -------------------------------------------------------
   front:
@@ -97,8 +93,7 @@ services:
       - Elasticsearch 
     tty: true
     restart: on-failure
-    networks:
-      - app_elk
+
 
   notification-mongodb:
     container_name: ${COMPOSE_PROJECT_NAME}-notification-mongodb
