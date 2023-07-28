@@ -97,10 +97,14 @@ const UserTable: FC = () => {
     setCurrentUser(record)
   }
 
-  const onSaveHandler = (user: UserWithKey): void => {
+  const onSaveHandler = async (user: UserWithKey): Promise<void> => {
     const userToSave = { ...user } as User
-    createUser(userToSave)
-    close()
+    try {
+      await createUser(userToSave)
+      close()
+    } catch (e) {
+      console.error(e)
+    }
   }
 
   return (

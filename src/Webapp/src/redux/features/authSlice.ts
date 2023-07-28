@@ -1,5 +1,6 @@
 import { authApi } from '@redux/api/authApi'
-import { createSlice } from '@reduxjs/toolkit'
+import { TokenModel } from '@redux/api/customFetchBase'
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 interface AuthState {
     accessToken?: string
@@ -21,12 +22,17 @@ export const authSlice = createSlice({
             state.refreshToken = undefined
             localStorage.removeItem('accessToken')
             localStorage.removeItem('refreshToken')
+        },
+        refreshTokens: (state, { payload }: PayloadAction<TokenModel>) => {
+            state.isLoggedIn = true
+            state.accessToken = payload.jwtAccessToken
+            state.refreshToken = payload.jwtRefreshToken
         }
     },
     extraReducers: (builder) => {
         builder.addMatcher(
             authApi.endpoints.login.matchFulfilled,
-            (state, { payload }) => {
+            (state, { payload }: PayloadAction<TokenModel>) => {
                 state.isLoggedIn = !!payload.jwtAccessToken
                 state.accessToken = payload.jwtAccessToken
                 state.refreshToken = payload.jwtRefreshToken
@@ -38,4 +44,4 @@ export const authSlice = createSlice({
 })
 
 export default authSlice.reducer
-export const { logout } = authSlice.actions
+export const { logout, refreshTokens } = authSlice.actions

@@ -165,7 +165,7 @@ namespace Auth.Controllers
         [ProducesResponseType(typeof(WebResponse), 200)]
         [ProducesResponseType(typeof(WebResponse), 400)]
         [ProducesResponseType(typeof(WebResponse), 401)]
-        [Authorize]
+        [AllowAnonymous]
         [HttpPost]
         [Route("refresh")]
         public async Task<IActionResult> UpdateAccessToken(TokenModel tokenModel)

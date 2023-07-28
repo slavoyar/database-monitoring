@@ -1,16 +1,11 @@
 import { User } from '@models';
-import { RootState } from '@redux/store';
-import { fetchBaseQuery } from '@reduxjs/toolkit/query'
 import { createApi } from '@reduxjs/toolkit/query/react'
+
+import customFetchBase, { TokenModel } from './customFetchBase';
 
 export interface AuthLoginModel {
   email: string;
   password: string;
-}
-
-export interface TokenModel {
-  jwtAccessToken: string;
-  jwtRefreshToken: string;
 }
 
 export interface AuthResponse {
@@ -24,17 +19,7 @@ export function isAuthResponse(value: AuthResponse | { '$values': User[] }): val
 
 export const authApi = createApi({
   reducerPath: 'authApi',
-  baseQuery: fetchBaseQuery({
-    baseUrl: '/api',
-    prepareHeaders: (headers, { getState }) => {
-      const token = (getState() as RootState).authState.accessToken
-      if (token) {
-        headers.set('authorization', `Bearer ${token}`)
-      }
-      headers.set('Content-Type', 'application/json')
-      return headers
-    },
-  }),
+  baseQuery: customFetchBase,
   tagTypes: ['Users'],
   endpoints: (builder) => ({
     login: builder.mutation<TokenModel, AuthLoginModel>({
