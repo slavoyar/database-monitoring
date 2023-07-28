@@ -120,6 +120,7 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:5278
       - ConnectionStrings__Postgre=Host=agregation-postgresserver;Port=5432;Database=MIAY;Username=postgres;Password=admin;Pooling=True;TrustServerCertificate=True
+      - ELASTICSEARCH_URL=http://elasticsearch:9200
     tty: true
     restart: on-failure
 
