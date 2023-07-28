@@ -1,5 +1,11 @@
 
+using Serilog;
+using Serilog.Formatting.Json;
+using Serilog.Sinks.Elasticsearch;
+using Serilog.Sinks.File;
+
 var builder = WebApplication.CreateBuilder(args);
+AddCustomLogging(builder);
 
 builder.Services.AddApplicationServices(builder.Configuration);
 builder.Services.AddCustomAuthentication(builder.Configuration);
@@ -38,4 +44,24 @@ async Task UpdateDatabaseAsync(WebApplication app)
         var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
         await context.Database.MigrateAsync();
     }
+}
+
+void AddCustomLogging(WebApplicationBuilder builder)
+{
+    builder.Host.UseSerilog((context, services, configuration) => {
+        configuration.ReadFrom.Configuration(context.Configuration)
+        .WriteTo.Console()
+        .WriteTo.Elasticsearch(new ElasticsearchSinkOptions(new Uri(builder.Configuration["ELASTICSEARCH_URL"]))
+        {
+            FailureCallback = e =>
+            {
+                Console.WriteLine("Unable to submit event " + e.Exception);
+            },
+            FailureSink = new FileSink("./failures.txt", new JsonFormatter(), null),
+            TypeName = null,
+            IndexFormat = "workspace-service-{0:yyyy.MM.dd}",
+            AutoRegisterTemplate = true,
+            EmitEventFailure = EmitEventFailureHandling.ThrowException | EmitEventFailureHandling.RaiseCallback | EmitEventFailureHandling.WriteToSelfLog
+        });
+    });
 }

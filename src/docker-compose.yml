@@ -167,6 +167,7 @@ services:
       - ASPNETCORE_URLS=http://+:5165
       - PostgreConfiguration__ConnectionString=Host=workspace-postgresserver;Port=5433;Username=postgres;Password=admin;Database=Workspace;Pooling=true;TrustServerCertificate=True
       - EventBusConfiguration__Connection=rabbitmq
+      - ELASTICSEARCH_URL=http://elasticsearch:9200
     tty: true
     restart: on-failure
 
