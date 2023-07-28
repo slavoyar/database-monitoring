@@ -24,16 +24,16 @@ const EditWorkspaceDialog: FC<EditWorkspaceDialogProps> = ({
   const [servers, setServers] = useState<string[]>([])
 
   useEffect(() => {
-    
-      setName(workspace?.name ?? '')
-    
-      setUsers(workspace?.users.map((item) => item.id) ?? [])
-    
-      setServers(workspace?.servers.map((item) => item.id) ?? [])
-    
+
+    setName(workspace?.name ?? '')
+
+    setUsers(workspace?.users.map((item) => item.id) ?? [])
+
+    setServers(workspace?.servers.map((item) => item.id) ?? [])
+
   }, [workspace, isOpen])
 
-  const userOptions = MOCK_USERS.map((user) => ({ value: user.id, label: user.name }))
+  const userOptions = MOCK_USERS.map((user) => ({ value: user.id, label: user.fullUserName }))
   const serverOptions = MOCK_SERVERS.map((server) => ({ value: server.id, label: server.name }))
 
   const computedTitle = workspace

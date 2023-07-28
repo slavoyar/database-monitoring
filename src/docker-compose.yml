@@ -10,7 +10,6 @@ version: "3.4"
 # workspace    http://localhost:5009/swagger/index.html
 
 services:
-
   # -------------------------------------------------------
   front:
     container_name: ${COMPOSE_PROJECT_NAME}-front-web

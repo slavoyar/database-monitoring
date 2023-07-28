@@ -1,15 +1,17 @@
 import React, { FC, useEffect, useState } from 'react'
 import { DeleteOutlined, PlusOutlined } from '@ant-design/icons'
-import { Optional } from '@models/Types'
-import { MOCK_USERS } from '@models/User'
+import { User } from '@models'
+import { isAuthResponse, useCreateUserMutation, useDeleteUserMutation, useFetchUsersQuery } from '@redux/api/authApi'
 import { Button, Table } from 'antd'
 
 import EditUserDialog from './EditUserDialog'
 
+export type UserWithKey = Omit<User, 'id'> & { key?: string }
+
 enum UserTableColumn {
-  NAME = 'name',
+  NAME = 'fullUserName',
   EMAIL = 'email',
-  PHONE = 'phone',
+  PHONE = 'phoneNumber',
 }
 
 export interface UserTableData {
@@ -43,25 +45,32 @@ const UserTable: FC = () => {
   const [selectedRows, setSelectedRows] = useState<React.Key[]>([])
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [currentUser, setCurrentUser] = useState<UserTableData>()
+  const { data: users, isLoading } = useFetchUsersQuery();
+  const [deleteUser] = useDeleteUserMutation()
+  const [createUser] = useCreateUserMutation();
 
   useEffect(() => {
-    const users = MOCK_USERS.map((user) => ({
-      key: user.id,
-      name: user.name,
-      email: user.email,
-      phone: user.phone ?? '',
-    }))
-    setTableData(users)
-  }, [])
+    if (users && !isAuthResponse(users)) {
+      setTableData(
+        users.$values.map((user) => ({
+          key: user.id,
+          fullUserName: user.fullUserName,
+          email: user.email,
+          phoneNumber: user.phoneNumber ?? '',
+        })))
+    }
+  }, [users])
 
   const onAddClick = (): void => {
     setIsModalOpen(true)
   }
 
-  const onDeleteClick = (): void => {
-    const newData = tableData.filter((item) => !selectedRows.includes(item.key))
+  const onDeleteClick = async (): Promise<void> => {
+    const userEmail = tableData.find(user => user.key === selectedRows[0])?.email
+    if (userEmail) {
+      await deleteUser(userEmail);
+    }
     setSelectedRows([])
-    setTableData(newData)
     setDeleteDisabled(true)
   }
 
@@ -88,14 +97,9 @@ const UserTable: FC = () => {
     setCurrentUser(record)
   }
 
-  const onSaveHandler = (user: Optional<UserTableData, 'key'>): void => {
-    const newData = [...tableData]
-    const userIndex = newData.findIndex((item) => item.key === user.key)
-    if (userIndex < 0) {
-      newData.push({ ...user, key: String(tableData.length) })
-    }
-    newData[userIndex] = user as UserTableData
-    setTableData(newData)
+  const onSaveHandler = (user: UserWithKey): void => {
+    const userToSave = { ...user } as User
+    createUser(userToSave)
     close()
   }
 
@@ -113,6 +117,7 @@ const UserTable: FC = () => {
       </Button.Group>
       <Table
         bordered
+        loading={isLoading}
         dataSource={tableData}
         columns={columns}
         rowSelection={rowSelection}

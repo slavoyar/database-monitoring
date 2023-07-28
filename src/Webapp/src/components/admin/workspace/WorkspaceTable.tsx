@@ -20,9 +20,11 @@ export interface WorkspaceTableData {
   [WorkspaceTableColumn.SERVERS]: Server[]
 }
 
-type EntityWithName = User | Server
+function userArrayToString(arr: User[]): string {
+  return arr.map((item) => item.fullUserName).join(', ')
+}
 
-function objectArrayToString(arr: EntityWithName[]): string {
+function serverArrayToString(arr: Server[]): string {
   return arr.map((item) => item.name).join(', ')
 }
 
@@ -36,13 +38,13 @@ const columns = [
     title: 'Пользователи',
     dataIndex: WorkspaceTableColumn.USERS,
     key: WorkspaceTableColumn.USERS,
-    render: (data: User[]) => objectArrayToString(data),
+    render: (data: User[]) => userArrayToString(data),
   },
   {
     title: 'Сервера',
     dataIndex: WorkspaceTableColumn.SERVERS,
     key: WorkspaceTableColumn.SERVERS,
-    render: (data: Server[]) => objectArrayToString(data),
+    render: (data: Server[]) => serverArrayToString(data),
   },
 ]
 
