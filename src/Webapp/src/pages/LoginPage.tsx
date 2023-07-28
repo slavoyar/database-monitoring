@@ -1,28 +1,35 @@
-import React, { FC } from 'react'
-import { useNavigate } from 'react-router-dom'
+import React, { FC, useState } from 'react'
+import { Navigate, useNavigate } from 'react-router-dom'
+import { Path } from '@models'
+import { AuthLoginModel, useLoginMutation } from '@redux/api/authApi'
+import { store } from '@redux/store'
 import { Button, Form, Input, Layout } from 'antd'
-import { ValidateErrorEntity } from 'rc-field-form/es/interface'
 
 import '@css/LoginPage.css'
 
-interface LoginForm {
-  login: string
-  password: string
-}
-
 const LoginPage: FC = () => {
   const navigate = useNavigate()
+  const [error, setError] = useState<string>('')
 
-  const onFinish = (values: LoginForm) => {
-    console.log('LOGIN', values)
-    navigate('/')
+  const [loginUser] = useLoginMutation();
+  const { isLoggedIn } = store.getState().authState
+
+  const onFinish = async (values: AuthLoginModel) => {
+    try {
+      await loginUser(values).unwrap()
+      navigate(`/${Path.dashboard}`)
+    } catch (e) {
+      if (e.data.message) {
+        setError(e.data.message as string)
+      }
+    }
   }
 
-  const onFinishFailed = (errorInfo: ValidateErrorEntity<LoginForm>) => {
-    console.error('ERROR in fields', errorInfo)
+  const onValuesChange = () => {
+    setError('')
   }
 
-  return (
+  return isLoggedIn ? <Navigate to={`/${Path.dashboard}`} /> : (
     <Layout className='login-layout'>
       <div className='login-container'>
         <h1>Авторизация</h1>
@@ -34,12 +41,12 @@ const LoginPage: FC = () => {
           autoComplete='off'
           className='login-form'
           onFinish={onFinish}
-          onFinishFailed={onFinishFailed}
+          onValuesChange={onValuesChange}
         >
           <Form.Item
-            label='Логин'
-            name='login'
-            rules={[{ required: true, message: 'Пожалуйста введите логин!' }]}
+            label='Email'
+            name='email'
+            rules={[{ required: true, message: 'Введите email!' }]}
           >
             <Input />
           </Form.Item>
@@ -47,18 +54,22 @@ const LoginPage: FC = () => {
           <Form.Item
             label='Пароль'
             name='password'
-            rules={[{ required: true, message: 'Пожалуйста введите пароль!' }]}
+            rules={[{ required: true, message: 'Введите пароль!' }]}
           >
             <Input.Password />
           </Form.Item>
-          <Form.Item wrapperCol={{ span: 24 }}>
+          <Form.Item
+            wrapperCol={{ span: 24 }}
+            validateStatus={error ? 'error' : ''}
+            help={error}
+          >
             <Button type='primary' htmlType='submit'>
               Войти
             </Button>
           </Form.Item>
         </Form>
       </div>
-    </Layout>
+    </Layout >
   )
 }
 

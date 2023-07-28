@@ -33,13 +33,13 @@ public class WorkspaceController : ControllerBase
     [HttpGet("{workspaceId}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<GetWorkspaceResponce>> GetWorkspaceAsync(Guid workspaceId)
+    public async Task<ActionResult<GetWorkspaceResponse>> GetWorkspaceAsync(Guid workspaceId)
     {
-        if(!await workspaceService.WorkspaceExists(workspaceId))
-            return NotFound(ConstantResponceMessages.NoWorkspaceWasFound);
+        if (!await workspaceService.WorkspaceExists(workspaceId))
+            return NotFound(ConstantResponseMessages.NoWorkspaceWasFound);
 
         var resultEntity = await workspaceService.GetWorkspaceByIdAsync(workspaceId);
-        return mapper.Map<GetWorkspaceResponce>(resultEntity);
+        return mapper.Map<GetWorkspaceResponse>(resultEntity);
 
     }
 
@@ -69,10 +69,10 @@ public class WorkspaceController : ControllerBase
 
     public async Task<ActionResult> DeleteWorkspaceAsync(Guid workspaceId)
     {
-        if(await workspaceService.DeleteWorkspaceAsync(workspaceId))
+        if (await workspaceService.DeleteWorkspaceAsync(workspaceId))
             return Ok();
         else
-            return NotFound(ConstantResponceMessages.NoWorkspaceWasFound);
+            return NotFound(ConstantResponseMessages.NoWorkspaceWasFound);
     }
 
     /// <summary>
@@ -87,12 +87,12 @@ public class WorkspaceController : ControllerBase
     [HttpPut("{workspaceId}")]
     public async Task<ActionResult> UpdateWorksapceByIdAsync(Guid workspaceId, UpsertWorkspaceRequest request)
     {
-        if(await workspaceService.WorkspaceExists(workspaceId) == false)
-            return NotFound(ConstantResponceMessages.NoWorkspaceWasFound);
+        if (await workspaceService.WorkspaceExists(workspaceId) == false)
+            return NotFound(ConstantResponseMessages.NoWorkspaceWasFound);
 
         var workspaceDto = mapper.Map<WorkspaceDto>(request);
-        
-        if(await workspaceService.UpdateWorkspaceAsync(workspaceId, workspaceDto))
+
+        if (await workspaceService.UpdateWorkspaceAsync(workspaceId, workspaceDto))
             return Ok();
         else
             return StatusCode(500);

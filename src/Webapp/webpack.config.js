@@ -7,7 +7,9 @@ let mode = 'development'
 if (process.env.NODE_ENV === 'production') {
   mode = 'production'
 }
-const devtool = mode === 'production' ? false : 'inline-source-map'
+
+const isProduction = mode === 'production'
+const devtool = isProduction ? false : 'inline-source-map'
 
 module.exports = {
   entry: './src/index.tsx',
@@ -72,10 +74,22 @@ module.exports = {
     publicPath: '/',
   },
   devServer: {
-    hot: true,
+    webSocketServer: isProduction ? false : 'ws',
+    hot: !isProduction,
     static: {
       directory: path.join(__dirname, 'public'),
     },
     historyApiFallback: true,
+    proxy: {
+      '/api': {
+        target: 'http://localhost:5000/',
+        changeOrigin: true,
+      },
+    }
   },
+  performance: {
+    hints: false,
+    maxEntrypointSize: 512000,
+    maxAssetSize: 512000
+  }
 }
