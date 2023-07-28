@@ -5,6 +5,10 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Serilog;
+using Serilog.Formatting.Json;
+using Serilog.Sinks.Elasticsearch;
+using Serilog.Sinks.File;
 using System.Reflection;
 using System.Text;
 using System.Text.Json.Serialization;
@@ -12,6 +16,7 @@ using System.Text.Json.Serialization;
 //-------------------------------------------------------------------
 
 var builder = WebApplication.CreateBuilder(args);
+AddCustomLogging(builder);
 ConfigurationManager configuration = builder.Configuration;
 
 //--- Add Connection to Sql
@@ -142,3 +147,23 @@ app.UseIdentityServer();
 app.MapControllers();
 
 app.Run();
+
+void AddCustomLogging(WebApplicationBuilder builder)
+{
+    builder.Host.UseSerilog((context, services, configuration) => {
+        configuration.ReadFrom.Configuration(context.Configuration)
+        .WriteTo.Console()
+        .WriteTo.Elasticsearch(new ElasticsearchSinkOptions(new Uri(builder.Configuration["ELASTICSEARCH_URL"]))
+        {
+            FailureCallback = e =>
+            {
+                Console.WriteLine("Unable to submit event " + e.Exception);
+            },
+            FailureSink = new FileSink("./failures.txt", new JsonFormatter(), null),
+            TypeName = null,
+            IndexFormat = "auth-service-{0:yyyy.MM.dd}",
+            AutoRegisterTemplate = true,
+            EmitEventFailure = EmitEventFailureHandling.ThrowException | EmitEventFailureHandling.RaiseCallback | EmitEventFailureHandling.WriteToSelfLog
+        });
+    });
+}
