@@ -8,6 +8,7 @@ version: "3.4"
 # notification http://localhost:5001/swagger/index.html
 # agregation   http://localhost:5002/swagger/index.html
 # workspace    http://localhost:5009/swagger/index.html
+# kibana       http://localhost:5601
 
 services:
 
@@ -65,11 +66,11 @@ services:
     ports:
       - "5000:80"
     environment:
-      - ConnectionStrings__DefaultConnection=Initial Catalog=AuthUsers; Data Source=auth-sqlserver; Persist Security Info=True; User ID=SA; Password=Qwe123!@#; Trusted_Connection=True; MultipleActiveResultSets=true; TrustServerCertificate=True; Integrated Security=false
+      - ConnectionStrings__DefaultConnection=Initial Catalog=AuthUsers; Data Source=auth-sql; Persist Security Info=True; User ID=SA; Password=Qwe123!@#; Trusted_Connection=True; MultipleActiveResultSets=true; TrustServerCertificate=True; Integrated Security=false
       - ELASTICSEARCH_URL=http://elasticsearch:9200
-
     depends_on:
       - auth-sql
+      - Elasticsearch
     build:
       context: ../src/Services/AuthServer/
       dockerfile: Dockerfile
@@ -108,13 +109,12 @@ services:
       - notification-mongo
       - rabbitmq
       - workspace
-      - Elasticsearch 
+      - Elasticsearch
     tty: true
     restart: on-failure
 
-
-  notification-mongodb:
-    container_name: ${COMPOSE_PROJECT_NAME}-notification-mongodb
+  notification-mongo:
+    container_name: ${COMPOSE_PROJECT_NAME}-notification-mongo
     image: mongo
     ports:
       - '27017:27017'
@@ -132,14 +132,14 @@ services:
       dockerfile: Dockerfile
     depends_on:
       - agregation-postgre
+      - Elasticsearch
     ports:
       - "5002:5278"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:5278
-      - ConnectionStrings__Postgre=Host=agregation-postgresserver;Port=5432;Database=MIAY;Username=postgres;Password=admin;Pooling=True;TrustServerCertificate=True
+      - ConnectionStrings__Postgre=Host=agregation-postgre;Port=5432;Database=MIAY;Username=postgres;Password=admin;Pooling=True;TrustServerCertificate=True
       - ELASTICSEARCH_URL=http://elasticsearch:9200
-
     tty: true
     restart: on-failure
 
@@ -165,6 +165,7 @@ services:
     depends_on:
       - workspace-postgre
       - rabbitmq
+      - Elasticsearch
     build:
       context: ../src
       dockerfile: Services/Workspace/Dockerfile
@@ -215,8 +216,7 @@ volumes:
   agregation-db:
   workspace-db:
   pgadmin-data:
-  elastic_data:
   front_build:
-
+  elastic_data:
 
 
