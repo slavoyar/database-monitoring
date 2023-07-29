@@ -1,3 +1,9 @@
+
+using Serilog;
+using Serilog.Formatting.Json;
+using Serilog.Sinks.Elasticsearch;
+using Serilog.Sinks.File;
+
 var builder = WebApplication.CreateBuilder(args);
 AddCustomLogging(builder);
 
