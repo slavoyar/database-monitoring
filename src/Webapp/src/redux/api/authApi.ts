@@ -43,6 +43,15 @@ export const authApi = createApi({
         }),
       invalidatesTags: ['Users']
     }),
+    updateUser: builder.mutation<AuthResponse, Partial<User>>({
+      query: (user) => (
+        {
+          url: 'users/update',
+          method: 'POST',
+          body: user
+        }
+      )
+    }),
     deleteUser: builder.mutation<AuthResponse, string>({
       query: (email) => (
         {
@@ -55,5 +64,5 @@ export const authApi = createApi({
   })
 });
 
-export const { useLoginMutation, useCreateUserMutation, useDeleteUserMutation, useFetchUsersQuery } = authApi;
+export const { useLoginMutation, useCreateUserMutation, useDeleteUserMutation, useUpdateUserMutation, useFetchUsersQuery } = authApi;
 

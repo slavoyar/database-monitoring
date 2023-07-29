@@ -1,7 +1,13 @@
 import React, { FC, useEffect, useState } from 'react'
 import { DeleteOutlined, PlusOutlined } from '@ant-design/icons'
 import { User } from '@models'
-import { isAuthResponse, useCreateUserMutation, useDeleteUserMutation, useFetchUsersQuery } from '@redux/api/authApi'
+import {
+  isAuthResponse,
+  useCreateUserMutation,
+  useDeleteUserMutation,
+  useFetchUsersQuery,
+  useUpdateUserMutation,
+} from '@redux/api/authApi'
 import { Button, Table } from 'antd'
 
 import EditUserDialog from './EditUserDialog'
@@ -45,9 +51,10 @@ const UserTable: FC = () => {
   const [selectedRows, setSelectedRows] = useState<React.Key[]>([])
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [currentUser, setCurrentUser] = useState<UserTableData>()
-  const { data: users, isLoading } = useFetchUsersQuery();
+  const { data: users, isLoading } = useFetchUsersQuery()
   const [deleteUser] = useDeleteUserMutation()
-  const [createUser] = useCreateUserMutation();
+  const [createUser] = useCreateUserMutation()
+  const [updateUser] = useUpdateUserMutation()
 
   useEffect(() => {
     if (users && !isAuthResponse(users)) {
@@ -57,7 +64,8 @@ const UserTable: FC = () => {
           fullUserName: user.fullUserName,
           email: user.email,
           phoneNumber: user.phoneNumber ?? '',
-        })))
+        })),
+      )
     }
   }, [users])
 
@@ -66,9 +74,9 @@ const UserTable: FC = () => {
   }
 
   const onDeleteClick = async (): Promise<void> => {
-    const userEmail = tableData.find(user => user.key === selectedRows[0])?.email
+    const userEmail = tableData.find((user) => user.key === selectedRows[0])?.email
     if (userEmail) {
-      await deleteUser(userEmail);
+      await deleteUser(userEmail)
     }
     setSelectedRows([])
     setDeleteDisabled(true)
@@ -98,9 +106,10 @@ const UserTable: FC = () => {
   }
 
   const onSaveHandler = async (user: UserWithKey): Promise<void> => {
+    const promise = user.key ? updateUser : createUser
     const userToSave = { ...user } as User
     try {
-      await createUser(userToSave)
+      await promise(userToSave)
       close()
     } catch (e) {
       console.error(e)
