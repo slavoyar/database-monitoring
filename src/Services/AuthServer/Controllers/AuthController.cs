@@ -85,20 +85,6 @@ namespace Auth.Controllers
 
             var authClaims = new List<Claim>();
 
-            var userWorkspaces = _authWebApplicationDbContext.Users
-                .Where(user => user == loggingUser)
-                .SelectMany(atr => atr.Workspaces)
-                .ToList();
-
-            foreach (var workspace in userWorkspaces)
-            {
-                if (workspace?.Name != null)
-                {
-                    var claimWorkSpace = new Claim(CustomClaims.WorkSpaces, workspace.Name.ToString());
-                    authClaims.Add(claimWorkSpace);
-                }
-            }
-
             if (loggingUser.FullUserName != null)
             {
                 var claimFullUserName = new Claim(ClaimTypes.Name, loggingUser.FullUserName);
@@ -142,9 +128,8 @@ namespace Auth.Controllers
                 (new
                 {
                     JwtAccessToken = JwtAccessTokenHashed,
-                    JwtAccessTokenExpirationDate = JwtAccessToken.ValidTo,
                     JwtRefreshToken = currentRefreshToken,
-                    JwtRefreshTokenExpirationDate = loggingUser.RefreshTokenExpiryTime
+                    user = loggingUser,
                 });
             }
 
@@ -224,9 +209,7 @@ namespace Auth.Controllers
                 return new ObjectResult(new
                 {
                     JwtAccessToken = JwtAccessTokenHashed,
-                    JwtAccessTokenExpirationDate = newAccessToken.ValidTo,
                     JwtRefreshToken = newRefreshToken,
-                    JwtRefreshTokenExpirationDate = refreshUser.RefreshTokenExpiryTime
                 });
             }
             return Unauthorized(WebResponsesAuth.authResponseErrorUnauthorized);

@@ -1,5 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Identity;
 
 namespace Auth.Models
 {
@@ -22,7 +22,5 @@ namespace Auth.Models
 
         [JsonIgnore]
         public override string? ConcurrencyStamp { get; set; }
-
-        public virtual List<Workspaces> Workspaces { get; set; } = new List<Workspaces>();
     }
 }

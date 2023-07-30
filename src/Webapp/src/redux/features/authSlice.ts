@@ -6,7 +6,8 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 interface AuthState {
     accessToken?: string;
     refreshToken?: string;
-    user: Partial<User>;
+    user?: Partial<User>;
+    email: string;
 }
 
 export const authSlice = createSlice({
@@ -14,6 +15,7 @@ export const authSlice = createSlice({
     initialState: {
         accessToken: localStorage.getItem('accessToken') ?? undefined,
         refreshToken: localStorage.getItem('refreshToken') ?? undefined,
+        email: localStorage.getItem('userEmail') ?? '',
     } as AuthState,
     reducers: {
         logout: (state) => {
@@ -21,6 +23,7 @@ export const authSlice = createSlice({
             state.refreshToken = undefined;
             localStorage.removeItem('accessToken');
             localStorage.removeItem('refreshToken');
+            localStorage.removeItem('userEmail');
         },
         refreshTokens: (state, { payload }: PayloadAction<TokenModel>) => {
             state.accessToken = payload.jwtAccessToken;
@@ -34,8 +37,10 @@ export const authSlice = createSlice({
                 state.accessToken = payload.jwtAccessToken;
                 state.refreshToken = payload.jwtRefreshToken;
                 state.user = payload.user;
+                state.email = payload.user.email;
                 localStorage.setItem('accessToken', payload.jwtAccessToken);
                 localStorage.setItem('refreshToken', payload.jwtRefreshToken);
+                localStorage.setItem('userEmail', payload.user.email);
             },
         );
     },
