@@ -1,5 +1,5 @@
-
 var builder = WebApplication.CreateBuilder(args);
+AddCustomLogging(builder);
 
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 
@@ -43,3 +43,24 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+
+void AddCustomLogging(WebApplicationBuilder builder)
+{
+    builder.Host.UseSerilog((context, services, configuration) => {
+        configuration.ReadFrom.Configuration(context.Configuration)
+        .WriteTo.Console()
+        .WriteTo.Elasticsearch(new ElasticsearchSinkOptions(new Uri(builder.Configuration["ELASTICSEARCH_URL"]))
+        {
+            FailureCallback = e =>
+            {
+                Console.WriteLine("Unable to submit event " + e.Exception);
+            },
+            FailureSink = new FileSink("./failures.txt", new JsonFormatter(), null),
+            TypeName = null,
+            IndexFormat = "notification-service-{0:yyyy.MM.dd}",
+            AutoRegisterTemplate = true,
+            EmitEventFailure = EmitEventFailureHandling.ThrowException | EmitEventFailureHandling.RaiseCallback | EmitEventFailureHandling.WriteToSelfLog
+        });
+    });
+}
