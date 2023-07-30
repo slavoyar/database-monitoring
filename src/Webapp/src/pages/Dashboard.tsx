@@ -1,10 +1,10 @@
-import React, { FC } from 'react'
-import { Navbar } from '@components/common/'
-import { Cards } from '@components/dashboard/'
-import { MOCK_SERVERS } from '@models/Server'
-import { Layout } from 'antd'
+import React, { FC } from 'react';
+import { Navbar } from '@components/common/';
+import { Cards } from '@components/dashboard/';
+import { MOCK_SERVERS } from '@models/Server';
+import { Layout } from 'antd';
 
-import '@css/Dashboard.css'
+import '@css/Dashboard.css';
 
 const Dashboard: FC = () => (
   <Layout>
@@ -15,6 +15,6 @@ const Dashboard: FC = () => (
       </div>
     </Layout.Content>
   </Layout>
-)
+);
 
-export default Dashboard
+export default Dashboard;

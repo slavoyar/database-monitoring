@@ -1,11 +1,11 @@
-import React, { FC, useEffect, useState } from 'react'
-import { DeleteOutlined, PlusOutlined } from '@ant-design/icons'
-import { Server, User } from '@models'
-import { Optional } from '@models/Types'
-import { MOCK_WORKSPACES } from '@models/Workspace'
-import { Button, Table } from 'antd'
+import React, { FC, useEffect, useState } from 'react';
+import { DeleteOutlined, PlusOutlined } from '@ant-design/icons';
+import { Server, User } from '@models';
+import { Optional } from '@models/Types';
+import { MOCK_WORKSPACES } from '@models/Workspace';
+import { Button, Table } from 'antd';
 
-import EditWorkspaceDialog from './EditWorkspaceDialog'
+import EditWorkspaceDialog from './EditWorkspaceDialog';
 
 enum WorkspaceTableColumn {
   NAME = 'name',
@@ -21,11 +21,11 @@ export interface WorkspaceTableData {
 }
 
 function userArrayToString(arr: User[]): string {
-  return arr.map((item) => item.fullUserName).join(', ')
+  return arr.map((item) => item.fullUserName).join(', ');
 }
 
 function serverArrayToString(arr: Server[]): string {
-  return arr.map((item) => item.name).join(', ')
+  return arr.map((item) => item.name).join(', ');
 }
 
 const columns = [
@@ -46,16 +46,16 @@ const columns = [
     key: WorkspaceTableColumn.SERVERS,
     render: (data: Server[]) => serverArrayToString(data),
   },
-]
+];
 
 const WorkspaceTable: FC = () => {
-  const [data, setData] = useState<WorkspaceTableData[]>([])
-  const [deleteDisabled, setDeleteDisabled] = useState(true)
-  const [selectedRows, setSelectedRows] = useState<React.Key[]>([])
-  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [data, setData] = useState<WorkspaceTableData[]>([]);
+  const [deleteDisabled, setDeleteDisabled] = useState(true);
+  const [selectedRows, setSelectedRows] = useState<React.Key[]>([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentWorkspace, setCurrentWorkspace] = useState<WorkspaceTableData | undefined>(
     undefined,
-  )
+  );
 
   useEffect(() => {
     const tableData = MOCK_WORKSPACES.map((workspace) => ({
@@ -63,57 +63,57 @@ const WorkspaceTable: FC = () => {
       name: workspace.name,
       users: workspace.users,
       servers: workspace.servers,
-    }))
-    setData(tableData)
-  }, [])
+    }));
+    setData(tableData);
+  }, []);
 
   const onAddClick = () => {
-    setIsModalOpen(true)
-  }
+    setIsModalOpen(true);
+  };
 
   const onDeleteClick = () => {
-    const newData = data.filter((item) => !selectedRows.includes(item.key))
-    setSelectedRows([])
-    setData(newData)
-    setDeleteDisabled(true)
-  }
+    const newData = data.filter((item) => !selectedRows.includes(item.key));
+    setSelectedRows([]);
+    setData(newData);
+    setDeleteDisabled(true);
+  };
 
   const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
-    setDeleteDisabled(!newSelectedRowKeys.length)
-    setSelectedRows(newSelectedRowKeys)
-  }
+    setDeleteDisabled(!newSelectedRowKeys.length);
+    setSelectedRows(newSelectedRowKeys);
+  };
 
   const close = (): void => {
     if (isModalOpen) {
-      setIsModalOpen(false)
+      setIsModalOpen(false);
     }
     if (currentWorkspace) {
-      setCurrentWorkspace(undefined)
+      setCurrentWorkspace(undefined);
     }
-  }
+  };
 
   const onSaveHandler = (workspace: Optional<WorkspaceTableData, 'key'>): void => {
-    const result = [...data]
-    const workspaceIndex = data.findIndex((item) => item.key === workspace.key)
+    const result = [...data];
+    const workspaceIndex = data.findIndex((item) => item.key === workspace.key);
     if (workspaceIndex < 0) {
       const newWorkspace = {
         ...workspace,
         key: String(data.length + 1),
-      }
-      result.push(newWorkspace)
+      };
+      result.push(newWorkspace);
     }
-    result[workspaceIndex] = { ...workspace } as WorkspaceTableData
-    setData(result)
-    close()
-  }
+    result[workspaceIndex] = { ...workspace } as WorkspaceTableData;
+    setData(result);
+    close();
+  };
   const rowSelection = {
     selectedRows,
     onChange: onSelectChange,
-  }
+  };
 
   const onRowClick = (record: WorkspaceTableData): void => {
-    setCurrentWorkspace(record)
-  }
+    setCurrentWorkspace(record);
+  };
 
   return (
     <>
@@ -141,7 +141,7 @@ const WorkspaceTable: FC = () => {
         onSave={onSaveHandler}
       />
     </>
-  )
-}
+  );
+};
 
-export default WorkspaceTable
+export default WorkspaceTable;

@@ -6,9 +6,9 @@ import {
     FetchArgs,
     fetchBaseQuery,
     FetchBaseQueryError,
-} from '@reduxjs/toolkit/query'
+} from '@reduxjs/toolkit/query';
 
-import { logout, refreshTokens } from '../features/authSlice'
+import { logout, refreshTokens } from '../features/authSlice';
 
 export interface TokenModel {
     jwtAccessToken: string;
@@ -18,12 +18,12 @@ export interface TokenModel {
 const baseQuery = fetchBaseQuery({
     baseUrl: '/api',
     prepareHeaders: (headers, { getState }) => {
-        const token = (getState() as RootState).authState.accessToken
+        const token = (getState() as RootState).authState.accessToken;
         if (token) {
-            headers.set('authorization', `Bearer ${token}`)
+            headers.set('authorization', `Bearer ${token}`);
         }
-        headers.set('Content-Type', 'application/json')
-        return headers
+        headers.set('Content-Type', 'application/json');
+        return headers;
     },
 });
 
@@ -32,9 +32,9 @@ const customFetchBase: BaseQueryFn<
     unknown,
     FetchBaseQueryError
 > = async (args, api, extraOptions) => {
-    let result = await baseQuery(args, api, extraOptions)
+    let result = await baseQuery(args, api, extraOptions);
     if (result.error?.status === 401) {
-        const { authState } = store.getState()
+        const { authState } = store.getState();
         const refreshResult = await baseQuery(
             {
                 url: 'auth/refresh',
@@ -43,13 +43,13 @@ const customFetchBase: BaseQueryFn<
                     accessToken: authState.accessToken,
                     refreshToken: authState.refreshToken,
                 }
-            }, api, extraOptions)
+            }, api, extraOptions);
         if (refreshResult.error?.status) {
-            store.dispatch(logout())
-            redirect(`/${Path.login}`)
+            store.dispatch(logout());
+            redirect(`/${Path.login}`);
         } else {
-            store.dispatch(refreshTokens(refreshResult as unknown as TokenModel))
-            result = await baseQuery(args, api, extraOptions)
+            store.dispatch(refreshTokens(refreshResult as unknown as TokenModel));
+            result = await baseQuery(args, api, extraOptions);
         }
     }
     return result;

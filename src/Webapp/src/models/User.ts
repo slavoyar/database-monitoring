@@ -1,4 +1,4 @@
-import Role from './Role'
+import Role from './Role';
 
 type UserId = string
 
@@ -30,6 +30,6 @@ export const MOCK_USERS = [
     email: 'user@mail.ru',
     phoneNumber: '+71234567890',
   },
-] as User[]
+] as User[];
 
-export { type User, type UserId }
+export { type User, type UserId };

@@ -1,6 +1,6 @@
-import { authApi } from '@redux/api/authApi'
-import { TokenModel } from '@redux/api/customFetchBase'
-import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { authApi } from '@redux/api/authApi';
+import { TokenModel } from '@redux/api/customFetchBase';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 interface AuthState {
     accessToken?: string
@@ -15,28 +15,28 @@ export const authSlice = createSlice({
     } as AuthState,
     reducers: {
         logout: (state) => {
-            state.accessToken = undefined
-            state.refreshToken = undefined
-            localStorage.removeItem('accessToken')
-            localStorage.removeItem('refreshToken')
+            state.accessToken = undefined;
+            state.refreshToken = undefined;
+            localStorage.removeItem('accessToken');
+            localStorage.removeItem('refreshToken');
         },
         refreshTokens: (state, { payload }: PayloadAction<TokenModel>) => {
-            state.accessToken = payload.jwtAccessToken
-            state.refreshToken = payload.jwtRefreshToken
+            state.accessToken = payload.jwtAccessToken;
+            state.refreshToken = payload.jwtRefreshToken;
         }
     },
     extraReducers: (builder) => {
         builder.addMatcher(
             authApi.endpoints.login.matchFulfilled,
             (state, { payload }: PayloadAction<TokenModel>) => {
-                state.accessToken = payload.jwtAccessToken
-                state.refreshToken = payload.jwtRefreshToken
-                localStorage.setItem('accessToken', payload.jwtAccessToken)
-                localStorage.setItem('refreshToken', payload.jwtRefreshToken)
+                state.accessToken = payload.jwtAccessToken;
+                state.refreshToken = payload.jwtRefreshToken;
+                localStorage.setItem('accessToken', payload.jwtAccessToken);
+                localStorage.setItem('refreshToken', payload.jwtRefreshToken);
             }
-        )
+        );
     },
-})
+});
 
-export default authSlice.reducer
-export const { logout, refreshTokens } = authSlice.actions
+export default authSlice.reducer;
+export const { logout, refreshTokens } = authSlice.actions;

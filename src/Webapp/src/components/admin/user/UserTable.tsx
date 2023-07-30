@@ -1,16 +1,16 @@
-import React, { FC, useEffect, useState } from 'react'
-import { DeleteOutlined, PlusOutlined } from '@ant-design/icons'
-import { User } from '@models'
+import React, { FC, useEffect, useState } from 'react';
+import { DeleteOutlined, PlusOutlined } from '@ant-design/icons';
+import { User } from '@models';
 import {
   isAuthResponse,
   useCreateUserMutation,
   useDeleteUserMutation,
   useFetchUsersQuery,
   useUpdateUserMutation,
-} from '@redux/api/authApi'
-import { Button, Table } from 'antd'
+} from '@redux/api/authApi';
+import { Button, Table } from 'antd';
 
-import EditUserDialog from './EditUserDialog'
+import EditUserDialog from './EditUserDialog';
 
 export type UserWithKey = Omit<User, 'id'> & { key?: string }
 
@@ -43,18 +43,18 @@ const columns = [
     dataIndex: UserTableColumn.PHONE,
     key: UserTableColumn.PHONE,
   },
-]
+];
 
 const UserTable: FC = () => {
-  const [tableData, setTableData] = useState<UserTableData[]>([])
-  const [deleteDisabled, setDeleteDisabled] = useState(true)
-  const [selectedRows, setSelectedRows] = useState<React.Key[]>([])
-  const [isModalOpen, setIsModalOpen] = useState(false)
-  const [currentUser, setCurrentUser] = useState<UserTableData>()
-  const { data: users, isLoading } = useFetchUsersQuery()
-  const [deleteUser] = useDeleteUserMutation()
-  const [createUser] = useCreateUserMutation()
-  const [updateUser] = useUpdateUserMutation()
+  const [tableData, setTableData] = useState<UserTableData[]>([]);
+  const [deleteDisabled, setDeleteDisabled] = useState(true);
+  const [selectedRows, setSelectedRows] = useState<React.Key[]>([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [currentUser, setCurrentUser] = useState<UserTableData>();
+  const { data: users, isLoading } = useFetchUsersQuery();
+  const [deleteUser] = useDeleteUserMutation();
+  const [createUser] = useCreateUserMutation();
+  const [updateUser] = useUpdateUserMutation();
 
   useEffect(() => {
     if (users && !isAuthResponse(users)) {
@@ -65,56 +65,56 @@ const UserTable: FC = () => {
           email: user.email,
           phoneNumber: user.phoneNumber ?? '',
         })),
-      )
+      );
     }
-  }, [users])
+  }, [users]);
 
   const onAddClick = (): void => {
-    setIsModalOpen(true)
-  }
+    setIsModalOpen(true);
+  };
 
   const onDeleteClick = async (): Promise<void> => {
-    const userEmail = tableData.find((user) => user.key === selectedRows[0])?.email
+    const userEmail = tableData.find((user) => user.key === selectedRows[0])?.email;
     if (userEmail) {
-      await deleteUser(userEmail)
+      await deleteUser(userEmail);
     }
-    setSelectedRows([])
-    setDeleteDisabled(true)
-  }
+    setSelectedRows([]);
+    setDeleteDisabled(true);
+  };
 
   const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
-    setDeleteDisabled(!newSelectedRowKeys.length)
-    setSelectedRows(newSelectedRowKeys)
-  }
+    setDeleteDisabled(!newSelectedRowKeys.length);
+    setSelectedRows(newSelectedRowKeys);
+  };
 
   const rowSelection = {
     selectedRows,
     onChange: onSelectChange,
-  }
+  };
 
   const close = (): void => {
     if (isModalOpen) {
-      setIsModalOpen(false)
+      setIsModalOpen(false);
     }
     if (currentUser) {
-      setCurrentUser(undefined)
+      setCurrentUser(undefined);
     }
-  }
+  };
 
   const onRowClick = (record: UserTableData): void => {
-    setCurrentUser(record)
-  }
+    setCurrentUser(record);
+  };
 
   const onSaveHandler = async (user: UserWithKey): Promise<void> => {
-    const promise = user.key ? updateUser : createUser
-    const userToSave = { ...user } as User
+    const promise = user.key ? updateUser : createUser;
+    const userToSave = { ...user } as User;
     try {
-      await promise(userToSave)
-      close()
+      await promise(userToSave);
+      close();
     } catch (e) {
-      console.error(e)
+      console.error(e);
     }
-  }
+  };
 
   return (
     <>
@@ -143,7 +143,7 @@ const UserTable: FC = () => {
         onCancel={close}
       />
     </>
-  )
-}
+  );
+};
 
-export default UserTable
+export default UserTable;

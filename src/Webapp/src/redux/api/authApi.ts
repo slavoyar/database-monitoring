@@ -1,5 +1,5 @@
 import { User } from '@models';
-import { createApi } from '@reduxjs/toolkit/query/react'
+import { createApi } from '@reduxjs/toolkit/query/react';
 
 import customFetchBase, { TokenModel } from './customFetchBase';
 
@@ -14,7 +14,7 @@ export interface AuthResponse {
 }
 
 export function isAuthResponse(value: AuthResponse | { '$values': User[] }): value is AuthResponse {
-  return (value as AuthResponse).status !== undefined
+  return (value as AuthResponse).status !== undefined;
 }
 
 export const authApi = createApi({

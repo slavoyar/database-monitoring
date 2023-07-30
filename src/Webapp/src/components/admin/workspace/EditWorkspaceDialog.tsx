@@ -1,11 +1,11 @@
-import React, { FC, useEffect, useState } from 'react'
-import { PropertyInput, PropertySelect } from '@components/common'
-import { MOCK_SERVERS } from '@models/Server'
-import { Optional } from '@models/Types'
-import { MOCK_USERS } from '@models/User'
-import { Modal, ModalFuncProps } from 'antd'
+import React, { FC, useEffect, useState } from 'react';
+import { PropertyInput, PropertySelect } from '@components/common';
+import { MOCK_SERVERS } from '@models/Server';
+import { Optional } from '@models/Types';
+import { MOCK_USERS } from '@models/User';
+import { Modal, ModalFuncProps } from 'antd';
 
-import { WorkspaceTableData } from './WorkspaceTable'
+import { WorkspaceTableData } from './WorkspaceTable';
 
 interface EditWorkspaceDialogProps extends ModalFuncProps {
   workspace: WorkspaceTableData | undefined
@@ -19,26 +19,26 @@ const EditWorkspaceDialog: FC<EditWorkspaceDialogProps> = ({
   onSave,
   ...props
 }: EditWorkspaceDialogProps) => {
-  const [name, setName] = useState<string>('')
-  const [users, setUsers] = useState<string[]>([])
-  const [servers, setServers] = useState<string[]>([])
+  const [name, setName] = useState<string>('');
+  const [users, setUsers] = useState<string[]>([]);
+  const [servers, setServers] = useState<string[]>([]);
 
   useEffect(() => {
 
-    setName(workspace?.name ?? '')
+    setName(workspace?.name ?? '');
 
-    setUsers(workspace?.users.map((item) => item.id) ?? [])
+    setUsers(workspace?.users.map((item) => item.id) ?? []);
 
-    setServers(workspace?.servers.map((item) => item.id) ?? [])
+    setServers(workspace?.servers.map((item) => item.id) ?? []);
 
-  }, [workspace, isOpen])
+  }, [workspace, isOpen]);
 
-  const userOptions = MOCK_USERS.map((user) => ({ value: user.id, label: user.fullUserName }))
-  const serverOptions = MOCK_SERVERS.map((server) => ({ value: server.id, label: server.name }))
+  const userOptions = MOCK_USERS.map((user) => ({ value: user.id, label: user.fullUserName }));
+  const serverOptions = MOCK_SERVERS.map((server) => ({ value: server.id, label: server.name }));
 
   const computedTitle = workspace
     ? 'Редактировать рабочее пространство'
-    : 'Создать рабочее пространство'
+    : 'Создать рабочее пространство';
 
   const onOkHandler = (): void => {
     onSave({
@@ -46,12 +46,12 @@ const EditWorkspaceDialog: FC<EditWorkspaceDialogProps> = ({
       name,
       users: MOCK_USERS.filter((item) => users.includes(item.id)),
       servers: MOCK_SERVERS.filter((item) => servers.includes(item.id)),
-    })
-  }
+    });
+  };
 
   const onNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setName(event.target.value)
-  }
+    setName(event.target.value);
+  };
   return (
     <Modal title={computedTitle} onOk={onOkHandler} open={isOpen} {...props}>
       <PropertyInput title='Название' value={name} onChange={onNameChange} />
@@ -72,7 +72,7 @@ const EditWorkspaceDialog: FC<EditWorkspaceDialogProps> = ({
         allowClear
       />
     </Modal>
-  )
-}
+  );
+};
 
-export default EditWorkspaceDialog
+export default EditWorkspaceDialog;

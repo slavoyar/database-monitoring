@@ -1,5 +1,5 @@
-import { MOCK_SERVERS, Server } from './Server'
-import { MOCK_USERS, User } from './User'
+import { MOCK_SERVERS, Server } from './Server';
+import { MOCK_USERS, User } from './User';
 
 type WorkspaceId = string
 
@@ -23,6 +23,6 @@ export const MOCK_WORKSPACES = [
     users: MOCK_USERS.filter((_, index) => index % 2),
     servers: MOCK_SERVERS,
   },
-] as Workspace[]
+] as Workspace[];
 
-export { type Workspace, type WorkspaceId }
+export { type Workspace, type WorkspaceId };

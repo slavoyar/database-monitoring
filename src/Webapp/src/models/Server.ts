@@ -78,6 +78,6 @@ export const MOCK_SERVERS: Server[] = [
     status: ServerStatus.down,
     address: '192.168.1.1',
   },
-]
+];
 
-export { ServerStatus, type Server, type ServerId }
+export { ServerStatus, type Server, type ServerId };

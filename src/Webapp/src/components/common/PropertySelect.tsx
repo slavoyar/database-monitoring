@@ -1,5 +1,5 @@
-import { FC } from 'react'
-import { Select, SelectProps } from 'antd'
+import { FC } from 'react';
+import { Select, SelectProps } from 'antd';
 
 interface PropertySelectProps extends SelectProps {
   title: string
@@ -10,6 +10,6 @@ const PropertySelect: FC<PropertySelectProps> = ({ title, ...props }: PropertySe
     <strong>{title}</strong>
     <Select style={{ display: 'block' }} {...props} />
   </div>
-)
+);
 
-export default PropertySelect
+export default PropertySelect;

@@ -1,6 +1,6 @@
-import { FC } from 'react'
-import { Navbar } from '@components/common'
-import { Layout, Result } from 'antd'
+import { FC } from 'react';
+import { Navbar } from '@components/common';
+import { Layout, Result } from 'antd';
 
 
 const NotFound: FC = () => (
@@ -15,6 +15,6 @@ const NotFound: FC = () => (
         </Layout.Content>
     </Layout>
 
-)
+);
 
-export default NotFound
+export default NotFound;

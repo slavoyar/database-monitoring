@@ -1,8 +1,8 @@
-import React, { FC } from 'react'
-import { Button, Form, Input } from 'antd'
-import { ValidateErrorEntity } from 'rc-field-form/es/interface'
+import React, { FC } from 'react';
+import { Button, Form, Input } from 'antd';
+import { ValidateErrorEntity } from 'rc-field-form/es/interface';
 
-import '@css/UserSettings.css'
+import '@css/UserSettings.css';
 
 interface UserSettingsForm {
   login: string
@@ -15,12 +15,12 @@ interface UserSettingsForm {
 
 const UserSettings: FC = () => {
   const onFinish = (values: UserSettingsForm) => {
-    console.log('LOGIN', values)
-  }
+    console.log('LOGIN', values);
+  };
 
   const onFinishFailed = (errorInfo: ValidateErrorEntity<UserSettingsForm>) => {
-    console.error('ERROR in fields', errorInfo)
-  }
+    console.error('ERROR in fields', errorInfo);
+  };
   return (
     <div className='user-settings'>
       <Form
@@ -74,7 +74,7 @@ const UserSettings: FC = () => {
         </Form.Item>
       </Form>
     </div>
-  )
-}
+  );
+};
 
-export default UserSettings
+export default UserSettings;
