@@ -5,8 +5,8 @@ import { Path } from '@models'
 import { RootState } from '@redux/store'
 
 const PrivateRoute: FC = () => {
-  const isLoggedIn = useSelector<RootState>((state) => state.authState.isLoggedIn)
-  return isLoggedIn ? <Outlet /> : <Navigate to={`/${Path.login}`} replace />
+  const accessToken = useSelector<RootState>((state) => state.authState.accessToken)
+  return accessToken ? <Outlet /> : <Navigate to={`/${Path.login}`} replace />
 }
 
 export default PrivateRoute

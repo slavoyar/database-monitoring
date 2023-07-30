@@ -1,8 +1,9 @@
 import React, { FC, useState } from 'react'
+import { useSelector } from 'react-redux'
 import { Navigate, useNavigate } from 'react-router-dom'
 import { Path } from '@models'
 import { AuthLoginModel, useLoginMutation } from '@redux/api/authApi'
-import { store } from '@redux/store'
+import { RootState } from '@redux/store'
 import { Button, Form, Input, Layout } from 'antd'
 
 import '@css/LoginPage.css'
@@ -10,9 +11,9 @@ import '@css/LoginPage.css'
 const LoginPage: FC = () => {
   const navigate = useNavigate()
   const [error, setError] = useState<string>('')
-
+  const accessToken = useSelector<RootState>(state => state.authState.accessToken)
   const [loginUser] = useLoginMutation();
-  const { isLoggedIn } = store.getState().authState
+
 
   const onFinish = async (values: AuthLoginModel) => {
     try {
@@ -29,7 +30,7 @@ const LoginPage: FC = () => {
     setError('')
   }
 
-  return isLoggedIn ? <Navigate to={`/${Path.dashboard}`} /> : (
+  return accessToken ? <Navigate to={`/${Path.dashboard}`} /> : (
     <Layout className='login-layout'>
       <div className='login-container'>
         <h1>Авторизация</h1>
