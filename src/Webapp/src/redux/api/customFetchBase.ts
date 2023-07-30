@@ -44,7 +44,7 @@ const customFetchBase: BaseQueryFn<
                     refreshToken: authState.refreshToken,
                 }
             }, api, extraOptions)
-        if (refreshResult.error?.status === 400 || refreshResult.error?.status === 401) {
+        if (refreshResult.error?.status) {
             store.dispatch(logout())
             redirect(`/${Path.login}`)
         } else {
