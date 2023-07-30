@@ -8,7 +8,7 @@ interface PropertyInputProps extends InputProps {
 const PropertyInput: FC<PropertyInputProps> = ({ title, ...props }: PropertyInputProps) => (
   <div className='property'>
     <strong>{title}</strong>
-    <Input {...props} />
+    <Input {...props}/>
   </div>
 );
 

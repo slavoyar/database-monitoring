@@ -1,5 +1,5 @@
 import { redirect } from 'react-router-dom';
-import { Path } from '@models';
+import { Path, User } from '@models';
 import { RootState, store } from '@redux/store';
 import {
     BaseQueryFn,
@@ -13,6 +13,7 @@ import { logout, refreshTokens } from '../features/authSlice';
 export interface TokenModel {
     jwtAccessToken: string;
     jwtRefreshToken: string;
+    user: User;
 }
 
 const baseQuery = fetchBaseQuery({
@@ -42,7 +43,7 @@ const customFetchBase: BaseQueryFn<
                 body: {
                     accessToken: authState.accessToken,
                     refreshToken: authState.refreshToken,
-                }
+                },
             }, api, extraOptions);
         if (refreshResult.error?.status) {
             store.dispatch(logout());

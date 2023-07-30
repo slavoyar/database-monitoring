@@ -56,7 +56,7 @@ const EditUserDialog: FC<EditUserDialogProps> = ({
       <PropertyInput title='Имя' value={name} onChange={(event) => onInputChange(event, setName)} />
       <PropertyInput title='Email' value={email} onChange={(event) => onInputChange(event, setEmail)} />
       <PropertyInput title='Телефон' value={phone} onChange={(event) => onInputChange(event, setPhone)} />
-      <PropertyInput title='Пароль' value={password} onChange={(event) => onInputChange(event, setPassword)} />
+      <PropertyInput title='Пароль' type='password' value={password} onChange={(event) => onInputChange(event, setPassword)} />
       <PropertySelect
         title='Роль'
         options={arrayToOptions<Role>(Object.values(Role))}

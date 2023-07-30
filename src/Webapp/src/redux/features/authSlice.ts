@@ -1,10 +1,12 @@
+import { User } from '@models';
 import { authApi } from '@redux/api/authApi';
 import { TokenModel } from '@redux/api/customFetchBase';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 interface AuthState {
-    accessToken?: string
-    refreshToken?: string
+    accessToken?: string;
+    refreshToken?: string;
+    user: Partial<User>;
 }
 
 export const authSlice = createSlice({
@@ -23,7 +25,7 @@ export const authSlice = createSlice({
         refreshTokens: (state, { payload }: PayloadAction<TokenModel>) => {
             state.accessToken = payload.jwtAccessToken;
             state.refreshToken = payload.jwtRefreshToken;
-        }
+        },
     },
     extraReducers: (builder) => {
         builder.addMatcher(
@@ -31,9 +33,10 @@ export const authSlice = createSlice({
             (state, { payload }: PayloadAction<TokenModel>) => {
                 state.accessToken = payload.jwtAccessToken;
                 state.refreshToken = payload.jwtRefreshToken;
+                state.user = payload.user;
                 localStorage.setItem('accessToken', payload.jwtAccessToken);
                 localStorage.setItem('refreshToken', payload.jwtRefreshToken);
-            }
+            },
         );
     },
 });

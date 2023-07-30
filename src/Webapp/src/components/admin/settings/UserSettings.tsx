@@ -1,27 +1,11 @@
 import React, { FC } from 'react';
+import { User } from '@models';
 import { Button, Form, Input } from 'antd';
 import { ValidateErrorEntity } from 'rc-field-form/es/interface';
 
 import '@css/UserSettings.css';
 
-interface UserSettingsForm {
-  login: string
-  firstName: string
-  lastName: string
-  email: string
-  phone: string
-  password: string
-}
-
-const UserSettings: FC = () => {
-  const onFinish = (values: UserSettingsForm) => {
-    console.log('LOGIN', values);
-  };
-
-  const onFinishFailed = (errorInfo: ValidateErrorEntity<UserSettingsForm>) => {
-    console.error('ERROR in fields', errorInfo);
-  };
-  return (
+const UserSettings: FC = () => (
     <div className='user-settings'>
       <Form
         name='user'
@@ -30,25 +14,12 @@ const UserSettings: FC = () => {
         initialValues={{ remember: true }}
         autoComplete='off'
         className='user-settings__form'
-        onFinish={onFinish}
-        onFinishFailed={onFinishFailed}
       >
         <Form.Item wrapperCol={{ span: 6, offset: 2 }}>
           <h1>Настройки профиля</h1>
         </Form.Item>
-        <Form.Item
-          label='Логин'
-          name='login'
-          rules={[{ required: true, message: 'Пожалуйста введите логин!' }]}
-        >
-          <Input />
-        </Form.Item>
 
         <Form.Item label='Имя' name='firstName'>
-          <Input />
-        </Form.Item>
-
-        <Form.Item label='Фамилия' name='lastName'>
           <Input />
         </Form.Item>
 
@@ -63,7 +34,6 @@ const UserSettings: FC = () => {
         <Form.Item
           label='Пароль'
           name='password'
-          rules={[{ required: true, message: 'Пожалуйста введите пароль!' }]}
         >
           <Input.Password />
         </Form.Item>
@@ -75,6 +45,5 @@ const UserSettings: FC = () => {
       </Form>
     </div>
   );
-};
 
 export default UserSettings;

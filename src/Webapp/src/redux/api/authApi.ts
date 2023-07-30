@@ -20,7 +20,7 @@ export function isAuthResponse(value: AuthResponse | { '$values': User[] }): val
 export const authApi = createApi({
   reducerPath: 'authApi',
   baseQuery: customFetchBase,
-  tagTypes: ['Users'],
+  tagTypes: ['Users', 'UserInfo'],
   endpoints: (builder) => ({
     login: builder.mutation<TokenModel, AuthLoginModel>({
       query: (data) => (
@@ -28,29 +28,33 @@ export const authApi = createApi({
           url: 'auth/login',
           method: 'POST',
           body: data,
-        })
+        }),
+    }),
+    getUserInfo: builder.query<User, void>({
+      query: () => 'auth/info',
+      providesTags: ['UserInfo'],
     }),
     fetchUsers: builder.query<{ '$values': User[] } | AuthResponse, void>({
       query: () => ({ url: 'users/get' }),
-      providesTags: ['Users']
+      providesTags: ['Users'],
     }),
     createUser: builder.mutation<AuthResponse, User>({
       query: (user) => (
         {
           url: 'users/create',
           method: 'POST',
-          body: user
+          body: user,
         }),
-      invalidatesTags: ['Users']
+      invalidatesTags: ['Users'],
     }),
     updateUser: builder.mutation<AuthResponse, Partial<User>>({
       query: (user) => (
         {
           url: 'users/update',
           method: 'POST',
-          body: user
+          body: user,
         }
-      )
+      ),
     }),
     deleteUser: builder.mutation<AuthResponse, string>({
       query: (email) => (
@@ -59,10 +63,17 @@ export const authApi = createApi({
           method: 'POST',
           body: JSON.stringify(email),
         }),
-      invalidatesTags: ['Users']
-    })
-  })
+      invalidatesTags: ['Users'],
+    }),
+  }),
 });
 
-export const { useLoginMutation, useCreateUserMutation, useDeleteUserMutation, useUpdateUserMutation, useFetchUsersQuery } = authApi;
+export const {
+  useLoginMutation,
+  useCreateUserMutation,
+  useDeleteUserMutation,
+  useUpdateUserMutation,
+  useFetchUsersQuery,
+  useGetUserInfoQuery,
+} = authApi;
 

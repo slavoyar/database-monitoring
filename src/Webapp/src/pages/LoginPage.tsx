@@ -14,7 +14,6 @@ const LoginPage: FC = () => {
   const accessToken = useSelector<RootState>(state => state.authState.accessToken);
   const [loginUser] = useLoginMutation();
 
-
   const onFinish = async (values: AuthLoginModel) => {
     try {
       await loginUser(values).unwrap();
