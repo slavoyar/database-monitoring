@@ -8,15 +8,17 @@ import { Button, Form, Input } from 'antd';
 import '@css/UserSettings.css';
 
 const UserSettings: FC = () => {
-  const [user, setUser] = useState<User | undefined>();
+  const [form] = Form.useForm();
   const [updateUser] = useUpdateUserMutation();
 
   const userEmail = useSelector<RootState, string>(state => state.authState.email);
-  const { data: userInfo } = useGetUserInfoQuery(userEmail);
+  const { data: user } = useGetUserInfoQuery(userEmail);
 
   useEffect(() => {
-    setUser(userInfo);
-  }, [userInfo]);
+    if (user) {
+      form.setFieldsValue({ ...user });
+    }
+  }, [user]);
 
   const onUpdateClick = (): void => {
     if (user) {
@@ -27,6 +29,7 @@ const UserSettings: FC = () => {
   return (
     <div className='user-settings'>
       <Form
+        form={form}
         name='user'
         labelCol={{ span: 2 }}
         wrapperCol={{ span: 8 }}
@@ -38,7 +41,7 @@ const UserSettings: FC = () => {
           <h1>Настройки профиля</h1>
         </Form.Item>
 
-        <Form.Item label='Имя' name='firstName'>
+        <Form.Item label='Имя' name='fullUserName'>
           <Input value={user?.fullUserName} />
         </Form.Item>
 
@@ -46,7 +49,7 @@ const UserSettings: FC = () => {
           <Input value={user?.email} />
         </Form.Item>
 
-        <Form.Item label='Телефон' name='phone'>
+        <Form.Item label='Телефон' name='phoneNumber'>
           <Input value={user?.phoneNumber} />
         </Form.Item>
 

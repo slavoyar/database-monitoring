@@ -129,6 +129,7 @@ namespace Auth.Controllers
         [ProducesResponseType(typeof(WebResponse), 400)]
         [ProducesResponseType(typeof(WebResponse), 401)]
         [HttpGet]
+        [Route("info")]
         public async Task<IActionResult> Read(string email)
         {
             //--- Check Input Data

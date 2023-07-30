@@ -31,7 +31,7 @@ export const authApi = createApi({
         }),
     }),
     getUserInfo: builder.query<User, string>({
-      query: (email) => ({ url: 'users/', params: { email } }),
+      query: (email) => ({ url: 'users/info', params: { email } }),
     }),
     fetchUsers: builder.query<{ '$values': User[] } | AuthResponse, void>({
       query: () => ({ url: 'users' }),

@@ -18,8 +18,6 @@ namespace Auth.Data
             : base(dbContextOptions, operationalStoreOptions)
         { }
 
-        public DbSet<Workspaces> Workspaces { get; set; }
-
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
