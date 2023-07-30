@@ -31,10 +31,10 @@ export const authApi = createApi({
         }),
     }),
     getUserInfo: builder.query<User, string>({
-      query: (email) => ({ url: 'users/get/', params: { email } }),
+      query: (email) => ({ url: 'users/', params: { email } }),
     }),
     fetchUsers: builder.query<{ '$values': User[] } | AuthResponse, void>({
-      query: () => ({ url: 'users/get' }),
+      query: () => ({ url: 'users' }),
       providesTags: ['Users'],
     }),
     createUser: builder.mutation<AuthResponse, User>({
@@ -50,7 +50,7 @@ export const authApi = createApi({
       query: (user) => (
         {
           url: 'users/update',
-          method: 'POST',
+          method: 'PATCH',
           body: user,
         }
       ),
@@ -59,7 +59,7 @@ export const authApi = createApi({
       query: (email) => (
         {
           url: 'users/delete',
-          method: 'POST',
+          method: 'DELETE',
           body: JSON.stringify(email),
         }),
       invalidatesTags: ['Users'],
