@@ -1,8 +1,5 @@
-import React, { FC, useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
-import { User } from '@models';
+import React, { FC, useEffect } from 'react';
 import { useGetUserInfoQuery, useUpdateUserMutation } from '@redux/api/authApi';
-import { RootState } from '@redux/store';
 import { Button, Form, Input } from 'antd';
 
 import '@css/UserSettings.css';
