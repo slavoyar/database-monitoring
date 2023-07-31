@@ -24,3 +24,7 @@ global using Microsoft.AspNetCore.Authentication.JwtBearer;
 global using Microsoft.IdentityModel.Tokens;
 global using Microsoft.OpenApi.Models;
 global using Microsoft.AspNetCore.Authorization;
+global using Serilog;
+global using Serilog.Sinks.Elasticsearch;
+global using Serilog.Formatting.Json;
+global using Serilog.Sinks.File;
