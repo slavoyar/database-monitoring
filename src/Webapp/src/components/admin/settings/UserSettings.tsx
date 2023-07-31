@@ -11,8 +11,7 @@ const UserSettings: FC = () => {
   const [form] = Form.useForm();
   const [updateUser] = useUpdateUserMutation();
 
-  const userEmail = useSelector<RootState, string>(state => state.authState.email);
-  const { data: user } = useGetUserInfoQuery(userEmail);
+  const { data: user } = useGetUserInfoQuery();
 
   useEffect(() => {
     if (user) {

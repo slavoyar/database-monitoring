@@ -91,6 +91,12 @@ namespace Auth.Controllers
                 authClaims.Add(claimFullUserName);
             }
 
+            if (loggingUser.Email != null)
+            {
+                var claimEmail = new Claim(ClaimTypes.Email, loggingUser.Email);
+                authClaims.Add(claimEmail);
+            }
+
             foreach (var userRole in userRoles)
             {
                 var claimRole = new Claim(ClaimTypes.Role, userRole);
@@ -172,12 +178,12 @@ namespace Auth.Controllers
             if (principal == null || princimalClaims == null)
                 return BadRequest(WebResponsesAuth.authResponseErrorAccessToken);
 
-            string? username = principal?.Identity?.Name;
+            var currentUserEmail = User.FindFirstValue(ClaimTypes.Email);
 
-            if (username == null)
+            if (currentUserEmail == null)
                 return BadRequest(WebResponsesAuth.authResponseErrorClaimsPrincipal);
 
-            var refreshUser = await _userManager.FindByNameAsync(username);
+            var refreshUser = await _userManager.FindByEmailAsync(currentUserEmail);
             if (refreshUser == null)
                 return BadRequest(WebResponsesAuth.authResponseErrorUser);
 
