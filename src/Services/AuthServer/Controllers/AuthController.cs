@@ -178,8 +178,7 @@ namespace Auth.Controllers
             if (principal == null || princimalClaims == null)
                 return BadRequest(WebResponsesAuth.authResponseErrorAccessToken);
 
-            var currentUserEmail = User.FindFirstValue(ClaimTypes.Email);
-
+            var currentUserEmail = principal.FindFirstValue(ClaimTypes.Email);
             if (currentUserEmail == null)
                 return BadRequest(WebResponsesAuth.authResponseErrorClaimsPrincipal);
 

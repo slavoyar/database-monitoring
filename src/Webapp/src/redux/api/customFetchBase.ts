@@ -1,5 +1,4 @@
-import { redirect } from 'react-router-dom';
-import { Path, User } from '@models';
+import { User } from '@models';
 import { RootState, store } from '@redux/store';
 import {
     BaseQueryFn,
@@ -45,12 +44,11 @@ const customFetchBase: BaseQueryFn<
                     refreshToken: authState.refreshToken,
                 },
             }, api, extraOptions);
-        if (refreshResult.error?.status) {
-            store.dispatch(logout());
-            redirect(`/${Path.login}`);
-        } else {
-            store.dispatch(refreshTokens(refreshResult as unknown as TokenModel));
+        if (refreshResult.data) {
+            store.dispatch(refreshTokens(refreshResult.data as TokenModel));
             result = await baseQuery(args, api, extraOptions);
+        } else {
+            store.dispatch(logout());
         }
     }
     return result;
