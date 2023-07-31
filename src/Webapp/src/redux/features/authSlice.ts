@@ -34,7 +34,6 @@ export const authSlice = createSlice({
                 state.accessToken = payload.jwtAccessToken;
                 state.refreshToken = payload.jwtRefreshToken;
                 state.user = payload.user;
-                state.email = payload.user.email;
                 localStorage.setItem('accessToken', payload.jwtAccessToken);
                 localStorage.setItem('refreshToken', payload.jwtRefreshToken);
             },
