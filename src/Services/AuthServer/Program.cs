@@ -1,5 +1,8 @@
 using System.Reflection;
+using System.Reflection;
 using System.Text;
+using System.Text;
+using System.Text.Json.Serialization;
 using System.Text.Json.Serialization;
 using Auth.Data;
 using Auth.Models;
@@ -12,9 +15,6 @@ using Serilog;
 using Serilog.Formatting.Json;
 using Serilog.Sinks.Elasticsearch;
 using Serilog.Sinks.File;
-using System.Reflection;
-using System.Text;
-using System.Text.Json.Serialization;
 
 //-------------------------------------------------------------------
 
@@ -164,7 +164,8 @@ app.Run();
 
 void AddCustomLogging(WebApplicationBuilder builder)
 {
-    builder.Host.UseSerilog((context, services, configuration) => {
+    builder.Host.UseSerilog((context, services, configuration) =>
+    {
         configuration.ReadFrom.Configuration(context.Configuration)
         .WriteTo.Console()
         .WriteTo.Elasticsearch(new ElasticsearchSinkOptions(new Uri(builder.Configuration["ELASTICSEARCH_URL"]))

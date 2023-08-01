@@ -8,7 +8,7 @@ const UserSettings: FC = () => {
   const [form] = Form.useForm();
   const [updateUser] = useUpdateUserMutation();
 
-  const { data: user } = useGetUserInfoQuery();
+  let { data: user } = useGetUserInfoQuery();
 
   useEffect(() => {
     if (user) {
@@ -18,8 +18,17 @@ const UserSettings: FC = () => {
 
   const onUpdateClick = (): void => {
     if (user) {
-      updateUser(user);
+      updateUser({
+        fullUserName: user.fullUserName,
+        email: user.email,
+        password: user.password,
+        phoneNumber: user.phoneNumber,
+      });
     }
+  };
+
+  const onFormChange = () => {
+    user = { ...form.getFieldsValue() };
   };
 
   return (
@@ -32,6 +41,7 @@ const UserSettings: FC = () => {
         initialValues={{ remember: true }}
         autoComplete='off'
         className='user-settings__form'
+        onChange={onFormChange}
       >
         <Form.Item wrapperCol={{ span: 6, offset: 2 }}>
           <h1>Настройки профиля</h1>

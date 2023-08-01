@@ -164,7 +164,7 @@ namespace Auth.Controllers
         [Authorize]
         [HttpPatch]
         [Route("update")]
-        public async Task<IActionResult> UpdateUser([FromBody] AuthRegisterModel inputUser)
+        public async Task<IActionResult> UpdateUser([FromBody] AuthUpdateModel inputUser)
         {
             if (inputUser.Email == null)
                 return BadRequest(WebResponsesAuth.authResponseErrorUser);
@@ -175,25 +175,17 @@ namespace Auth.Controllers
             if (foundedUser == null)
                 return BadRequest(WebResponsesAuth.authResponseErrorUser);
 
-            //--- Check if role exists
-            var userRole = inputUser.Role;
-            if (userRole == null)
-                return BadRequest(WebResponsesAuth.authResponseErrorRole);
-
-            if (!await _roleManager.RoleExistsAsync(userRole))
-                return StatusCode(StatusCodes.Status500InternalServerError, WebResponsesAuth.authResponseErrorNoRoleInDb);
-
             //--- User can not edit other users if its not admin
             var currentUserEmail = User.FindFirstValue(ClaimTypes.Email);
-            if (userRole != UserRoles.Admin && inputUser.Email != currentUserEmail)
+            var currentUserRole = User.FindFirstValue(ClaimTypes.Email);
+            if (inputUser.Email != currentUserEmail)
                 return BadRequest(WebResponsesAuth.authResponseErrorUser);
 
             //--- Updating data of user
             foundedUser.Email = inputUser.Email;
-            foundedUser.FullUserName = inputUser.FullUserName;
-            foundedUser.Role = userRole;
-            foundedUser.PhoneNumber = inputUser.PhoneNumber;
             foundedUser.UserName = inputUser.Email;
+            foundedUser.FullUserName = inputUser.FullUserName;
+            foundedUser.PhoneNumber = inputUser.PhoneNumber;
 
             if (inputUser.Password != null)
                 foundedUser.Password = inputUser.Password;
