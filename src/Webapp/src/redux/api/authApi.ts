@@ -20,7 +20,7 @@ export function isAuthResponse(value: AuthResponse | { '$values': User[] }): val
 export const authApi = createApi({
   reducerPath: 'authApi',
   baseQuery: customFetchBase,
-  tagTypes: ['Users'],
+  tagTypes: ['Users', 'UserInfo'],
   endpoints: (builder) => ({
     login: builder.mutation<TokenModel, AuthLoginModel>({
       query: (data) => (
@@ -32,10 +32,11 @@ export const authApi = createApi({
     }),
     getUserInfo: builder.query<User, void>({
       query: () => 'users/info',
+      providesTags: ['Users', 'UserInfo'],
     }),
     fetchUsers: builder.query<{ '$values': User[] } | AuthResponse, void>({
       query: () => ({ url: 'users' }),
-      providesTags: ['Users'],
+      providesTags: ['Users', 'UserInfo'],
     }),
     createUser: builder.mutation<AuthResponse, User>({
       query: (user) => (
@@ -54,6 +55,7 @@ export const authApi = createApi({
           body: user,
         }
       ),
+      invalidatesTags: ['Users', 'UserInfo'],
     }),
     deleteUser: builder.mutation<AuthResponse, string>({
       query: (email) => (
