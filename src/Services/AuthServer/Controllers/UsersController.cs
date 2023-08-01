@@ -143,7 +143,12 @@ namespace Auth.Controllers
             if (foundedUser == null)
                 return BadRequest(WebResponsesAuth.authResponseErrorUser);
 
-            return Ok(foundedUser);
+            return Ok(new AuthUpdateModel
+            {
+                FullUserName = foundedUser.FullUserName,
+                Email = foundedUser.Email,
+                PhoneNumber = foundedUser.PhoneNumber
+            });
         }
 
         #endregion GetUsers

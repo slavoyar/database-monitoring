@@ -18,12 +18,7 @@ const UserSettings: FC = () => {
 
   const onUpdateClick = (): void => {
     if (user) {
-      updateUser({
-        fullUserName: user.fullUserName,
-        email: user.email,
-        password: user.password,
-        phoneNumber: user.phoneNumber,
-      });
+      updateUser(user);
     }
   };
 
