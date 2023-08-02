@@ -1,10 +1,10 @@
-import React, { FC, useEffect, useState } from 'react'
-import { DeleteOutlined, PlusOutlined } from '@ant-design/icons'
-import { MOCK_SERVERS } from '@models/Server'
-import { Optional } from '@models/Types'
-import { Button, Table } from 'antd'
+import React, { FC, useEffect, useState } from 'react';
+import { DeleteOutlined, PlusOutlined } from '@ant-design/icons';
+import { MOCK_SERVERS } from '@models/Server';
+import { Optional } from '@models/Types';
+import { Button, Table } from 'antd';
 
-import EditServerDialog from './EditServerDialog'
+import EditServerDialog from './EditServerDialog';
 
 enum ServerTableColumn {
   NAME = 'name',
@@ -35,14 +35,14 @@ const columns = [
     dataIndex: ServerTableColumn.ADDRESS,
     key: ServerTableColumn.ADDRESS,
   },
-]
+];
 
 const ServerTable: FC = () => {
-  const [tableDate, setTableData] = useState<ServerTableData[]>([])
-  const [deleteDisabled, setDeleteDisabled] = useState(true)
-  const [selectedRows, setSelectedRows] = useState<React.Key[]>([])
-  const [isModalOpen, setIsModalOpen] = useState(false)
-  const [currentServer, setcurrentServer] = useState<ServerTableData | undefined>(undefined)
+  const [tableDate, setTableData] = useState<ServerTableData[]>([]);
+  const [deleteDisabled, setDeleteDisabled] = useState(true);
+  const [selectedRows, setSelectedRows] = useState<React.Key[]>([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [currentServer, setcurrentServer] = useState<ServerTableData | undefined>(undefined);
 
   useEffect(() => {
     const data = MOCK_SERVERS.map((server) => ({
@@ -50,59 +50,59 @@ const ServerTable: FC = () => {
       address: server.address,
       name: server.name,
       status: server.status,
-    }))
-    setTableData(data)
-  }, [])
+    }));
+    setTableData(data);
+  }, []);
 
   const onAddClick = () => {
-    setIsModalOpen(true)
-  }
+    setIsModalOpen(true);
+  };
 
   const onDeleteClick = () => {
-    const newData = tableDate.filter((item) => !selectedRows.includes(item.key))
-    setSelectedRows([])
-    setTableData(newData)
-    setDeleteDisabled(true)
-  }
+    const newData = tableDate.filter((item) => !selectedRows.includes(item.key));
+    setSelectedRows([]);
+    setTableData(newData);
+    setDeleteDisabled(true);
+  };
 
   const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
-    setDeleteDisabled(!newSelectedRowKeys.length)
-    setSelectedRows(newSelectedRowKeys)
-  }
+    setDeleteDisabled(!newSelectedRowKeys.length);
+    setSelectedRows(newSelectedRowKeys);
+  };
 
   const close = (): void => {
     if (isModalOpen) {
-      setIsModalOpen(false)
+      setIsModalOpen(false);
     }
     if (currentServer) {
-      setcurrentServer(undefined)
+      setcurrentServer(undefined);
     }
-  }
+  };
 
   const onSaveHandler = (server: Omit<Optional<ServerTableData, 'key'>, 'status'>): void => {
-    const result = [...tableDate]
-    const index = tableDate.findIndex((item) => item.key === server.key)
+    const result = [...tableDate];
+    const index = tableDate.findIndex((item) => item.key === server.key);
     if (index < 0) {
       const newWorkspace = {
         ...server,
         key: String(tableDate.length + 1),
         status: 'bad',
-      }
-      result.push(newWorkspace)
+      };
+      result.push(newWorkspace);
     }
-    result[index] = { ...server } as ServerTableData
-    setTableData(result)
-    close()
-  }
+    result[index] = { ...server } as ServerTableData;
+    setTableData(result);
+    close();
+  };
 
   const rowSelection = {
     selectedRows,
     onChange: onSelectChange,
-  }
+  };
 
   const onRowClick = (record: ServerTableData): void => {
-    setcurrentServer(record)
-  }
+    setcurrentServer(record);
+  };
 
   return (
     <>
@@ -130,7 +130,7 @@ const ServerTable: FC = () => {
         onSave={onSaveHandler}
       />
     </>
-  )
-}
+  );
+};
 
-export default ServerTable
+export default ServerTable;

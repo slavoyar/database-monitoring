@@ -1,4 +1,5 @@
 ﻿using System.Data;
+using System.Security.Claims;
 using Auth.Data;
 using Auth.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -27,7 +28,7 @@ namespace Auth.Controllers
 
         #endregion Constructor and Common vars
 
-        #region Create
+        #region CreateUser
 
         /// <summary>
         /// Create User with input data
@@ -41,9 +42,10 @@ namespace Auth.Controllers
         [ProducesResponseType(typeof(WebResponse), 400)]
         [ProducesResponseType(typeof(WebResponse), 401)]
         [ProducesResponseType(typeof(WebResponse), 500)]
+        [Authorize]
         [HttpPost]
-        [Route("Create")]
-        public async Task<IActionResult> Create([FromBody] AuthRegisterModel model)
+        [Route("create")]
+        public async Task<IActionResult> CreateUser([FromBody] AuthRegisterModel model)
         {
             //--- Check Input Data
             var userRole = model.Role;
@@ -87,9 +89,9 @@ namespace Auth.Controllers
             return Ok(WebResponsesAuth.authResponseSuccessUserCreate);
         }
 
-        #endregion Create
+        #endregion CreateUser
 
-        #region Read
+        #region GetUsers
 
         /// <summary>
         /// Get all users
@@ -101,27 +103,26 @@ namespace Auth.Controllers
         [ProducesResponseType(typeof(WebResponse), 200)]
         [ProducesResponseType(typeof(WebResponse), 400)]
         [ProducesResponseType(typeof(WebResponse), 401)]
+        [Authorize]
         [HttpGet]
-        [Route("Read")]
-        public async Task<IActionResult> Read()
+        public IActionResult GetUsers()
         {
-            //--- Check Input Data
-            var foundedUsers = _userManager
-                .Users
-                .Where(user => user.Role != UserRoles.Admin)
-                .ToList();
+            var role = User.FindFirstValue(ClaimTypes.Role);
+            var email = User.FindFirstValue(ClaimTypes.Email);
 
-            if (foundedUsers == null)
+            var allUsers = _userManager.Users.Where(user => user.Email != email);
+            if (allUsers == null)
                 return BadRequest(WebResponsesAuth.authResponseErrorUser);
 
-            //--- Return found Users
-            return Ok(foundedUsers);
+            if (role != UserRoles.Admin)
+                return Ok(allUsers.Where(user => user.Role != UserRoles.Admin).ToList());
+
+            return Ok(allUsers.ToList());
         }
 
         /// <summary>
-        /// Get user with input mail
+        /// Get user by email from the claims
         /// </summary>
-        /// <param name="userMail"></param>
         /// <returns></returns>
         /// <response code="200">Success reading</response>
         /// <response code="400">Data has missing/invalid values</response>
@@ -129,29 +130,34 @@ namespace Auth.Controllers
         [ProducesResponseType(typeof(WebResponse), 200)]
         [ProducesResponseType(typeof(WebResponse), 400)]
         [ProducesResponseType(typeof(WebResponse), 401)]
-        [HttpPost]
-        [Route("Read")]
-        public async Task<IActionResult> Read([FromBody] string userMail)
+        [Authorize]
+        [HttpGet]
+        [Route("info")]
+        public async Task<IActionResult> GetUserInfo()
         {
-            //--- Check Input Data
-            var foundedUser = await _userManager.FindByEmailAsync(userMail);
-
-            // User cannot found Admin user
-            if (foundedUser == null || foundedUser?.Role == UserRoles.Admin)
+            var currentUserEmail = User.FindFirstValue(ClaimTypes.Email);
+            if (currentUserEmail == null)
                 return BadRequest(WebResponsesAuth.authResponseErrorUser);
 
-            //--- Return found user
-            return Ok(foundedUser);
+            var foundedUser = await _userManager.FindByEmailAsync(currentUserEmail);
+            if (foundedUser == null)
+                return BadRequest(WebResponsesAuth.authResponseErrorUser);
+
+            return Ok(new AuthUpdateModel
+            {
+                FullUserName = foundedUser.FullUserName,
+                Email = foundedUser.Email,
+                PhoneNumber = foundedUser.PhoneNumber
+            });
         }
 
-        #endregion Read
+        #endregion GetUsers
 
-        #region Update
+        #region UpdateUser
 
         /// <summary>
         /// Update user with input mail
         /// </summary>
-        /// <param name="userMail">Name of user to update</param>
         /// <param name="inputUser">New model data for updating user</param>
         /// <returns></returns>
         /// <response code="200">Success updating</response>
@@ -160,36 +166,34 @@ namespace Auth.Controllers
         [ProducesResponseType(typeof(WebResponse), 200)]
         [ProducesResponseType(typeof(WebResponse), 400)]
         [ProducesResponseType(typeof(WebResponse), 401)]
-        [HttpPost]
-        [Route("Update")]
-        public async Task<IActionResult> Update(string userMail, [FromBody] AuthRegisterModel inputUser)
+        [Authorize]
+        [HttpPatch]
+        [Route("update")]
+        public async Task<IActionResult> UpdateUser([FromBody] AuthUpdateModel inputUser)
         {
-            //--- Check Input Data
-            var foundedUser = await _userManager.FindByEmailAsync(userMail);
+            if (inputUser.Email == null)
+                return BadRequest(WebResponsesAuth.authResponseErrorUser);
+
+            //--- Check if user exists
+            var foundedUser = await _userManager.FindByEmailAsync(inputUser.Email);
 
             if (foundedUser == null)
                 return BadRequest(WebResponsesAuth.authResponseErrorUser);
 
-            //--- Check Input Data
-            var userRole = inputUser.Role;
-            if (userRole == null)
-                return BadRequest(WebResponsesAuth.authResponseErrorRole);
-
-            if (!await _roleManager.RoleExistsAsync(userRole))
-                return StatusCode(StatusCodes.Status500InternalServerError, WebResponsesAuth.authResponseErrorNoRoleInDb);
-
-            // User cannot found Admin mail
-            if (userRole == UserRoles.Admin)
+            //--- User can not edit other users if its not admin
+            var currentUserEmail = User.FindFirstValue(ClaimTypes.Email);
+            var currentUserRole = User.FindFirstValue(ClaimTypes.Email);
+            if (inputUser.Email != currentUserEmail)
                 return BadRequest(WebResponsesAuth.authResponseErrorUser);
 
             //--- Updating data of user
-
             foundedUser.Email = inputUser.Email;
-            foundedUser.FullUserName = inputUser.FullUserName;
-            foundedUser.Role = userRole;
-            foundedUser.PhoneNumber = inputUser.PhoneNumber;
-            foundedUser.Password = inputUser.Password;
             foundedUser.UserName = inputUser.Email;
+            foundedUser.FullUserName = inputUser.FullUserName;
+            foundedUser.PhoneNumber = inputUser.PhoneNumber;
+
+            if (inputUser.Password != null)
+                foundedUser.Password = inputUser.Password;
 
             var result = await _userManager.UpdateAsync(foundedUser);
 
@@ -199,9 +203,9 @@ namespace Auth.Controllers
             return Ok(WebResponsesAuth.authResponseSuccessUserUpdate);
         }
 
-        #endregion Update
+        #endregion UpdateUser
 
-        #region Delete
+        #region DeleteUser
 
         /// <summary>
         /// Delete user with input mail
@@ -214,14 +218,13 @@ namespace Auth.Controllers
         [ProducesResponseType(typeof(WebResponse), 200)]
         [ProducesResponseType(typeof(WebResponse), 400)]
         [ProducesResponseType(typeof(WebResponse), 401)]
-        [HttpPost]
-        [Route("Delete")]
-        public async Task<IActionResult> Delete([FromBody] string userMail)
+        [Authorize]
+        [HttpDelete]
+        public async Task<IActionResult> DeleteUser([FromBody] string userMail)
         {
             //--- Check Input Data
             var foundedUser = await _userManager.FindByEmailAsync(userMail);
 
-            // User cannot found Admin user
             if (foundedUser == null)
                 return BadRequest(WebResponsesAuth.authResponseErrorUser);
 
@@ -236,6 +239,6 @@ namespace Auth.Controllers
             return Ok(WebResponsesAuth.authResponseSuccessUserDelete);
         }
 
-        #endregion Delete
+        #endregion DeleteUser
     }
 }

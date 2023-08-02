@@ -1,24 +1,24 @@
-import React, { FC } from 'react'
-import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { DashboardOutlined, LineChartOutlined, LogoutOutlined, SettingOutlined } from '@ant-design/icons'
-import { Path } from '@models'
-import { logout } from '@redux/features/authSlice'
-import { store } from '@redux/store'
-import { Layout, Menu, Select } from 'antd'
+import React, { FC } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { DashboardOutlined, LineChartOutlined, LogoutOutlined, SettingOutlined } from '@ant-design/icons';
+import { Path } from '@models';
+import { logout } from '@redux/features/authSlice';
+import { store } from '@redux/store';
+import { Layout, Menu, Select } from 'antd';
 
-import '@css/Navbar.css'
+import '@css/Navbar.css';
 
-const { Header } = Layout
+const { Header } = Layout;
 
 const Navbar: FC = () => {
-  const navigate = useNavigate()
-  const location = useLocation()
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const onLogoClick = () => {
     if (!location.pathname.includes(Path.dashboard)) {
-      navigate(`/${Path.dashboard}`)
+      navigate(`/${Path.dashboard}`);
     }
-  }
+  };
 
   return (
     <Header className='header'>
@@ -54,7 +54,7 @@ const Navbar: FC = () => {
         </Link>
       </div>
     </Header>
-  )
-}
+  );
+};
 
-export default Navbar
+export default Navbar;

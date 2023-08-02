@@ -41,6 +41,8 @@
     "react/jsx-props-no-spreading": "off",
     "camelcase": "error",
     "spaced-comment": "error",
+    "semi": "error",
+    "comma-dangle": "error",
     "quotes": [
       "error",
       "single"

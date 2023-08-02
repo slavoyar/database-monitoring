@@ -9,6 +9,7 @@ version: "3.4"
 # agregation   http://localhost:5002/swagger/index.html
 # workspace    http://localhost:5009/swagger/index.html
 # kibana       http://localhost:5601
+# kibana       http://localhost:5601
 
 services:
 
@@ -17,25 +18,24 @@ services:
     container_name: elasticsearch
     restart: always
     volumes:
-    - elastic_data:/usr/share/elasticsearch/data/
+      - elastic_data:/usr/share/elasticsearch/data/
     environment:
       ES_JAVA_OPTS: "-Xmx256m -Xms256m"
-      discovery.type: single-node    
+      discovery.type: single-node
     ports:
-    - '9200:9200'
-    - '9300:9300'
+      - '9200:9200'
+      - '9300:9300'
 
   Kibana:
     image: kibana:7.16.2
     container_name: kibana
-    restart: always       
+    restart: always
     ports:
-    - '5601:5601'
+      - '5601:5601'
     environment:
-      - ELASTICSEARCH_URL=http://elasticsearch:9200  
+      - ELASTICSEARCH_URL=http://elasticsearch:9200
     depends_on:
-      - Elasticsearch  
-
+      - Elasticsearch
 
   # -------------------------------------------------------
   front:
@@ -218,5 +218,3 @@ volumes:
   pgadmin-data:
   front_build:
   elastic_data:
-
-

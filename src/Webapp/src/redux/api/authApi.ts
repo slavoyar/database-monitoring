@@ -1,41 +1,80 @@
-import { RootState } from '@redux/store';
-import { fetchBaseQuery } from '@reduxjs/toolkit/query'
-import { createApi } from '@reduxjs/toolkit/query/react'
+import { User } from '@models';
+import { createApi } from '@reduxjs/toolkit/query/react';
+
+import customFetchBase, { TokenModel } from './customFetchBase';
 
 export interface AuthLoginModel {
   email: string;
   password: string;
 }
 
-export interface TokenModel {
-  jwtAccessToken: string;
-  jwtRefreshToken: string;
+export interface AuthResponse {
+  status: 'Error' | 'Success'
+  message: string
+}
+
+export function isAuthResponse(value: AuthResponse | { '$values': User[] }): value is AuthResponse {
+  return (value as AuthResponse).status !== undefined;
 }
 
 export const authApi = createApi({
   reducerPath: 'authApi',
-  baseQuery: fetchBaseQuery({
-    baseUrl: '/api',
-    prepareHeaders: (headers, { getState }) => {
-      const token = (getState() as RootState).authState.accessToken
-      if (token) {
-        headers.set('authorization', `Bearer ${token}`)
-      }
-      return headers
-    },
-  }),
+  baseQuery: customFetchBase,
+  tagTypes: ['Users', 'UserInfo'],
   endpoints: (builder) => ({
     login: builder.mutation<TokenModel, AuthLoginModel>({
-      query(data) {
-        return {
+      query: (data) => (
+        {
           url: 'auth/login',
           method: 'POST',
           body: data,
-        };
-      },
-    })
+        }),
+    }),
+    getUserInfo: builder.query<User, void>({
+      query: () => 'users/info',
+      providesTags: ['Users', 'UserInfo'],
+    }),
+    fetchUsers: builder.query<{ '$values': User[] } | AuthResponse, void>({
+      query: () => ({ url: 'users' }),
+      providesTags: ['Users', 'UserInfo'],
+    }),
+    createUser: builder.mutation<AuthResponse, User>({
+      query: (user) => (
+        {
+          url: 'users/create',
+          method: 'POST',
+          body: user,
+        }),
+      invalidatesTags: ['Users'],
+    }),
+    updateUser: builder.mutation<AuthResponse, Partial<User>>({
+      query: (user) => (
+        {
+          url: 'users/update',
+          method: 'PATCH',
+          body: user,
+        }
+      ),
+      invalidatesTags: ['Users', 'UserInfo'],
+    }),
+    deleteUser: builder.mutation<AuthResponse, string>({
+      query: (email) => (
+        {
+          url: 'users/delete',
+          method: 'DELETE',
+          body: JSON.stringify(email),
+        }),
+      invalidatesTags: ['Users'],
+    }),
   }),
 });
 
-export const { useLoginMutation } = authApi;
+export const {
+  useLoginMutation,
+  useCreateUserMutation,
+  useDeleteUserMutation,
+  useUpdateUserMutation,
+  useFetchUsersQuery,
+  useGetUserInfoQuery,
+} = authApi;
 
