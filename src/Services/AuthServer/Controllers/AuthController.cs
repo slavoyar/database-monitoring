@@ -130,12 +130,19 @@ namespace Auth.Controllers
                     await _userManager.UpdateAsync(loggingUser);
                 }
 
+                var user = new AuthUpdateModel
+                {
+                    FullUserName = loggingUser.FullUserName,
+                    Email = loggingUser.Email,
+                    PhoneNumber = loggingUser.Email
+                };
+
                 return Ok
                 (new
                 {
                     JwtAccessToken = JwtAccessTokenHashed,
                     JwtRefreshToken = currentRefreshToken,
-                    user = loggingUser,
+                    user = user,
                 });
             }
 
