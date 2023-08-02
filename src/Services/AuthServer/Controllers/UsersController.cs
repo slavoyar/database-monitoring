@@ -121,7 +121,7 @@ namespace Auth.Controllers
         }
 
         /// <summary>
-        /// Get user with input mail
+        /// Get user by email from the claims
         /// </summary>
         /// <returns></returns>
         /// <response code="200">Success reading</response>
@@ -133,7 +133,7 @@ namespace Auth.Controllers
         [Authorize]
         [HttpGet]
         [Route("info")]
-        public async Task<IActionResult> GetUserByEmail()
+        public async Task<IActionResult> GetUserInfo()
         {
             var currentUserEmail = User.FindFirstValue(ClaimTypes.Email);
             if (currentUserEmail == null)
