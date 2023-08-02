@@ -3,13 +3,8 @@ namespace DatabaseMonitoring.Services.Workspace.ViewModels;
 /// <summary>
 /// Get worksapce response
 /// </summary>
-public class GetWorkspaceResponse
+public class GetWorkspaceResponse : BaseEntity
 {
-    /// <summary>
-    /// Identifier
-    /// </summary>
-    public Guid Id { get; set; }
-
     /// <summary>
     /// Name
     /// </summary>

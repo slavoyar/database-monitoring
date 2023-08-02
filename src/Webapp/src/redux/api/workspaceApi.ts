@@ -28,6 +28,7 @@ export const workspaceApi = api.injectEndpoints({
                 url: `v1/workspace/${id}`,
                 method: 'delete',
             }),
+            invalidatesTags: ['Workspace'],
         }),
         updateWorkspace: build.mutation<void, Workspace>({
             query: (workspace) => ({
@@ -35,6 +36,7 @@ export const workspaceApi = api.injectEndpoints({
                 method: 'put',
                 body: workspace,
             }),
+            invalidatesTags: ['Workspace'],
         }),
         getWorkspaceUsers: build.query<UserId[], WorkspaceId>({
             query: (id) => `v1/users/${id}`,
