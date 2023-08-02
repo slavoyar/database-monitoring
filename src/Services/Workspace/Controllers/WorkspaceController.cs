@@ -29,7 +29,7 @@ public class WorkspaceController : ControllerBase
     /// <summary>
     /// Get workspace by id
     /// </summary>
-    /// <param name="workspaceId">Worksapce identifier</param>
+    /// <param name="workspaceId">Workspace identifier</param>
     [HttpGet("{workspaceId}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -40,7 +40,18 @@ public class WorkspaceController : ControllerBase
 
         var resultEntity = await workspaceService.GetWorkspaceByIdAsync(workspaceId);
         return mapper.Map<GetWorkspaceResponse>(resultEntity);
+    }
 
+    /// <summary>
+    /// Get all workspaces
+    /// </summary>
+    [HttpGet("list")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<IEnumerable<GetWorkspaceResponse>>> GetAllWorkspacesAsync()
+    {
+        var workspaces = await workspaceService.GetAllWorkspacesAsync();
+        return workspaces.Select(w => mapper.Map<GetWorkspaceResponse>(w)).ToList();
     }
 
     /// <summary>
@@ -108,6 +119,4 @@ public class WorkspaceController : ControllerBase
     {
         return Ok(await workspaceService.GetUsersAssociatedWithServer(serverId));
     }
-
-
 }

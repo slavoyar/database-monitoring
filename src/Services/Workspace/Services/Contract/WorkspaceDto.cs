@@ -1,7 +1,7 @@
 namespace DatabaseMonitoring.Services.Workspace.Services.Contract;
 
 /// <summary>
-/// Worksapce data transfer object
+/// Workspace data transfer object
 /// </summary>
 public class WorkspaceDto
 {

@@ -21,6 +21,5 @@ public class WorkspaceMappingProfile : Profile
 
         CreateMap<WorkspaceDto, GetWorkspaceResponse>();
         CreateMap<UpsertWorkspaceRequest, WorkspaceDto>();
-
     }
 }
