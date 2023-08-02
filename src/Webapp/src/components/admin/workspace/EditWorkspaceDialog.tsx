@@ -1,16 +1,15 @@
 import React, { FC, useEffect, useState } from 'react';
 import { PropertyInput, PropertySelect } from '@components/common';
+import { Workspace } from '@models';
 import { MOCK_SERVERS } from '@models/Server';
-import { Optional } from '@models/Types';
 import { MOCK_USERS } from '@models/User';
 import { Modal, ModalFuncProps } from 'antd';
 
-import { WorkspaceTableData } from './WorkspaceTable';
 
 interface EditWorkspaceDialogProps extends ModalFuncProps {
-  workspace: WorkspaceTableData | undefined
+  workspace: Workspace | undefined
   isOpen: boolean
-  onSave: (workspace: Optional<WorkspaceTableData, 'key'>) => void
+  onSave: (workspace: Workspace) => void
 }
 
 const EditWorkspaceDialog: FC<EditWorkspaceDialogProps> = ({
@@ -20,6 +19,7 @@ const EditWorkspaceDialog: FC<EditWorkspaceDialogProps> = ({
   ...props
 }: EditWorkspaceDialogProps) => {
   const [name, setName] = useState<string>('');
+  const [description, setDescription] = useState<string>('');
   const [users, setUsers] = useState<string[]>([]);
   const [servers, setServers] = useState<string[]>([]);
 
@@ -27,9 +27,11 @@ const EditWorkspaceDialog: FC<EditWorkspaceDialogProps> = ({
 
     setName(workspace?.name ?? '');
 
-    setUsers(workspace?.users.map((item) => item.id) ?? []);
+    setDescription(workspace?.description ?? '');
 
-    setServers(workspace?.servers.map((item) => item.id) ?? []);
+    setUsers(workspace?.users ?? []);
+
+    setServers(workspace?.servers ?? []);
 
   }, [workspace, isOpen]);
 
@@ -42,19 +44,26 @@ const EditWorkspaceDialog: FC<EditWorkspaceDialogProps> = ({
 
   const onOkHandler = (): void => {
     onSave({
-      key: workspace?.key,
+      id: workspace?.id,
       name,
-      users: MOCK_USERS.filter((item) => users.includes(item.id)),
-      servers: MOCK_SERVERS.filter((item) => servers.includes(item.id)),
+      users,
+      servers,
+      description,
     });
   };
 
   const onNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setName(event.target.value);
   };
+
+  const onDescriptionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setDescription(event.target.value);
+  };
+
   return (
     <Modal title={computedTitle} onOk={onOkHandler} open={isOpen} {...props}>
       <PropertyInput title='Название' value={name} onChange={onNameChange} />
+      <PropertyInput title='Описание' value={description} onChange={onDescriptionChange} />
       <PropertySelect
         title='Пользователи'
         options={userOptions}

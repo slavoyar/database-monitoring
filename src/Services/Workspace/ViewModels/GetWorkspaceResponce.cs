@@ -6,6 +6,11 @@ namespace DatabaseMonitoring.Services.Workspace.ViewModels;
 public class GetWorkspaceResponse
 {
     /// <summary>
+    /// Identifier
+    /// </summary>
+    public Guid Id { get; set; }
+
+    /// <summary>
     /// Name
     /// </summary>
     public string Name { get; set; }
