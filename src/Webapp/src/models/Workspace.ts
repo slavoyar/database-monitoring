@@ -4,10 +4,11 @@ import { MOCK_USERS, User } from './User';
 type WorkspaceId = string
 
 interface Workspace {
-  id: WorkspaceId
-  name: string
-  users: User[]
-  servers: Server[]
+  id?: WorkspaceId;
+  name: string;
+  description?: string;
+  users: User[];
+  servers: Server[];
 }
 
 export const MOCK_WORKSPACES = [

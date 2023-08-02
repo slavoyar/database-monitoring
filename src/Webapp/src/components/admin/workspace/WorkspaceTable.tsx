@@ -59,7 +59,7 @@ const WorkspaceTable: FC = () => {
 
   useEffect(() => {
     const tableData = MOCK_WORKSPACES.map((workspace) => ({
-      key: workspace.id,
+      key: workspace.id as string,
       name: workspace.name,
       users: workspace.users,
       servers: workspace.servers,
