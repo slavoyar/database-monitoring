@@ -2,7 +2,7 @@ import React, { FC, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { Path } from '@models';
-import { AuthLoginModel, useLoginMutation } from '@redux/api/authApi';
+import { AuthLoginModel, useLoginMutation } from '@redux/api/api';
 import { RootState } from '@redux/store';
 import { Button, Form, Input, Layout } from 'antd';
 

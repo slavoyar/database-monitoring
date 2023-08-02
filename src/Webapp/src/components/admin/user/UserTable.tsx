@@ -7,7 +7,7 @@ import {
   useDeleteUserMutation,
   useFetchUsersQuery,
   useUpdateUserMutation,
-} from '@redux/api/authApi';
+} from '@redux/api/api';
 import { Button, Table } from 'antd';
 
 import EditUserDialog from './EditUserDialog';

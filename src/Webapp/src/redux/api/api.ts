@@ -17,8 +17,8 @@ export function isAuthResponse(value: AuthResponse | { '$values': User[] }): val
   return (value as AuthResponse).status !== undefined;
 }
 
-export const authApi = createApi({
-  reducerPath: 'authApi',
+export const api = createApi({
+  reducerPath: 'api',
   baseQuery: customFetchBase,
   tagTypes: ['Users', 'UserInfo'],
   endpoints: (builder) => ({
@@ -76,5 +76,5 @@ export const {
   useUpdateUserMutation,
   useFetchUsersQuery,
   useGetUserInfoQuery,
-} = authApi;
+} = api;
 
