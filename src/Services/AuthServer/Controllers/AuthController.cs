@@ -134,9 +134,9 @@ namespace Auth.Controllers
                 {
                     FullUserName = loggingUser.FullUserName,
                     Email = loggingUser.Email,
-                    PhoneNumber = loggingUser.Email
+                    PhoneNumber = loggingUser.PhoneNumber
                 };
-
+                
                 return Ok
                 (new
                 {
