@@ -1,30 +1,29 @@
 import React, { FC, useEffect, useState } from 'react';
 import { PropertyInput, PropertySelect } from '@components/common';
-import { Workspace } from '@models';
-import { MOCK_SERVERS } from '@models/Server';
+import { User, UserId, WorkspaceTableData } from '@models';
+import { MOCK_SERVERS, Server, ServerId } from '@models/Server';
 import { ValueWithLabel } from '@models/Types';
-import { isAuthResponse, useFetchUsersQuery } from '@redux/api/api';
 import { Modal, ModalFuncProps } from 'antd';
 
 interface EditWorkspaceDialogProps extends ModalFuncProps {
-  workspace: Workspace | undefined
-  isOpen: boolean
-  onSave: (workspace: Workspace) => void
+  workspace: WorkspaceTableData | undefined;
+  users: User[];
+  isOpen: boolean;
+  onSave: (workspace: WorkspaceTableData) => void;
 }
 
 const EditWorkspaceDialog: FC<EditWorkspaceDialogProps> = ({
   workspace,
   isOpen,
   onSave,
+  users: fetchedUsers,
   ...props
 }: EditWorkspaceDialogProps) => {
   const [name, setName] = useState<string>('');
   const [description, setDescription] = useState<string>('');
-  const [users, setUsers] = useState<string[]>([]);
-  const [servers, setServers] = useState<string[]>([]);
+  const [users, setUsers] = useState<User[]>([]);
+  const [servers, setServers] = useState<Server[]>([]);
   const [userOptions, setUserOptions] = useState<ValueWithLabel[]>([]);
-
-  const { data: fetchedUsers } = useFetchUsersQuery();
 
   useEffect(() => {
     setName(workspace?.name ?? '');
@@ -34,14 +33,12 @@ const EditWorkspaceDialog: FC<EditWorkspaceDialogProps> = ({
   }, [workspace, isOpen]);
 
   useEffect(() => {
-    if (fetchedUsers && !isAuthResponse(fetchedUsers)) {
-      setUserOptions(fetchedUsers.$values.map(user => (
-        {
-          value: user.id,
-          label: user.fullUserName,
-        }
-      )));
-    }
+    setUserOptions(fetchedUsers.map(user => (
+      {
+        value: user.id,
+        label: user.fullUserName,
+      }
+    )));
   }, [fetchedUsers]);
 
   const serverOptions = MOCK_SERVERS.map((server) => ({ value: server.id, label: server.name }));
@@ -68,6 +65,15 @@ const EditWorkspaceDialog: FC<EditWorkspaceDialogProps> = ({
     setDescription(event.target.value);
   };
 
+  const onUserChange = (ids: UserId[]) => {
+    console.error(ids, fetchedUsers);
+    setUsers(fetchedUsers.filter(u => ids.includes(u.id)));
+  };
+
+  const onServerChange = (ids: ServerId[]) => {
+    setServers(MOCK_SERVERS.filter(s => ids.includes(s.id)));
+  };
+
   return (
     <Modal title={computedTitle} onOk={onOkHandler} open={isOpen} {...props}>
       <PropertyInput title='Название' value={name} onChange={onNameChange} />
@@ -76,16 +82,16 @@ const EditWorkspaceDialog: FC<EditWorkspaceDialogProps> = ({
         title='Пользователи'
         options={userOptions}
         mode='multiple'
-        value={users}
-        onChange={setUsers}
+        value={users.map(u => u.id)}
+        onChange={onUserChange}
         allowClear
       />
       <PropertySelect
         title='Серверы'
         options={serverOptions}
         mode='multiple'
-        value={servers}
-        onChange={setServers}
+        value={servers.map(s => s.id)}
+        onChange={onServerChange}
         allowClear
       />
     </Modal>

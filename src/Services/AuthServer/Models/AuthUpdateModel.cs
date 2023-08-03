@@ -8,6 +8,11 @@ namespace Auth.Models
     public class AuthUpdateModel
     {
         /// <summary>
+        /// Identifier
+        /// </summary>
+        public string? Id { get; set; }
+
+        /// <summary>
         /// Custom user identification data
         /// </summary>
         public string? FullUserName { get; set; }

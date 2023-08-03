@@ -1,5 +1,5 @@
-import { MOCK_SERVERS, ServerId } from './Server';
-import { MOCK_USERS, UserId } from './User';
+import { Server, ServerId } from './Server';
+import { User, UserId } from './User';
 
 type WorkspaceId = string
 
@@ -11,19 +11,34 @@ interface Workspace {
   servers: ServerId[];
 }
 
-export const MOCK_WORKSPACES = [
-  {
-    id: 'workspace1',
-    name: 'Workspace 1',
-    users: MOCK_USERS.map(item => item.id),
-    servers: MOCK_SERVERS.filter((_, index) => index % 2).map(item => item.id),
-  },
-  {
-    id: 'workspace2',
-    name: 'Workspace 2',
-    users: MOCK_USERS.filter((_, index) => index % 2).map(item => item.id),
-    servers: MOCK_SERVERS.map(item => item.id),
-  },
-] as Workspace[];
+type WorkspaceTableData
+  = Omit<Workspace, 'users' | 'servers'>
+  & { users: User[], servers: Server[] };
 
-export { type Workspace, type WorkspaceId };
+const workspaceToTableData
+  = (workspace: Workspace, users: User[], servers: Server[]): WorkspaceTableData => ({
+    ...workspace,
+    users: users.filter(user => workspace.users.includes(user.id)),
+    servers: servers.filter(server => workspace.servers.includes(server.id)),
+  });
+
+const workspacesToTableData = (
+  workspaces: Workspace[],
+  users: User[],
+  servers: Server[],
+): WorkspaceTableData[] => workspaces.map(w => workspaceToTableData(w, users, servers));
+
+const tableDataToWorkspace
+  = (data: WorkspaceTableData): Workspace => ({
+    ...data,
+    users: data.users.map(user => user.id),
+    servers: data.servers.map(server => server.id),
+  });
+
+export {
+  type Workspace,
+  type WorkspaceId,
+  type WorkspaceTableData,
+  workspacesToTableData,
+  tableDataToWorkspace,
+};

@@ -1,7 +1,12 @@
 import React, { FC, useEffect, useState } from 'react';
 import { DeleteOutlined, PlusOutlined } from '@ant-design/icons';
 import { Server, User } from '@models';
-import { Workspace } from '@models/Workspace';
+import {
+  tableDataToWorkspace,
+  workspacesToTableData,
+  WorkspaceTableData,
+} from '@models/Workspace';
+import { isAuthResponse, useFetchUsersQuery } from '@redux/api/api';
 import {
   useCreateWorkspaceMutation,
   useDeleteWorkspaceMutation,
@@ -42,7 +47,7 @@ const columns = [
     title: 'Пользователи',
     dataIndex: WorkspaceTableColumn.USERS,
     key: WorkspaceTableColumn.USERS,
-    render: (data: User[]) => userArrayToString(data),
+    render: (ids: User[]) => userArrayToString(ids),
   },
   {
     title: 'Сервера',
@@ -53,24 +58,26 @@ const columns = [
 ];
 
 const WorkspaceTable: FC = () => {
-  const [data, setData] = useState<Workspace[]>([]);
+  const [data, setData] = useState<WorkspaceTableData[]>([]);
   const [deleteDisabled, setDeleteDisabled] = useState(true);
   const [selectedRows, setSelectedRows] = useState<React.Key[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [currentWorkspace, setCurrentWorkspace] = useState<Workspace | undefined>(
+  const [currentWorkspace, setCurrentWorkspace] = useState<WorkspaceTableData | undefined>(
     undefined,
   );
 
   const { data: fetchedData } = useGetAllWorkspacesQuery();
+  const { data: fetchedUsers } = useFetchUsersQuery();
   const [createWorkspace] = useCreateWorkspaceMutation();
   const [updateWorkspace] = useUpdateWorkspaceMutation();
   const [deleteWorkspace] = useDeleteWorkspaceMutation();
 
   useEffect(() => {
-    if (fetchedData) {
-      setData(fetchedData);
+    if (fetchedData && fetchedUsers && !isAuthResponse(fetchedUsers)) {
+      // TODO: Add servers
+      setData(workspacesToTableData(fetchedData, fetchedUsers.$values, []));
     }
-  }, [fetchedData]);
+  }, [fetchedData, fetchedUsers]);
 
   const onAddClick = () => {
     setIsModalOpen(true);
@@ -78,7 +85,6 @@ const WorkspaceTable: FC = () => {
 
   const onDeleteClick = async (): Promise<void> => {
     try {
-      console.error(selectedRows);
       await deleteWorkspace(selectedRows[0] as string);
       setDeleteDisabled(true);
     } catch (e) {
@@ -87,7 +93,6 @@ const WorkspaceTable: FC = () => {
   };
 
   const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
-    console.error(newSelectedRowKeys);
     setDeleteDisabled(!newSelectedRowKeys.length);
     setSelectedRows(newSelectedRowKeys);
   };
@@ -101,11 +106,11 @@ const WorkspaceTable: FC = () => {
     }
   };
 
-  const onSaveHandler = async (workspace: Workspace): Promise<void> => {
+  const onSaveHandler = async (workspace: WorkspaceTableData): Promise<void> => {
     const workspaceIndex = data.findIndex((item) => item.id === workspace.id);
     const promise = workspaceIndex < 0 ? createWorkspace : updateWorkspace;
     try {
-      await promise(workspace);
+      await promise(tableDataToWorkspace(workspace));
       close();
     } catch (e) {
       console.error(e);
@@ -116,7 +121,7 @@ const WorkspaceTable: FC = () => {
     onChange: onSelectChange,
   };
 
-  const onRowClick = (record: Workspace): void => {
+  const onRowClick = (record: WorkspaceTableData): void => {
     setCurrentWorkspace(record);
   };
 
@@ -142,6 +147,7 @@ const WorkspaceTable: FC = () => {
       />
       <EditWorkspaceDialog
         workspace={currentWorkspace}
+        users={fetchedUsers && !isAuthResponse(fetchedUsers) ? fetchedUsers.$values : []}
         isOpen={!!currentWorkspace || isModalOpen}
         onCancel={close}
         onSave={onSaveHandler}
