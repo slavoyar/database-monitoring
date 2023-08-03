@@ -77,7 +77,6 @@ public class WorkspaceController : ControllerBase
     [HttpDelete("{workspaceId}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-
     public async Task<ActionResult> DeleteWorkspaceAsync(Guid workspaceId)
     {
         if (await workspaceService.DeleteWorkspaceAsync(workspaceId))

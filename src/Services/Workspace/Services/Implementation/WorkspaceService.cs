@@ -97,7 +97,7 @@ public class WorkspaceService : IWorkspaceService
     /// <inheritdoc/>
     public async Task<IEnumerable<WorkspaceDto>> GetAllWorkspacesAsync()
     {
-        var workspaces = await unitOfWork.Workspaces.GetAll().ToListAsync();
+        var workspaces = await unitOfWork.Workspaces.GetAll().Include(w => w.Users).Include(w => w.Servers).ToListAsync();
         var workspacesDto = workspaces.Select(w => mapper.Map<WorkspaceDto>(w)).ToList();
         return workspacesDto;
     }
@@ -189,16 +189,35 @@ public class WorkspaceService : IWorkspaceService
     /// <inheritdoc/>
     public async Task<bool> UpdateWorkspaceAsync(Guid workspaceId, WorkspaceDto workspaceDto)
     {
-        var workspace = await unitOfWork.Workspaces.GetAsync(workspaceId);
+        var workspace = await unitOfWork.Workspaces.GetAll().Where(w => w.Id == workspaceId).Include(w => w.Servers).Include(x => x.Users).FirstAsync();
         workspace.Description = workspaceDto.Description;
         workspace.Name = workspaceDto.Name;
         unitOfWork.Workspaces.Update(workspace);
-        return await unitOfWork.Workspaces.SaveChangesAsync();
+        await unitOfWork.Workspaces.SaveChangesAsync();
+        await ReplaceEntities(workspace.Users, workspaceDto.Users, unitOfWork.Users, workspace);
+        await ReplaceEntities(workspace.Servers, workspaceDto.Servers, unitOfWork.Servers, workspace);
+        return true;
     }
 
     /// <inheritdoc/>
     public async Task<bool> WorkspaceExists(Guid id)
         => (await unitOfWork.Workspaces.GetAsync(id)) != null;
 
+    private static async Task ReplaceEntities<T>(
+        ICollection<T> oldEntities,
+        IEnumerable<Guid> newEnityIds,
+        IRepository<T> repository,
+        WorkspaceEntity workspace
+    ) where T : BaseEntity, IWithOuterId, new()
+    {
+        var entitiesToDelete = oldEntities.Where(u => !newEnityIds.Contains(u.OuterId)).ToList();
+        repository.DeleteRange(entitiesToDelete);
+
+        var oldEntityIds = oldEntities.Select(entity => entity.OuterId);
+        var entityiesToAdd = newEnityIds.Where(entityId => !oldEntityIds.Contains(entityId));
+        await repository.CreateRangeAsync(entityiesToAdd.Select(entity => new T() {OuterId = entity, Workspace = workspace}).ToList());
+
+        await repository.SaveChangesAsync();
+    }
 
 }

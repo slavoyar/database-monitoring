@@ -17,7 +17,7 @@ public class WorkspaceMappingProfile : Profile
 
         CreateMap<WorkspaceDto, WorkspaceEntity>()
             .ForMember(w => w.Servers, options => options.MapFrom(src => src.Servers.Select(s => new Server() { OuterId = s })))
-            .ForMember(w => w.Users, options => options.MapFrom(src => src.Users.Select(u => new Server() { OuterId = u })));
+            .ForMember(w => w.Users, options => options.MapFrom(src => src.Users.Select(u => new User() { OuterId = u })));
 
         CreateMap<WorkspaceDto, GetWorkspaceResponse>();
         CreateMap<UpsertWorkspaceRequest, WorkspaceDto>();
