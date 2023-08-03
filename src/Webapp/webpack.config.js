@@ -85,6 +85,10 @@ module.exports = {
         context: ['/api/auth', '/api/users'],
         target: 'http://localhost:5000/',
       },
+      {
+        context: ['/api/v1/workspace', '/api/v1/users', '/api/v1/servers'],
+        target: 'http://localhost:5009/',
+      },
     ],
   },
   performance: {
@@ -92,4 +96,4 @@ module.exports = {
     maxEntrypointSize: 512000,
     maxAssetSize: 512000,
   },
-}
+};

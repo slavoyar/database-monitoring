@@ -2,9 +2,9 @@ import React, { FC, useEffect, useState } from 'react';
 import { PropertyInput, PropertySelect } from '@components/common';
 import { Workspace } from '@models';
 import { MOCK_SERVERS } from '@models/Server';
-import { MOCK_USERS } from '@models/User';
+import { ValueWithLabel } from '@models/Types';
+import { isAuthResponse, useFetchUsersQuery } from '@redux/api/api';
 import { Modal, ModalFuncProps } from 'antd';
-
 
 interface EditWorkspaceDialogProps extends ModalFuncProps {
   workspace: Workspace | undefined
@@ -22,20 +22,28 @@ const EditWorkspaceDialog: FC<EditWorkspaceDialogProps> = ({
   const [description, setDescription] = useState<string>('');
   const [users, setUsers] = useState<string[]>([]);
   const [servers, setServers] = useState<string[]>([]);
+  const [userOptions, setUserOptions] = useState<ValueWithLabel[]>([]);
+
+  const { data: fetchedUsers } = useFetchUsersQuery();
 
   useEffect(() => {
-
     setName(workspace?.name ?? '');
-
     setDescription(workspace?.description ?? '');
-
     setUsers(workspace?.users ?? []);
-
     setServers(workspace?.servers ?? []);
-
   }, [workspace, isOpen]);
 
-  const userOptions = MOCK_USERS.map((user) => ({ value: user.id, label: user.fullUserName }));
+  useEffect(() => {
+    if (fetchedUsers && !isAuthResponse(fetchedUsers)) {
+      setUserOptions(fetchedUsers.$values.map(user => (
+        {
+          value: user.id,
+          label: user.fullUserName,
+        }
+      )));
+    }
+  }, [fetchedUsers]);
+
   const serverOptions = MOCK_SERVERS.map((server) => ({ value: server.id, label: server.name }));
 
   const computedTitle = workspace
