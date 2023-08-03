@@ -59,7 +59,7 @@ const UserTable: FC = () => {
   useEffect(() => {
     if (users && !isAuthResponse(users)) {
       setTableData(
-        users.$values.map((user) => ({
+        users.map((user) => ({
           key: user.id,
           fullUserName: user.fullUserName,
           email: user.email,

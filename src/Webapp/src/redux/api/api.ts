@@ -13,7 +13,7 @@ export interface AuthResponse {
   message: string
 }
 
-export function isAuthResponse(value: AuthResponse | { '$values': User[] }): value is AuthResponse {
+export function isAuthResponse(value: AuthResponse | User[]): value is AuthResponse {
   return (value as AuthResponse).status !== undefined;
 }
 
@@ -34,7 +34,7 @@ export const api = createApi({
       query: () => 'users/info',
       providesTags: ['Users', 'UserInfo'],
     }),
-    fetchUsers: builder.query<{ '$values': User[] } | AuthResponse, void>({
+    fetchUsers: builder.query<User[] | AuthResponse, void>({
       query: () => ({ url: 'users' }),
       providesTags: ['Users', 'UserInfo'],
     }),

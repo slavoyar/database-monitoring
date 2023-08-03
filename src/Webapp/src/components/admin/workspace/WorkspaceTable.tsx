@@ -75,7 +75,7 @@ const WorkspaceTable: FC = () => {
   useEffect(() => {
     if (fetchedData && fetchedUsers && !isAuthResponse(fetchedUsers)) {
       // TODO: Add servers
-      setData(workspacesToTableData(fetchedData, fetchedUsers.$values, []));
+      setData(workspacesToTableData(fetchedData, fetchedUsers, []));
     }
   }, [fetchedData, fetchedUsers]);
 
@@ -147,7 +147,7 @@ const WorkspaceTable: FC = () => {
       />
       <EditWorkspaceDialog
         workspace={currentWorkspace}
-        users={fetchedUsers && !isAuthResponse(fetchedUsers) ? fetchedUsers.$values : []}
+        users={fetchedUsers && !isAuthResponse(fetchedUsers) ? fetchedUsers : []}
         isOpen={!!currentWorkspace || isModalOpen}
         onCancel={close}
         onSave={onSaveHandler}
