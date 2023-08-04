@@ -28,6 +28,7 @@ const EditUserDialog: FC<EditUserDialogProps> = ({
     setName(user?.fullUserName ?? '');
     setEmail(user?.email ?? '');
     setPhone(user?.phoneNumber ?? '');
+    setRole(user?.role ?? Role.engineer);
   }, [user, isOpen]);
 
   const computedTitle = user ? 'Редактировать пользователя' : 'Создать пользователя';

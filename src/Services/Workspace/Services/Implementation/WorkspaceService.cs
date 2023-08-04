@@ -215,7 +215,7 @@ public class WorkspaceService : IWorkspaceService
 
         var oldEntityIds = oldEntities.Select(entity => entity.OuterId);
         var entityiesToAdd = newEnityIds.Where(entityId => !oldEntityIds.Contains(entityId));
-        await repository.CreateRangeAsync(entityiesToAdd.Select(entity => new T() {OuterId = entity, Workspace = workspace}).ToList());
+        await repository.CreateRangeAsync(entityiesToAdd.Select(entity => new T() { OuterId = entity, Workspace = workspace }).ToList());
 
         await repository.SaveChangesAsync();
     }

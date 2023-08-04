@@ -1,6 +1,6 @@
 import React, { FC, useEffect, useState } from 'react';
 import { DeleteOutlined, PlusOutlined } from '@ant-design/icons';
-import { User } from '@models';
+import { Role, User } from '@models';
 import {
   isAuthResponse,
   useCreateUserMutation,
@@ -18,13 +18,15 @@ enum UserTableColumn {
   NAME = 'fullUserName',
   EMAIL = 'email',
   PHONE = 'phoneNumber',
+  ROLE = 'role'
 }
 
 export interface UserTableData {
-  key: string
-  [UserTableColumn.NAME]: string
-  [UserTableColumn.EMAIL]: string
-  [UserTableColumn.PHONE]: string
+  key: string;
+  [UserTableColumn.NAME]: string;
+  [UserTableColumn.EMAIL]: string;
+  [UserTableColumn.PHONE]: string;
+  [UserTableColumn.ROLE]: Role;
 }
 
 const columns = [
@@ -64,6 +66,7 @@ const UserTable: FC = () => {
           fullUserName: user.fullUserName,
           email: user.email,
           phoneNumber: user.phoneNumber ?? '',
+          role: user.role,
         })),
       );
     }
