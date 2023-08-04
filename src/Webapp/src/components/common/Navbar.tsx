@@ -7,9 +7,8 @@ import {
   LogoutOutlined,
   SettingOutlined,
 } from '@ant-design/icons';
-import { Path, User, UserId, Workspace, WorkspaceId } from '@models';
+import { Path, UserId, WorkspaceId } from '@models';
 import { ValueWithLabel } from '@models/Types';
-import { useGetUserInfoQuery } from '@redux/api/api';
 import { useGetUserWorkspacesQuery } from '@redux/api/workspaceApi';
 import { logout } from '@redux/features/authSlice';
 import { RootState, store } from '@redux/store';

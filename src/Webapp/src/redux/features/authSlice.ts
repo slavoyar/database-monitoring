@@ -22,9 +22,15 @@ export const authSlice = createSlice({
             localStorage.removeItem('accessToken');
             localStorage.removeItem('refreshToken');
         },
+        // TODO: refactor use this reducer in extrareducers
         refreshTokens: (state, { payload }: PayloadAction<TokenModel>) => {
             state.accessToken = payload.jwtAccessToken;
             state.refreshToken = payload.jwtRefreshToken;
+            localStorage.setItem('accessToken', payload.jwtAccessToken);
+            localStorage.setItem('refreshToken', payload.jwtRefreshToken);
+        },
+        updateUser: (state, { payload }: PayloadAction<User>) => {
+            state.user = payload;
         },
     },
     extraReducers: (builder) => {
@@ -33,9 +39,10 @@ export const authSlice = createSlice({
             (state, { payload }: PayloadAction<TokenModel>) => {
                 state.accessToken = payload.jwtAccessToken;
                 state.refreshToken = payload.jwtRefreshToken;
-                state.user = payload.user;
                 localStorage.setItem('accessToken', payload.jwtAccessToken);
                 localStorage.setItem('refreshToken', payload.jwtRefreshToken);
+
+                state.user = payload.user;
             },
         );
         builder.addMatcher(
@@ -48,4 +55,4 @@ export const authSlice = createSlice({
 });
 
 export default authSlice.reducer;
-export const { logout, refreshTokens } = authSlice.actions;
+export const { logout, refreshTokens, updateUser } = authSlice.actions;
