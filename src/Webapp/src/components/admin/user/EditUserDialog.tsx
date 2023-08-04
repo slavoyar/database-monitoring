@@ -43,9 +43,10 @@ const EditUserDialog: FC<EditUserDialogProps> = ({
     });
   };
 
-  const onInputChange = (event: React.ChangeEvent<HTMLInputElement>, cb: (value: string) => void): void => {
-    cb(event.target.value);
-  };
+  const onInputChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+    cb: (value: string) => void,
+  ): void => cb(event.target.value);
 
   const onRoleChange = (value: string): void => {
     setRole(value as Role);
@@ -54,9 +55,19 @@ const EditUserDialog: FC<EditUserDialogProps> = ({
   return (
     <Modal title={computedTitle} onOk={onOkHandler} open={isOpen} {...props}>
       <PropertyInput title='Имя' value={name} onChange={(event) => onInputChange(event, setName)} />
-      <PropertyInput title='Email' value={email} onChange={(event) => onInputChange(event, setEmail)} />
-      <PropertyInput title='Телефон' value={phone} onChange={(event) => onInputChange(event, setPhone)} />
-      <PropertyInput title='Пароль' type='password' value={password} onChange={(event) => onInputChange(event, setPassword)} />
+      <PropertyInput
+        title='Email'
+        value={email}
+        onChange={(event) => onInputChange(event, setEmail)} />
+      <PropertyInput
+        title='Телефон'
+        value={phone}
+        onChange={(event) => onInputChange(event, setPhone)} />
+      <PropertyInput
+        title='Пароль'
+        type='password'
+        value={password}
+        onChange={(event) => onInputChange(event, setPassword)} />
       <PropertySelect
         title='Роль'
         options={arrayToOptions<Role>(Object.values(Role))}

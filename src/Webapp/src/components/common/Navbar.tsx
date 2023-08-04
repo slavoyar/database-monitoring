@@ -1,6 +1,11 @@
 import React, { FC } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { DashboardOutlined, LineChartOutlined, LogoutOutlined, SettingOutlined } from '@ant-design/icons';
+import {
+  DashboardOutlined,
+  LineChartOutlined,
+  LogoutOutlined,
+  SettingOutlined,
+} from '@ant-design/icons';
 import { Path } from '@models';
 import { logout } from '@redux/features/authSlice';
 import { store } from '@redux/store';

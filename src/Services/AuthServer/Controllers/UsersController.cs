@@ -122,7 +122,8 @@ namespace Auth.Controllers
                 Id = user.Id,
                 FullUserName = user.FullUserName,
                 Email = user.Email,
-                PhoneNumber = user.PhoneNumber
+                PhoneNumber = user.PhoneNumber,
+                Role = foundedUser.Role
             }));
         }
 
@@ -154,7 +155,8 @@ namespace Auth.Controllers
                 Id = foundedUser.Id,
                 FullUserName = foundedUser.FullUserName,
                 Email = foundedUser.Email,
-                PhoneNumber = foundedUser.PhoneNumber
+                PhoneNumber = foundedUser.PhoneNumber,
+                Role = foundedUser.Role
             });
         }
 

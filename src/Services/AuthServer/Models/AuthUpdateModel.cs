@@ -28,6 +28,11 @@ namespace Auth.Models
         [EmailAddress]
         public string? Email { get; set; }
 
+        /// <summary>
+        /// Role
+        /// </summary>
+        public string? Role { get; set; }
+
         public string? Password { get; set; }
     }
 }
