@@ -38,6 +38,12 @@ export const authSlice = createSlice({
                 localStorage.setItem('refreshToken', payload.jwtRefreshToken);
             },
         );
+        builder.addMatcher(
+            api.endpoints.getUserInfo.matchFulfilled,
+            (state, { payload }: PayloadAction<User>) => {
+                state.user = payload;
+            },
+        );
     },
 });
 

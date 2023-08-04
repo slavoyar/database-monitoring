@@ -11,6 +11,10 @@ export const workspaceApi = api.injectEndpoints({
             query: () => 'v1/workspace/list',
             providesTags: ['Workspace'],
         }),
+        getUserWorkspaces: build.query<Workspace[], UserId>({
+            query: (id) => `v1/workspace/user/${id}`,
+            providesTags: ['Workspace'],
+        }),
         getWorkSpaceById: build.query<Workspace, WorkspaceId>({
             query: (id) => `v1/workspace/${id}`,
             providesTags: ['Workspace'],
@@ -78,6 +82,7 @@ export const workspaceApi = api.injectEndpoints({
 
 export const {
     useGetAllWorkspacesQuery,
+    useGetUserWorkspacesQuery,
     useGetWorkSpaceByIdQuery,
     useGetWorkspaceServersQuery,
     useGetWorkspaceUsersQuery,

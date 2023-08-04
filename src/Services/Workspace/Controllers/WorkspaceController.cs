@@ -55,6 +55,18 @@ public class WorkspaceController : ControllerBase
     }
 
     /// <summary>
+    /// Get workspaces for given user
+    /// </summary>
+    [HttpGet("user/{userId}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<IEnumerable<GetWorkspaceResponse>>> GetWorkspacesForUserAsync(Guid userId)
+    {
+        var workspaces = await workspaceService.GetAllWorkspacesAsync();
+        return workspaces.Select(w => mapper.Map<GetWorkspaceResponse>(w)).Where(w => w.Users.Contains(userId)).ToList();
+    }
+
+    /// <summary>
     /// Create new workspace
     /// </summary>
     /// <param name="request">New workspace data</param>

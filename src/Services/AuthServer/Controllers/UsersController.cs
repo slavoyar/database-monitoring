@@ -123,7 +123,7 @@ namespace Auth.Controllers
                 FullUserName = user.FullUserName,
                 Email = user.Email,
                 PhoneNumber = user.PhoneNumber,
-                Role = foundedUser.Role
+                Role = user.Role
             }));
         }
 
