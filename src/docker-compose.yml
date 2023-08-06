@@ -9,7 +9,6 @@ version: "3.4"
 # agregation   http://localhost:5002/swagger/index.html
 # workspace    http://localhost:5009/swagger/index.html
 # kibana       http://localhost:5601
-# kibana       http://localhost:5601
 
 services:
 
