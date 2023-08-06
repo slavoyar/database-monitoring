@@ -15,7 +15,7 @@ namespace Agregation.Infrastructure.Services.Implementations
             ILogRepository _logRepository, IServerPatientRepository repository, IMapper mapper)
         {
             logRepository = _logRepository;
-            serverPatientRepository = repository;   
+            serverPatientRepository = repository;
             this.mapper = mapper;
         }
 
@@ -23,7 +23,8 @@ namespace Agregation.Infrastructure.Services.Implementations
         {
             var serverEntities = await serverPatientRepository.GetPagedAsync(page, itemsPerPage);
             var shortServersPatients = mapper.Map<List<ShortServerPatientDto>>(serverEntities);
-            for (int i = 0; i < serverEntities.Count; i++) {
+            for (int i = 0; i < serverEntities.Count; i++)
+            {
                 var count = logRepository.GetNumberOfLogsById(serverEntities[i].Id.ToString(), page, itemsPerPage);
                 shortServersPatients[i].CountOfLogs = count;
             }
@@ -47,7 +48,8 @@ namespace Agregation.Infrastructure.Services.Implementations
 
         public async Task<bool> TryDeleteAsync(Guid id)
         {
-            return await Task.Run(() => {
+            return await Task.Run(() =>
+            {
                 var isSuccess = serverPatientRepository.TryDelete(id);
                 serverPatientRepository.SaveChanges();
                 return isSuccess;
@@ -61,10 +63,25 @@ namespace Agregation.Infrastructure.Services.Implementations
             return dto;
         }
 
+        public async Task<ICollection<ServerPatientDto>?> GetListByListGuid(ICollection<Guid> guids)
+        {
+            var entity = await Task.Run(() => serverPatientRepository.GetListGuid(guids));
+            var dto = mapper.Map<ICollection<ServerPatientDto>>(entity);
+            return dto;
+        }
+
+        public async Task<ICollection<ShortServerPatientDto>?> GetShortListByListGuid(ICollection<Guid> guids)
+        {
+            var entity = await Task.Run(() => serverPatientRepository.GetListGuid(guids));
+            var dto = mapper.Map<ICollection<ShortServerPatientDto>>(entity);
+            return dto;
+        }
+
         public async Task<bool> TryUpdateAsync(ServerPatientDto dto)
         {
             var entity = mapper.Map<ServerPatient>(dto);
-            return await Task.Run(() => {
+            return await Task.Run(() =>
+            {
                 var isSuccess = serverPatientRepository.TryUpdate(entity);
                 serverPatientRepository.SaveChanges();
                 return isSuccess;
