@@ -40,10 +40,11 @@ namespace Agregation.Infrastructure.Services.Implementations
 
                 try
                 {
-                    var servers = _serverPatientSetService.GetShortServerPatientsPaged(1, 100).Result;
+                    var servers = _serverPatientSetService.GetPagedAsync(1, 100).Result;
 
                     foreach (var server in servers)
                     {
+                        var stateChanged = false;
                         var serverDataEndpoint = new Uri("http://" + server.IdAddress + "/" + patientEndpoint);
 
                         var _httpClient = new HttpClient();
@@ -73,19 +74,26 @@ namespace Agregation.Infrastructure.Services.Implementations
                             logsList.Add(newLog);
                         }
 
-                        _AppDatabaseContext.Logs.AddRange(logsList);
-                        _AppDatabaseContext.SaveChanges();
+                        if (logsList.Count > 0)
+                        {
+                            stateChanged = true;
+                            _AppDatabaseContext.Logs.AddRange(logsList);
+                            _AppDatabaseContext.SaveChanges();
+                        }
+
+                        // Send new data to SignalR Group
+                        if (stateChanged)
+                        {
+                            var newServerState = _serverPatientSetService.GetAsync(new Guid(server.Id));
+                            var serverInJson = JsonSerializer.Serialize(newServerState);
+                            _hubContext.Clients.Group(server.Id).SendAsync("Receive", serverInJson).Wait();
+                        }
                     }
                 }
                 catch (Exception ex)
                 {
                     Console.WriteLine(ex.Message);
                 }
-
-                var currentServers = _serverPatientSetService.GetShortServerPatientsPaged(1, 100).Result;
-                var serversInJson = JsonSerializer.Serialize(currentServers);
-                //Console.WriteLine($"try send message {serversInJson}");
-                _hubContext.Clients.Users("").SendAsync("ServersState", $"{serversInJson}");
 
                 var random = new Random();
                 var randomValue = random.Next(500, 1000);
