@@ -1,29 +1,34 @@
-import React, { FC, useEffect } from 'react';
-import { useGetUserInfoQuery, useUpdateUserMutation } from '@redux/api/authApi';
+import React, { FC, useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { User } from '@models';
+import { useUpdateUserMutation } from '@redux/api/api';
+import { updateUser } from '@redux/features/authSlice';
+import { RootState } from '@redux/store';
 import { Button, Form, Input } from 'antd';
 
 import '@css/UserSettings.css';
 
 const UserSettings: FC = () => {
   const [form] = Form.useForm();
-  const [updateUser] = useUpdateUserMutation();
+  const userState = useSelector<RootState>(state => state.authState.user) as User;
+  const dispatch = useDispatch();
+  const [user, setUser] = useState<User>(userState);
 
-  let { data: user } = useGetUserInfoQuery();
+  const [updateUserQuery] = useUpdateUserMutation();
 
   useEffect(() => {
-    if (user) {
-      form.setFieldsValue({ ...user });
+    if (userState) {
+      form.setFieldsValue({ ...userState });
     }
-  }, [user]);
+  }, [userState]);
 
-  const onUpdateClick = (): void => {
-    if (user) {
-      updateUser(user);
-    }
+  const onUpdateClick = async (): Promise<void> => {
+    await updateUserQuery(user);
+    dispatch(updateUser(user));
   };
 
   const onFormChange = () => {
-    user = { ...form.getFieldsValue() };
+    setUser({ ...form.getFieldsValue() });
   };
 
   return (

@@ -132,11 +132,12 @@ namespace Auth.Controllers
 
                 var user = new AuthUpdateModel
                 {
+                    Id = loggingUser.Id,
                     FullUserName = loggingUser.FullUserName,
                     Email = loggingUser.Email,
                     PhoneNumber = loggingUser.PhoneNumber
                 };
-                
+
                 return Ok
                 (new
                 {

@@ -9,7 +9,6 @@ version: "3.4"
 # agregation   http://localhost:5002/swagger/index.html
 # workspace    http://localhost:5009/swagger/index.html
 # kibana       http://localhost:5601
-# kibana       http://localhost:5601
 
 services:
 
@@ -161,7 +160,7 @@ services:
     container_name: ${COMPOSE_PROJECT_NAME}-workspace
     image: ${COMPOSE_PROJECT_NAME}-workspace
     ports:
-      - "5009:5165"
+      - "5009:5009"
     depends_on:
       - workspace-postgre
       - rabbitmq
@@ -171,7 +170,7 @@ services:
       dockerfile: Services/Workspace/Dockerfile
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=http://+:5165
+      - ASPNETCORE_URLS=http://+:5009
       - PostgreConfiguration__ConnectionString=Host=workspace-postgre;Port=5433;Username=postgres;Password=admin;Database=Workspace;Pooling=true;TrustServerCertificate=True
       - EventBusConfiguration__Connection=rabbitmq
       - ELASTICSEARCH_URL=http://elasticsearch:9200

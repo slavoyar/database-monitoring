@@ -1,5 +1,5 @@
 import { User } from '@models';
-import { authApi } from '@redux/api/authApi';
+import { api } from '@redux/api/api';
 import { TokenModel } from '@redux/api/customFetchBase';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
@@ -22,24 +22,37 @@ export const authSlice = createSlice({
             localStorage.removeItem('accessToken');
             localStorage.removeItem('refreshToken');
         },
+        // TODO: refactor use this reducer in extrareducers
         refreshTokens: (state, { payload }: PayloadAction<TokenModel>) => {
             state.accessToken = payload.jwtAccessToken;
             state.refreshToken = payload.jwtRefreshToken;
+            localStorage.setItem('accessToken', payload.jwtAccessToken);
+            localStorage.setItem('refreshToken', payload.jwtRefreshToken);
+        },
+        updateUser: (state, { payload }: PayloadAction<User>) => {
+            state.user = payload;
         },
     },
     extraReducers: (builder) => {
         builder.addMatcher(
-            authApi.endpoints.login.matchFulfilled,
+            api.endpoints.login.matchFulfilled,
             (state, { payload }: PayloadAction<TokenModel>) => {
                 state.accessToken = payload.jwtAccessToken;
                 state.refreshToken = payload.jwtRefreshToken;
-                state.user = payload.user;
                 localStorage.setItem('accessToken', payload.jwtAccessToken);
                 localStorage.setItem('refreshToken', payload.jwtRefreshToken);
+
+                state.user = payload.user;
+            },
+        );
+        builder.addMatcher(
+            api.endpoints.getUserInfo.matchFulfilled,
+            (state, { payload }: PayloadAction<User>) => {
+                state.user = payload;
             },
         );
     },
 });
 
 export default authSlice.reducer;
-export const { logout, refreshTokens } = authSlice.actions;
+export const { logout, refreshTokens, updateUser } = authSlice.actions;

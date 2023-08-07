@@ -13,14 +13,14 @@ export interface AuthResponse {
   message: string
 }
 
-export function isAuthResponse(value: AuthResponse | { '$values': User[] }): value is AuthResponse {
+export function isAuthResponse(value: AuthResponse | User[]): value is AuthResponse {
   return (value as AuthResponse).status !== undefined;
 }
 
-export const authApi = createApi({
-  reducerPath: 'authApi',
+export const api = createApi({
+  reducerPath: 'api',
   baseQuery: customFetchBase,
-  tagTypes: ['Users', 'UserInfo'],
+  tagTypes: ['Users', 'UserInfo', 'Workspace'],
   endpoints: (builder) => ({
     login: builder.mutation<TokenModel, AuthLoginModel>({
       query: (data) => (
@@ -34,7 +34,7 @@ export const authApi = createApi({
       query: () => 'users/info',
       providesTags: ['Users', 'UserInfo'],
     }),
-    fetchUsers: builder.query<{ '$values': User[] } | AuthResponse, void>({
+    fetchUsers: builder.query<User[] | AuthResponse, void>({
       query: () => ({ url: 'users' }),
       providesTags: ['Users', 'UserInfo'],
     }),
@@ -76,5 +76,5 @@ export const {
   useUpdateUserMutation,
   useFetchUsersQuery,
   useGetUserInfoQuery,
-} = authApi;
+} = api;
 

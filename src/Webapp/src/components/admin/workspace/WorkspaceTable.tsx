@@ -1,23 +1,27 @@
 import React, { FC, useEffect, useState } from 'react';
 import { DeleteOutlined, PlusOutlined } from '@ant-design/icons';
 import { Server, User } from '@models';
-import { Optional } from '@models/Types';
-import { MOCK_WORKSPACES } from '@models/Workspace';
+import {
+  tableDataToWorkspace,
+  workspacesToTableData,
+  WorkspaceTableData,
+} from '@models/Workspace';
+import { isAuthResponse, useFetchUsersQuery } from '@redux/api/api';
+import {
+  useCreateWorkspaceMutation,
+  useDeleteWorkspaceMutation,
+  useGetAllWorkspacesQuery,
+  useUpdateWorkspaceMutation,
+} from '@redux/api/workspaceApi';
 import { Button, Table } from 'antd';
 
 import EditWorkspaceDialog from './EditWorkspaceDialog';
 
 enum WorkspaceTableColumn {
   NAME = 'name',
+  DESCRIPTION = 'description',
   USERS = 'users',
   SERVERS = 'servers',
-}
-
-export interface WorkspaceTableData {
-  key: string
-  [WorkspaceTableColumn.NAME]: string
-  [WorkspaceTableColumn.USERS]: User[]
-  [WorkspaceTableColumn.SERVERS]: Server[]
 }
 
 function userArrayToString(arr: User[]): string {
@@ -35,10 +39,15 @@ const columns = [
     key: WorkspaceTableColumn.NAME,
   },
   {
+    title: 'Описание',
+    dataIndex: WorkspaceTableColumn.DESCRIPTION,
+    key: WorkspaceTableColumn.DESCRIPTION,
+  },
+  {
     title: 'Пользователи',
     dataIndex: WorkspaceTableColumn.USERS,
     key: WorkspaceTableColumn.USERS,
-    render: (data: User[]) => userArrayToString(data),
+    render: (ids: User[]) => userArrayToString(ids),
   },
   {
     title: 'Сервера',
@@ -57,25 +66,30 @@ const WorkspaceTable: FC = () => {
     undefined,
   );
 
+  const { data: fetchedData } = useGetAllWorkspacesQuery();
+  const { data: fetchedUsers } = useFetchUsersQuery();
+  const [createWorkspace] = useCreateWorkspaceMutation();
+  const [updateWorkspace] = useUpdateWorkspaceMutation();
+  const [deleteWorkspace] = useDeleteWorkspaceMutation();
+
   useEffect(() => {
-    const tableData = MOCK_WORKSPACES.map((workspace) => ({
-      key: workspace.id,
-      name: workspace.name,
-      users: workspace.users,
-      servers: workspace.servers,
-    }));
-    setData(tableData);
-  }, []);
+    if (fetchedData && fetchedUsers && !isAuthResponse(fetchedUsers)) {
+      // TODO: Add servers
+      setData(workspacesToTableData(fetchedData, fetchedUsers, []));
+    }
+  }, [fetchedData, fetchedUsers]);
 
   const onAddClick = () => {
     setIsModalOpen(true);
   };
 
-  const onDeleteClick = () => {
-    const newData = data.filter((item) => !selectedRows.includes(item.key));
-    setSelectedRows([]);
-    setData(newData);
-    setDeleteDisabled(true);
+  const onDeleteClick = async (): Promise<void> => {
+    try {
+      await deleteWorkspace(selectedRows[0] as string);
+      setDeleteDisabled(true);
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
@@ -92,19 +106,15 @@ const WorkspaceTable: FC = () => {
     }
   };
 
-  const onSaveHandler = (workspace: Optional<WorkspaceTableData, 'key'>): void => {
-    const result = [...data];
-    const workspaceIndex = data.findIndex((item) => item.key === workspace.key);
-    if (workspaceIndex < 0) {
-      const newWorkspace = {
-        ...workspace,
-        key: String(data.length + 1),
-      };
-      result.push(newWorkspace);
+  const onSaveHandler = async (workspace: WorkspaceTableData): Promise<void> => {
+    const workspaceIndex = data.findIndex((item) => item.id === workspace.id);
+    const promise = workspaceIndex < 0 ? createWorkspace : updateWorkspace;
+    try {
+      await promise(tableDataToWorkspace(workspace));
+      close();
+    } catch (e) {
+      console.error(e);
     }
-    result[workspaceIndex] = { ...workspace } as WorkspaceTableData;
-    setData(result);
-    close();
   };
   const rowSelection = {
     selectedRows,
@@ -133,9 +143,11 @@ const WorkspaceTable: FC = () => {
         columns={columns}
         rowSelection={rowSelection}
         onRow={(record) => ({ onClick: () => onRowClick(record) })}
+        rowKey='id'
       />
       <EditWorkspaceDialog
         workspace={currentWorkspace}
+        users={fetchedUsers && !isAuthResponse(fetchedUsers) ? fetchedUsers : []}
         isOpen={!!currentWorkspace || isModalOpen}
         onCancel={close}
         onSave={onSaveHandler}

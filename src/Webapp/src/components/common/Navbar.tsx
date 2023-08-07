@@ -1,9 +1,17 @@
-import React, { FC } from 'react';
+import React, { FC, useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { DashboardOutlined, LineChartOutlined, LogoutOutlined, SettingOutlined } from '@ant-design/icons';
-import { Path } from '@models';
+import {
+  DashboardOutlined,
+  LineChartOutlined,
+  LogoutOutlined,
+  SettingOutlined,
+} from '@ant-design/icons';
+import { Path, UserId, WorkspaceId } from '@models';
+import { ValueWithLabel } from '@models/Types';
+import { useGetUserWorkspacesQuery } from '@redux/api/workspaceApi';
 import { logout } from '@redux/features/authSlice';
-import { store } from '@redux/store';
+import { RootState, store } from '@redux/store';
 import { Layout, Menu, Select } from 'antd';
 
 import '@css/Navbar.css';
@@ -13,6 +21,25 @@ const { Header } = Layout;
 const Navbar: FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const [workspace, setWorkspace] = useState<WorkspaceId>('');
+  const [workspaceOptions, setWorkspaceOptions] = useState<ValueWithLabel[]>([]);
+
+  const userId = useSelector<RootState>(state => state.authState.user?.id) as UserId;
+
+  const { data: workspaces } = useGetUserWorkspacesQuery(userId, { skip: !userId });
+
+  useEffect(() => {
+    if (!workspaces) {
+      setWorkspace('');
+      setWorkspaceOptions([]);
+      return;
+    }
+    if (!workspace && workspaces.length) {
+      setWorkspace(workspaces[0].id as WorkspaceId);
+    }
+    const options = workspaces.map(w => ({ value: w.id, label: w.name } as ValueWithLabel));
+    setWorkspaceOptions(options);
+  }, [workspaces]);
 
   const onLogoClick = () => {
     if (!location.pathname.includes(Path.dashboard)) {
@@ -45,7 +72,13 @@ const Navbar: FC = () => {
         </Menu.Item>
       </Menu>
       <div className='navbar-settings'>
-        <Select placeholder='Workspace' className='navbar-workspace-select' />
+        <Select
+          placeholder='Workspace'
+          className='navbar-workspace-select'
+          value={workspace}
+          options={workspaceOptions}
+          onChange={setWorkspace}
+        />
         <Link to={`/${Path.admin}/${Path.user}`}>
           <SettingOutlined />
         </Link>

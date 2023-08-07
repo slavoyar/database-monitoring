@@ -282,6 +282,8 @@ src/**/inf.yaml
 
 .angular/
 
+failures.txt
+
 *launch.json
 *tasks.json
 

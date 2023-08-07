@@ -105,19 +105,26 @@ namespace Auth.Controllers
         [ProducesResponseType(typeof(WebResponse), 401)]
         [Authorize]
         [HttpGet]
-        public IActionResult GetUsers()
+        public ActionResult<List<AuthUpdateModel>> GetUsers()
         {
             var role = User.FindFirstValue(ClaimTypes.Role);
             var email = User.FindFirstValue(ClaimTypes.Email);
 
-            var allUsers = _userManager.Users.Where(user => user.Email != email);
+            var allUsers = _userManager.Users;
             if (allUsers == null)
                 return BadRequest(WebResponsesAuth.authResponseErrorUser);
 
             if (role != UserRoles.Admin)
                 return Ok(allUsers.Where(user => user.Role != UserRoles.Admin).ToList());
 
-            return Ok(allUsers.ToList());
+            return Ok(allUsers.Select(user => new AuthUpdateModel
+            {
+                Id = user.Id,
+                FullUserName = user.FullUserName,
+                Email = user.Email,
+                PhoneNumber = user.PhoneNumber,
+                Role = user.Role
+            }));
         }
 
         /// <summary>
@@ -133,7 +140,7 @@ namespace Auth.Controllers
         [Authorize]
         [HttpGet]
         [Route("info")]
-        public async Task<IActionResult> GetUserInfo()
+        public async Task<ActionResult<AuthUpdateModel>> GetUserInfo()
         {
             var currentUserEmail = User.FindFirstValue(ClaimTypes.Email);
             if (currentUserEmail == null)
@@ -145,9 +152,11 @@ namespace Auth.Controllers
 
             return Ok(new AuthUpdateModel
             {
+                Id = foundedUser.Id,
                 FullUserName = foundedUser.FullUserName,
                 Email = foundedUser.Email,
-                PhoneNumber = foundedUser.PhoneNumber
+                PhoneNumber = foundedUser.PhoneNumber,
+                Role = foundedUser.Role
             });
         }
 
@@ -182,7 +191,6 @@ namespace Auth.Controllers
 
             //--- User can not edit other users if its not admin
             var currentUserEmail = User.FindFirstValue(ClaimTypes.Email);
-            var currentUserRole = User.FindFirstValue(ClaimTypes.Email);
             if (inputUser.Email != currentUserEmail)
                 return BadRequest(WebResponsesAuth.authResponseErrorUser);
 
@@ -222,7 +230,10 @@ namespace Auth.Controllers
         [HttpDelete]
         public async Task<IActionResult> DeleteUser([FromBody] string userMail)
         {
-            //--- Check Input Data
+            var currentUserEmail = User.FindFirstValue(ClaimTypes.Email);
+            if (currentUserEmail == userMail)
+                return BadRequest(WebResponsesAuth.authResponseErrorUser);
+
             var foundedUser = await _userManager.FindByEmailAsync(userMail);
 
             if (foundedUser == null)

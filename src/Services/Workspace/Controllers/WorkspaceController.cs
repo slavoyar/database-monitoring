@@ -29,7 +29,7 @@ public class WorkspaceController : ControllerBase
     /// <summary>
     /// Get workspace by id
     /// </summary>
-    /// <param name="workspaceId">Worksapce identifier</param>
+    /// <param name="workspaceId">Workspace identifier</param>
     [HttpGet("{workspaceId}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -40,7 +40,30 @@ public class WorkspaceController : ControllerBase
 
         var resultEntity = await workspaceService.GetWorkspaceByIdAsync(workspaceId);
         return mapper.Map<GetWorkspaceResponse>(resultEntity);
+    }
 
+    /// <summary>
+    /// Get all workspaces
+    /// </summary>
+    [HttpGet("list")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<IEnumerable<GetWorkspaceResponse>>> GetAllWorkspacesAsync()
+    {
+        var workspaces = await workspaceService.GetAllWorkspacesAsync();
+        return workspaces.Select(w => mapper.Map<GetWorkspaceResponse>(w)).ToList();
+    }
+
+    /// <summary>
+    /// Get workspaces for given user
+    /// </summary>
+    [HttpGet("user/{userId}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<IEnumerable<GetWorkspaceResponse>>> GetWorkspacesForUserAsync(Guid userId)
+    {
+        var workspaces = await workspaceService.GetAllWorkspacesAsync();
+        return workspaces.Select(w => mapper.Map<GetWorkspaceResponse>(w)).Where(w => w.Users.Contains(userId)).ToList();
     }
 
     /// <summary>
@@ -66,7 +89,6 @@ public class WorkspaceController : ControllerBase
     [HttpDelete("{workspaceId}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-
     public async Task<ActionResult> DeleteWorkspaceAsync(Guid workspaceId)
     {
         if (await workspaceService.DeleteWorkspaceAsync(workspaceId))
@@ -108,6 +130,4 @@ public class WorkspaceController : ControllerBase
     {
         return Ok(await workspaceService.GetUsersAssociatedWithServer(serverId));
     }
-
-
 }

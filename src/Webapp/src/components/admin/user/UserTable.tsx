@@ -1,13 +1,13 @@
 import React, { FC, useEffect, useState } from 'react';
 import { DeleteOutlined, PlusOutlined } from '@ant-design/icons';
-import { User } from '@models';
+import { Role, User } from '@models';
 import {
   isAuthResponse,
   useCreateUserMutation,
   useDeleteUserMutation,
   useFetchUsersQuery,
   useUpdateUserMutation,
-} from '@redux/api/authApi';
+} from '@redux/api/api';
 import { Button, Table } from 'antd';
 
 import EditUserDialog from './EditUserDialog';
@@ -18,13 +18,15 @@ enum UserTableColumn {
   NAME = 'fullUserName',
   EMAIL = 'email',
   PHONE = 'phoneNumber',
+  ROLE = 'role'
 }
 
 export interface UserTableData {
-  key: string
-  [UserTableColumn.NAME]: string
-  [UserTableColumn.EMAIL]: string
-  [UserTableColumn.PHONE]: string
+  key: string;
+  [UserTableColumn.NAME]: string;
+  [UserTableColumn.EMAIL]: string;
+  [UserTableColumn.PHONE]: string;
+  [UserTableColumn.ROLE]: Role;
 }
 
 const columns = [
@@ -59,11 +61,12 @@ const UserTable: FC = () => {
   useEffect(() => {
     if (users && !isAuthResponse(users)) {
       setTableData(
-        users.$values.map((user) => ({
+        users.map((user) => ({
           key: user.id,
           fullUserName: user.fullUserName,
           email: user.email,
           phoneNumber: user.phoneNumber ?? '',
+          role: user.role,
         })),
       );
     }
