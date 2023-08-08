@@ -103,10 +103,10 @@ services:
     depends_on:
       - agregation-postgre
     ports:
-      - "5002:5278"
+      - "5002:5002"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=http://+:5278
+      - ASPNETCORE_URLS=http://+:5002
       - ConnectionStrings__Postgre=Host=agregation-postgre;Port=5432;Database=MIAY;Username=postgres;Password=admin;Pooling=True;TrustServerCertificate=True
     tty: true
     restart: on-failure
