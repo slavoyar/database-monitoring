@@ -3,6 +3,7 @@ using System;
 using Agregation.Infrastructure.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Agregation.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    partial class ApplicationContextModelSnapshot : ModelSnapshot
+    [Migration("20230807180340_add-test-data")]
+    partial class addtestdata
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -112,7 +115,7 @@ namespace Agregation.Migrations
                             ConnectionStatus = true,
                             IconId = "1",
                             IdAddress = "testpatient-1",
-                            LastSuccessLog = "2023-08-07 21:08:53",
+                            LastSuccessLog = "2023-08-07 21:03:40",
                             Name = "testpatient1",
                             PingStatus = true,
                             Status = "Working"
@@ -123,7 +126,7 @@ namespace Agregation.Migrations
                             ConnectionStatus = true,
                             IconId = "1",
                             IdAddress = "testpatient-2",
-                            LastSuccessLog = "2023-08-07 21:08:53",
+                            LastSuccessLog = "2023-08-07 21:03:40",
                             Name = "testpatient2",
                             PingStatus = true,
                             Status = "Working"
@@ -134,7 +137,7 @@ namespace Agregation.Migrations
                             ConnectionStatus = true,
                             IconId = "1",
                             IdAddress = "testpatient-3",
-                            LastSuccessLog = "2023-08-07 21:08:53",
+                            LastSuccessLog = "2023-08-07 21:03:40",
                             Name = "testpatient3",
                             PingStatus = true,
                             Status = "Working"
