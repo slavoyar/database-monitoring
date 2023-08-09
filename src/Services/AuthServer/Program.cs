@@ -29,6 +29,7 @@ builder.Services.AddIdentity<AuthUser, IdentityRole>(options =>
     {
         options.SignIn.RequireConfirmedEmail = false;
         options.SignIn.RequireConfirmedPhoneNumber = false;
+        options.Lockout.AllowedForNewUsers = false;
     })
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<AuthDbContext>()
