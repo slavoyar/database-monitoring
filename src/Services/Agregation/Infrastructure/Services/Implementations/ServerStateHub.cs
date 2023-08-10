@@ -7,30 +7,30 @@ namespace Agregation.Infrastructure.Services.Implementations
 {
     public class ServerStateHub : Hub
     {
-        public async Task Subscribe(string serverId)
+        public async Task Subscribe(Guid serverId)
         {
-            await Groups.AddToGroupAsync(Context.ConnectionId, serverId);
+            await Groups.AddToGroupAsync(Context.ConnectionId, serverId.ToString());
         }
 
-        public async Task SubscribeToGroup(ICollection<string> ListServerId)
+        public async Task SubscribeToGroup(ICollection<Guid> ListServerId)
         {
             foreach (var serverId in ListServerId)
             {
-                await Groups.AddToGroupAsync(Context.ConnectionId, serverId);
+                await Groups.AddToGroupAsync(Context.ConnectionId, serverId.ToString());
             }
         }
 
-        public async Task Unsubscribe(ICollection<string> ListServerId)
+        public async Task Unsubscribe(ICollection<Guid> ListServerId)
         {
             foreach (var serverId in ListServerId)
             {
-                await Groups.RemoveFromGroupAsync(Context.ConnectionId, serverId);
+                await Groups.RemoveFromGroupAsync(Context.ConnectionId, serverId.ToString());
             }
         }
 
-        public async Task UnsubscribeToGroup(string serverId)
+        public async Task UnsubscribeToGroup(Guid serverId)
         {
-            await Groups.RemoveFromGroupAsync(Context.ConnectionId, serverId);
+            await Groups.RemoveFromGroupAsync(Context.ConnectionId, serverId.ToString());
 
         }
 
