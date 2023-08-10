@@ -85,8 +85,7 @@ namespace Agregation.Infrastructure.Services.Implementations
                         if (stateChanged)
                         {
                             var newServerState = _serverPatientSetService.GetAsync(new Guid(server.Id));
-                            var serverInJson = JsonSerializer.Serialize(newServerState);
-                            _hubContext.Clients.Group(server.Id).SendAsync("Receive", serverInJson).Wait();
+                            _hubContext.Clients.Group(server.Id).SendAsync("Receive", newServerState).Wait();
                         }
                     }
                 }
