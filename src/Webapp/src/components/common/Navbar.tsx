@@ -5,6 +5,7 @@ import {
   DashboardOutlined,
   LineChartOutlined,
   LogoutOutlined,
+  MailOutlined,
   SettingOutlined,
 } from '@ant-design/icons';
 import { Path, UserId, WorkspaceId } from '@models';
@@ -79,6 +80,9 @@ const Navbar: FC = () => {
           options={workspaceOptions}
           onChange={setWorkspace}
         />
+        <Link to={`/${Path.notifications}`}>
+          <MailOutlined />
+        </Link>
         <Link to={`/${Path.admin}/${Path.user}`}>
           <SettingOutlined />
         </Link>

@@ -6,6 +6,7 @@ enum Path {
   servers = 'servers',
   users = 'users',
   login = 'login',
+  notifications = 'notifications'
 }
 
 export default Path;
