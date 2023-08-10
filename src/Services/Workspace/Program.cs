@@ -8,7 +8,9 @@ var builder = WebApplication.CreateBuilder(args);
 AddCustomLogging(builder);
 
 builder.Services.AddApplicationServices(builder.Configuration);
+
 builder.Services.AddCustomAuthentication(builder.Configuration);
+
 builder.Services.AddAuthorization();
 
 builder.Services.AddControllers();

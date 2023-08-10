@@ -16,6 +16,7 @@ public static class RegisterExtensions
         services.AddApplicationConfigurations(configuration);
         services.AddDatabaseContext(configuration);
         services.RegisterRabbitMQ(configuration);
+        services.AddRedis(configuration);
         services.RegisterServices();
         services.RegisterUnitOfWork();
         services.RegisterRepositories();
@@ -60,6 +61,19 @@ public static class RegisterExtensions
         app.UseMiddleware<ExceptionMiddleware>();
     }
 
+    /// <summary>
+    /// Redis registration
+    /// </summary>
+    private static IServiceCollection AddRedis(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.AddDistributedMemoryCache();
+        services.AddStackExchangeRedisCache(options => {
+            options.Configuration = configuration.GetSection("Redis")["ConnectionString"];
+            options.InstanceName = "WorkspaceService";
+        });
+        services.AddTransient<ICasheRepository<WorkspaceDto>, RedisWorkspaceCashRepository>();
+        return services;
+    }
 
 
     /// <summary>

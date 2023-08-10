@@ -10,6 +10,7 @@ public class WorkspaceService : IWorkspaceService
     private readonly IMapper mapper;
     private readonly IUnitOfWork unitOfWork;
     private readonly IApplicationEventService applicationEventSerivce;
+    private readonly ICasheRepository<WorkspaceDto> workspaceCasheReposotory;
 
     /// <summary>
     /// Contructor
@@ -17,15 +18,18 @@ public class WorkspaceService : IWorkspaceService
     /// <param name="mapper">Mapper with configured profiles</param>
     /// <param name="unitOfWork">Unit of work impl</param>
     /// <param name="applicationEventSerivce">Event bus impl</param>
+    /// <param name="workspaceCasheReposotory">Workspace cashing repository</param>
     public WorkspaceService(
         IMapper mapper,
         IUnitOfWork unitOfWork,
-        IApplicationEventService applicationEventSerivce
+        IApplicationEventService applicationEventSerivce,
+        ICasheRepository<WorkspaceDto> workspaceCasheReposotory
     )
     {
-        this.mapper = mapper;
-        this.unitOfWork = unitOfWork;
-        this.applicationEventSerivce = applicationEventSerivce;
+        this.mapper = mapper ?? throw new ArgumentNullException();
+        this.unitOfWork = unitOfWork ?? throw new ArgumentNullException();
+        this.applicationEventSerivce = applicationEventSerivce ?? throw new ArgumentNullException();
+        this.workspaceCasheReposotory = workspaceCasheReposotory ?? throw new ArgumentNullException();
     }
 
     ///<inheritdoc/>
@@ -42,9 +46,11 @@ public class WorkspaceService : IWorkspaceService
         await unitOfWork.Servers.CreateAsync(newServer);
         await unitOfWork.Workspaces.SaveChangesAsync();
 
+        var workspaceDto = mapper.Map<WorkspaceDto>(workspace);
+        await workspaceCasheReposotory.SetAsync(workspace.Id.ToString(), workspaceDto);
+
         if (!workspace.Users.Any())
             return;
-
         var @event = new ServerAddedToWorkspaceAppEvent
         {
             ServerId = newServer.OuterId,
@@ -63,11 +69,14 @@ public class WorkspaceService : IWorkspaceService
     /// <returns></returns>
     public async Task AddUserToWorkspaceAsync(Guid workspaceId, Guid userId)
     {
-        var workspace = await unitOfWork.Workspaces.GetAll().Where(x => x.Id == workspaceId).Include(x => x.Users).FirstOrDefaultAsync();
+        var workspace = await unitOfWork.Workspaces.GetAll().Where(x => x.Id == workspaceId).Include(x => x.Users).Include(x => x.Servers).FirstOrDefaultAsync();
         bool noUsersInWorkspace = !workspace.Users.Any();
         var newUser = new User { OuterId = userId, Workspace = workspace };
         await unitOfWork.Users.CreateAsync(newUser);
         await unitOfWork.Workspaces.SaveChangesAsync();
+
+        var workspaceDto = mapper.Map<WorkspaceDto>(workspace);
+        await workspaceCasheReposotory.SetAsync(workspace.Id.ToString(), workspaceDto);
 
         if (noUsersInWorkspace)
             return;
@@ -87,6 +96,8 @@ public class WorkspaceService : IWorkspaceService
         var workspaceEntity = mapper.Map<WorkspaceEntity>(workspaceDto);
         var id = await unitOfWork.Workspaces.CreateAsync(workspaceEntity);
         await unitOfWork.Workspaces.SaveChangesAsync();
+        workspaceDto.Id = id;
+        await workspaceCasheReposotory.SetAsync(id.ToString(), workspaceDto);
         return id;
     }
 
@@ -100,6 +111,9 @@ public class WorkspaceService : IWorkspaceService
     /// <inheritdoc/>
     public async Task<WorkspaceDto> GetWorkspaceByIdAsync(Guid workspaceId)
     {
+        var cashedEntity = await workspaceCasheReposotory.GetAsync(workspaceId.ToString());
+        if(cashedEntity != null)
+            return cashedEntity;
         var entity = await unitOfWork.Workspaces.GetAll().Where(w => w.Id == workspaceId).Include(w => w.Users).Include(w => w.Servers).FirstAsync();
         var workspaceDto = mapper.Map<WorkspaceDto>(entity);
         return workspaceDto;
@@ -129,6 +143,10 @@ public class WorkspaceService : IWorkspaceService
     /// <inheritdoc/>
     public async Task<IEnumerable<Guid>> GetWorkspaceServersAsync(Guid workspaceId)
     {
+        var workspcaeDtoFromCashe = await workspaceCasheReposotory.GetAsync(workspaceId.ToString());
+        if(workspcaeDtoFromCashe != null)
+            return workspcaeDtoFromCashe.Servers;
+
         var workspace = await unitOfWork.Workspaces.GetAll()
             .Where(w => w.Id == workspaceId)
             .Include(w => w.Servers)
@@ -140,6 +158,10 @@ public class WorkspaceService : IWorkspaceService
     /// <inheritdoc/>
     public async Task<IEnumerable<Guid>> GetWorkspaceUsersAsync(Guid workspaceId)
     {
+        var workspcaeDtoFromCashe = await workspaceCasheReposotory.GetAsync(workspaceId.ToString());
+        if(workspcaeDtoFromCashe != null)
+            return workspcaeDtoFromCashe.Users;
+
         var workspace = await unitOfWork.Workspaces.GetAll()
             .Where(w => w.Id == workspaceId)
             .Include(w => w.Users)
@@ -162,8 +184,10 @@ public class WorkspaceService : IWorkspaceService
         if (server == null)
             return false;
         await unitOfWork.Servers.DeleteAsync(server.Id);
-
         await unitOfWork.Servers.SaveChangesAsync();
+
+        var workspaceDto = mapper.Map<WorkspaceDto>(workspace);
+        await workspaceCasheReposotory.SetAsync(workspace.Id.ToString(), workspaceDto);
 
         if (!workspace.Users.Any())
             return true;
@@ -193,8 +217,10 @@ public class WorkspaceService : IWorkspaceService
         if (user == null)
             return false;
         await unitOfWork.Users.DeleteAsync(user.Id);
-
         await unitOfWork.Servers.SaveChangesAsync();
+
+        var workspaceDto = mapper.Map<WorkspaceDto>(workspace);
+        await workspaceCasheReposotory.SetAsync(workspace.Id.ToString(), workspaceDto);
 
         if (!workspace.Users.Any())
             return true;
@@ -220,6 +246,10 @@ public class WorkspaceService : IWorkspaceService
         await unitOfWork.Workspaces.SaveChangesAsync();
         await ReplaceEntities(workspace.Users, workspaceDto.Users, unitOfWork.Users, workspace);
         await ReplaceEntities(workspace.Servers, workspaceDto.Servers, unitOfWork.Servers, workspace);
+
+        var wokrspaceToCashe = mapper.Map<WorkspaceDto>(workspace);
+        await workspaceCasheReposotory.SetAsync(workspace.Id.ToString(), wokrspaceToCashe);
+        
         return true;
     }
 
