@@ -29,6 +29,12 @@ public class WorkspaceService : IWorkspaceService
     }
 
     ///<inheritdoc/>
+    /// <summary>
+    /// Adds server to workspace and sends an event if there are users in this workspace
+    /// </summary>
+    /// <param name="workspaceId">Workspace identifer</param>
+    /// <param name="serverId">Server identifer</param>
+    /// <returns></returns>
     public async Task AddServerToWorkspaceAsync(Guid workspaceId, Guid serverId)
     {
         var workspace = await unitOfWork.Workspaces.GetAll().Where(x => x.Id == workspaceId).Include(x => x.Servers).Include(x => x.Users).FirstOrDefaultAsync();
@@ -49,6 +55,12 @@ public class WorkspaceService : IWorkspaceService
     }
 
     /// <inheritdoc/>
+    /// <summary>
+    /// Adds user to workspace and sends an event if there are two or more users in it
+    /// </summary>
+    /// <param name="workspaceId">Workspace identifer</param>
+    /// <param name="userId">User identifer</param>
+    /// <returns></returns>
     public async Task AddUserToWorkspaceAsync(Guid workspaceId, Guid userId)
     {
         var workspace = await unitOfWork.Workspaces.GetAll().Where(x => x.Id == workspaceId).Include(x => x.Users).FirstOrDefaultAsync();
@@ -137,6 +149,12 @@ public class WorkspaceService : IWorkspaceService
     }
 
     /// <inheritdoc/>
+    /// <summary>
+    /// Removes server from workspace and sends an event if there are users in this workspace
+    /// </summary>
+    /// <param name="workspaceId">Workspace identifer</param>
+    /// <param name="serverId">Server identifer</param>
+    /// <returns></returns>
     public async Task<bool> RemoveServerFromWorkspaceAsync(Guid workspaceId, Guid serverId)
     {
         var workspace = await unitOfWork.Workspaces.GetAll().Where(w => w.Id == workspaceId).Include(w => w.Servers).Include(x => x.Users).FirstAsync();
@@ -162,6 +180,12 @@ public class WorkspaceService : IWorkspaceService
     }
 
     /// <inheritdoc/>
+    /// <summary>
+    /// Removed user from workspace and sends an event if there is anyone left in workspace
+    /// </summary>
+    /// <param name="workspaceId">Workspace identifier</param>
+    /// <param name="userId">User identifier</param>
+    /// <returns></returns>
     public async Task<bool> RemoveUserFromWorkspaceAsync(Guid workspaceId, Guid userId)
     {
         var workspace = await unitOfWork.Workspaces.GetAll().Where(w => w.Id == workspaceId).Include(w => w.Users).FirstAsync();
