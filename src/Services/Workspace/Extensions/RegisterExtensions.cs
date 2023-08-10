@@ -68,7 +68,7 @@ public static class RegisterExtensions
     {
         services.AddDistributedMemoryCache();
         services.AddStackExchangeRedisCache(options => {
-            options.Configuration = configuration.GetSection("Redis")["ConnectionString"];
+            options.Configuration = configuration["REDIS_CONNECTION_STRING"];
             options.InstanceName = "WorkspaceService";
         });
         services.AddTransient<ICasheRepository<WorkspaceDto>, RedisWorkspaceCashRepository>();
