@@ -15,7 +15,7 @@ public class NotificationController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<UnreadNotification>> GetUnreadNotifications(Guid userid, Guid workspaceId)
+    public async Task<ActionResult<IEnumerable<UnreadNotification>>> GetUnreadNotifications(Guid userid, Guid workspaceId)
     {
         var unreadNotifications = await notificationService.GetUnreadNotifications(userid, workspaceId);
         return Ok(mapper.Map<IEnumerable<UnreadNotification>>(unreadNotifications));
