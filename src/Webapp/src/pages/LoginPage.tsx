@@ -1,35 +1,35 @@
-import React, { FC, useState } from 'react'
-import { Navigate, useNavigate } from 'react-router-dom'
-import { Path } from '@models'
-import { AuthLoginModel, useLoginMutation } from '@redux/api/authApi'
-import { store } from '@redux/store'
-import { Button, Form, Input, Layout } from 'antd'
+import React, { FC, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { Navigate, useNavigate } from 'react-router-dom';
+import { Path } from '@models';
+import { AuthLoginModel, useLoginMutation } from '@redux/api/api';
+import { RootState } from '@redux/store';
+import { Button, Form, Input, Layout } from 'antd';
 
-import '@css/LoginPage.css'
+import '@css/LoginPage.css';
 
 const LoginPage: FC = () => {
-  const navigate = useNavigate()
-  const [error, setError] = useState<string>('')
-
+  const navigate = useNavigate();
+  const [error, setError] = useState<string>('');
+  const accessToken = useSelector<RootState>(state => state.authState.accessToken);
   const [loginUser] = useLoginMutation();
-  const { isLoggedIn } = store.getState().authState
 
   const onFinish = async (values: AuthLoginModel) => {
     try {
-      await loginUser(values).unwrap()
-      navigate(`/${Path.dashboard}`)
+      await loginUser(values).unwrap();
+      navigate(`/${Path.dashboard}`);
     } catch (e) {
       if (e.data.message) {
-        setError(e.data.message as string)
+        setError(e.data.message as string);
       }
     }
-  }
+  };
 
   const onValuesChange = () => {
-    setError('')
-  }
+    setError('');
+  };
 
-  return isLoggedIn ? <Navigate to={`/${Path.dashboard}`} /> : (
+  return accessToken ? <Navigate to={`/${Path.dashboard}`} /> : (
     <Layout className='login-layout'>
       <div className='login-container'>
         <h1>Авторизация</h1>
@@ -70,7 +70,7 @@ const LoginPage: FC = () => {
         </Form>
       </div>
     </Layout >
-  )
-}
+  );
+};
 
-export default LoginPage
+export default LoginPage;

@@ -1,9 +1,9 @@
-import React, { FC } from 'react'
-import { Route, Routes } from 'react-router-dom'
-import { ServerView, UserSettings, UserView, WorkspaceView } from '@components/admin'
-import PrivateRoute from '@components/common/PrivateRoute'
-import { Path } from '@models'
-import { AdminPage, Dashboard, LoginPage, NotFound } from '@pages'
+import React, { FC } from 'react';
+import { Route, Routes } from 'react-router-dom';
+import { ServerView, UserSettings, UserView, WorkspaceView } from '@components/admin';
+import PrivateRoute from '@components/common/PrivateRoute';
+import { Path } from '@models';
+import { AdminPage, Dashboard, LoginPage, NotFound } from '@pages';
 
 const App: FC = () => (
   <Routes>
@@ -47,7 +47,7 @@ const App: FC = () => (
       <Route path='*' element={<NotFound />} />
     </Route>
   </Routes >
-)
+);
 
 
-export default App
+export default App;

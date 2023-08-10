@@ -1,14 +1,15 @@
-import React, { FC, useEffect, useState } from 'react'
-import { PropertyInput } from '@components/common'
-import { Optional } from '@models/Types'
-import { Modal, ModalFuncProps } from 'antd'
+import React, { FC, useEffect, useState } from 'react';
+import { PropertyInput, PropertySelect } from '@components/common';
+import { Role } from '@models';
+import { arrayToOptions } from '@utils/utils';
+import { Modal, ModalFuncProps } from 'antd';
 
-import { UserTableData } from './UserTable'
+import { UserTableData, UserWithKey } from './UserTable';
 
 interface EditUserDialogProps extends ModalFuncProps {
   user: UserTableData | undefined
   isOpen: boolean
-  onSave: (user: Optional<UserTableData, 'key'>) => void
+  onSave: (user: UserWithKey) => void
 }
 
 const EditUserDialog: FC<EditUserDialogProps> = ({
@@ -17,46 +18,65 @@ const EditUserDialog: FC<EditUserDialogProps> = ({
   onSave,
   ...props
 }: EditUserDialogProps) => {
-  const [name, setName] = useState<string>('')
-  const [email, setEmail] = useState<string>('')
-  const [phone, setPhone] = useState<string>('')
+  const [name, setName] = useState<string>('');
+  const [email, setEmail] = useState<string>('');
+  const [phone, setPhone] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
+  const [role, setRole] = useState<Role>(Role.engineer);
 
   useEffect(() => {
-    setName(user?.name ?? '')
-    setEmail(user?.email ?? '')
-    setPhone(user?.phone ?? '')
-  }, [user, isOpen])
+    setName(user?.fullUserName ?? '');
+    setEmail(user?.email ?? '');
+    setPhone(user?.phoneNumber ?? '');
+    setRole(user?.role ?? Role.engineer);
+  }, [user, isOpen]);
 
-  const computedTitle = user ? 'Редактировать пользователя' : 'Создать пользователя'
+  const computedTitle = user ? 'Редактировать пользователя' : 'Создать пользователя';
 
   const onOkHandler = (): void => {
     onSave({
       key: user?.key,
-      name,
-      phone,
+      fullUserName: name,
+      phoneNumber: phone,
       email,
-    })
-  }
+      password,
+      role,
+    });
+  };
 
-  const onNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setName(event.target.value)
-  }
+  const onInputChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+    cb: (value: string) => void,
+  ): void => cb(event.target.value);
 
-  const onEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setEmail(event.target.value)
-  }
-
-  const onPhoneChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setPhone(event.target.value)
-  }
+  const onRoleChange = (value: string): void => {
+    setRole(value as Role);
+  };
 
   return (
     <Modal title={computedTitle} onOk={onOkHandler} open={isOpen} {...props}>
-      <PropertyInput title='Имя' value={name} onChange={onNameChange} />
-      <PropertyInput title='Email' value={email} onChange={onEmailChange} />
-      <PropertyInput title='Телефон' value={phone} onChange={onPhoneChange} />
+      <PropertyInput title='Имя' value={name} onChange={(event) => onInputChange(event, setName)} />
+      <PropertyInput
+        title='Email'
+        value={email}
+        onChange={(event) => onInputChange(event, setEmail)} />
+      <PropertyInput
+        title='Телефон'
+        value={phone}
+        onChange={(event) => onInputChange(event, setPhone)} />
+      <PropertyInput
+        title='Пароль'
+        type='password'
+        value={password}
+        onChange={(event) => onInputChange(event, setPassword)} />
+      <PropertySelect
+        title='Роль'
+        options={arrayToOptions<Role>(Object.values(Role))}
+        value={role}
+        onChange={onRoleChange}
+      />
     </Modal>
-  )
-}
+  );
+};
 
-export default EditUserDialog
+export default EditUserDialog;

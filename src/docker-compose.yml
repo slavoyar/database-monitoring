@@ -8,8 +8,33 @@ version: "3.4"
 # notification http://localhost:5001/swagger/index.html
 # agregation   http://localhost:5002/swagger/index.html
 # workspace    http://localhost:5009/swagger/index.html
+# kibana       http://localhost:5601
 
 services:
+
+  Elasticsearch:
+    image: elasticsearch:7.16.2
+    container_name: elasticsearch
+    restart: always
+    volumes:
+      - elastic_data:/usr/share/elasticsearch/data/
+    environment:
+      ES_JAVA_OPTS: "-Xmx256m -Xms256m"
+      discovery.type: single-node
+    ports:
+      - '9200:9200'
+      - '9300:9300'
+
+  Kibana:
+    image: kibana:7.16.2
+    container_name: kibana
+    restart: always
+    ports:
+      - '5601:5601'
+    environment:
+      - ELASTICSEARCH_URL=http://elasticsearch:9200
+    depends_on:
+      - Elasticsearch
 
   # -------------------------------------------------------
   front:
@@ -41,8 +66,10 @@ services:
       - "5000:80"
     environment:
       - ConnectionStrings__DefaultConnection=Initial Catalog=AuthUsers; Data Source=auth-sql; Persist Security Info=True; User ID=SA; Password=Qwe123!@#; Trusted_Connection=True; MultipleActiveResultSets=true; TrustServerCertificate=True; Integrated Security=false
+      - ELASTICSEARCH_URL=http://elasticsearch:9200
     depends_on:
       - auth-sql
+      - Elasticsearch
     build:
       context: ../src/Services/AuthServer/
       dockerfile: Dockerfile
@@ -73,6 +100,7 @@ services:
       - MongoDbConfiguration__ConnectionString=mongo://notification-mongo:27017
       - WorkspaceConfiguration__Endpoint=workspace:1412/workspaces/getworkspacesbyserverid
       - EventBusConfiguration__Connection=rabbitmq
+      - ELASTICSEARCH_URL=http://elasticsearch:9200
     build:
       context: ../src
       dockerfile: Services/Notification/Dockerfile
@@ -80,6 +108,7 @@ services:
       - notification-mongo
       - rabbitmq
       - workspace
+      - Elasticsearch
     tty: true
     restart: on-failure
 
@@ -102,12 +131,14 @@ services:
       dockerfile: Dockerfile
     depends_on:
       - agregation-postgre
+      - Elasticsearch
     ports:
       - "5002:5002"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:5002
       - ConnectionStrings__Postgre=Host=agregation-postgre;Port=5432;Database=MIAY;Username=postgres;Password=admin;Pooling=True;TrustServerCertificate=True
+      - ELASTICSEARCH_URL=http://elasticsearch:9200
     tty: true
     restart: on-failure
 
@@ -129,18 +160,20 @@ services:
     container_name: ${COMPOSE_PROJECT_NAME}-workspace
     image: ${COMPOSE_PROJECT_NAME}-workspace
     ports:
-      - "5009:5165"
+      - "5009:5009"
     depends_on:
       - workspace-postgre
       - rabbitmq
+      - Elasticsearch
     build:
       context: ../src
       dockerfile: Services/Workspace/Dockerfile
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=http://+:5165
+      - ASPNETCORE_URLS=http://+:5009
       - PostgreConfiguration__ConnectionString=Host=workspace-postgre;Port=5433;Username=postgres;Password=admin;Database=Workspace;Pooling=true;TrustServerCertificate=True
       - EventBusConfiguration__Connection=rabbitmq
+      - ELASTICSEARCH_URL=http://elasticsearch:9200
     tty: true
     restart: on-failure
 
@@ -183,3 +216,4 @@ volumes:
   workspace-db:
   pgadmin-data:
   front_build:
+  elastic_data:

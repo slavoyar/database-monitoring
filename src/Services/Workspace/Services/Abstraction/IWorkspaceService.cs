@@ -20,6 +20,12 @@ public interface IWorkspaceService
     Task<WorkspaceDto> GetWorkspaceByIdAsync(Guid id);
 
     /// <summary>
+    /// Get all workspace DTOs 
+    /// </summary>
+    /// <returns>Array of workspaces</returns>
+    Task<IEnumerable<WorkspaceDto>> GetAllWorkspacesAsync();
+
+    /// <summary>
     /// Add new workspace to database asynchronous
     /// </summary>
     /// <param name="workspaceDto">Worksapce DTO</param>

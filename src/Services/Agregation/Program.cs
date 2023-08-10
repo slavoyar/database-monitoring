@@ -4,6 +4,10 @@ using Agregation.Infrastructure.DataAccess;
 using MIAUDataBase;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using Serilog;
+using Serilog.Formatting.Json;
+using Serilog.Sinks.Elasticsearch;
+using Serilog.Sinks.File;
 using System.Reflection;
 using Agregation.Infrastructure.Services.Implementations;
 using Agregation.Domain.Intefaces;
@@ -11,6 +15,7 @@ using Microsoft.AspNetCore.SignalR;
 
 var builder = WebApplication.CreateBuilder(args);
 ConfigurationManager configuration = builder.Configuration;
+AddCustomLogging(builder);
 
 /*
  This method adds mappers, database connection, repositories and set services
@@ -104,4 +109,25 @@ recurringJobManager.Trigger(jobid);
 
 app.MapHub<ServerStateHub>("/serversState");
 
+
 app.Run();
+
+void AddCustomLogging(WebApplicationBuilder builder)
+{
+    builder.Host.UseSerilog((context, services, configuration) => {
+        configuration.ReadFrom.Configuration(context.Configuration)
+        .WriteTo.Console()
+        .WriteTo.Elasticsearch(new ElasticsearchSinkOptions(new Uri(builder.Configuration["ELASTICSEARCH_URL"]))
+        {
+            FailureCallback = e =>
+            {
+                Console.WriteLine("Unable to submit event " + e.Exception);
+            },
+            FailureSink = new FileSink("./failures.txt", new JsonFormatter(), null),
+            TypeName = null,
+            IndexFormat = "aggregation-service-{0:yyyy.MM.dd}",
+            AutoRegisterTemplate = true,
+            EmitEventFailure = EmitEventFailureHandling.ThrowException | EmitEventFailureHandling.RaiseCallback | EmitEventFailureHandling.WriteToSelfLog
+        });
+    });
+}

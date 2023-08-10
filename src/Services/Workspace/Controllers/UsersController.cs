@@ -20,7 +20,6 @@ public class UsersController : ControllerBase
         ILogger<UsersController> logger,
         IWorkspaceService workspaceService,
         IMapper mapper
-
     )
     {
         this.logger = logger;

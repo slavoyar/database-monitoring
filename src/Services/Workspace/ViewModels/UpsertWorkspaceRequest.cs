@@ -16,4 +16,14 @@ public class UpsertWorkspaceRequest
     /// </summary>
     [MaxLength(250)]
     public string Description { get; set; }
+
+    /// <summary>
+    /// Users
+    /// </summary>
+    public ICollection<Guid> Users { get; set; }
+
+    /// <summary>
+    /// Servers
+    /// </summary>
+    public ICollection<Guid> Servers { get; set; }
 }

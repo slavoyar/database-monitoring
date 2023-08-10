@@ -1,10 +1,12 @@
-import { authApi } from '@redux/api/authApi'
-import { createSlice } from '@reduxjs/toolkit'
+import { User } from '@models';
+import { api } from '@redux/api/api';
+import { TokenModel } from '@redux/api/customFetchBase';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 interface AuthState {
-    accessToken?: string
-    refreshToken?: string
-    isLoggedIn: boolean
+    accessToken?: string;
+    refreshToken?: string;
+    user?: Partial<User>;
 }
 
 export const authSlice = createSlice({
@@ -12,30 +14,45 @@ export const authSlice = createSlice({
     initialState: {
         accessToken: localStorage.getItem('accessToken') ?? undefined,
         refreshToken: localStorage.getItem('refreshToken') ?? undefined,
-        isLoggedIn: !!localStorage.getItem('accessToken')
     } as AuthState,
     reducers: {
         logout: (state) => {
-            state.isLoggedIn = false
-            state.accessToken = undefined
-            state.refreshToken = undefined
-            localStorage.removeItem('accessToken')
-            localStorage.removeItem('refreshToken')
-        }
+            state.accessToken = undefined;
+            state.refreshToken = undefined;
+            localStorage.removeItem('accessToken');
+            localStorage.removeItem('refreshToken');
+        },
+        // TODO: refactor use this reducer in extrareducers
+        refreshTokens: (state, { payload }: PayloadAction<TokenModel>) => {
+            state.accessToken = payload.jwtAccessToken;
+            state.refreshToken = payload.jwtRefreshToken;
+            localStorage.setItem('accessToken', payload.jwtAccessToken);
+            localStorage.setItem('refreshToken', payload.jwtRefreshToken);
+        },
+        updateUser: (state, { payload }: PayloadAction<User>) => {
+            state.user = payload;
+        },
     },
     extraReducers: (builder) => {
         builder.addMatcher(
-            authApi.endpoints.login.matchFulfilled,
-            (state, { payload }) => {
-                state.isLoggedIn = !!payload.jwtAccessToken
-                state.accessToken = payload.jwtAccessToken
-                state.refreshToken = payload.jwtRefreshToken
-                localStorage.setItem('accessToken', payload.jwtAccessToken)
-                localStorage.setItem('refreshToken', payload.jwtRefreshToken)
-            }
-        )
-    },
-})
+            api.endpoints.login.matchFulfilled,
+            (state, { payload }: PayloadAction<TokenModel>) => {
+                state.accessToken = payload.jwtAccessToken;
+                state.refreshToken = payload.jwtRefreshToken;
+                localStorage.setItem('accessToken', payload.jwtAccessToken);
+                localStorage.setItem('refreshToken', payload.jwtRefreshToken);
 
-export default authSlice.reducer
-export const { logout } = authSlice.actions
+                state.user = payload.user;
+            },
+        );
+        builder.addMatcher(
+            api.endpoints.getUserInfo.matchFulfilled,
+            (state, { payload }: PayloadAction<User>) => {
+                state.user = payload;
+            },
+        );
+    },
+});
+
+export default authSlice.reducer;
+export const { logout, refreshTokens, updateUser } = authSlice.actions;

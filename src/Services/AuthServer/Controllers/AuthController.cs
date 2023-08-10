@@ -85,24 +85,16 @@ namespace Auth.Controllers
 
             var authClaims = new List<Claim>();
 
-            var userWorkspaces = _authWebApplicationDbContext.Users
-                .Where(user => user == loggingUser)
-                .SelectMany(atr => atr.Workspaces)
-                .ToList();
-
-            foreach (var workspace in userWorkspaces)
-            {
-                if (workspace?.Name != null)
-                {
-                    var claimWorkSpace = new Claim(CustomClaims.WorkSpaces, workspace.Name.ToString());
-                    authClaims.Add(claimWorkSpace);
-                }
-            }
-
             if (loggingUser.FullUserName != null)
             {
                 var claimFullUserName = new Claim(ClaimTypes.Name, loggingUser.FullUserName);
                 authClaims.Add(claimFullUserName);
+            }
+
+            if (loggingUser.Email != null)
+            {
+                var claimEmail = new Claim(ClaimTypes.Email, loggingUser.Email);
+                authClaims.Add(claimEmail);
             }
 
             foreach (var userRole in userRoles)
@@ -138,13 +130,20 @@ namespace Auth.Controllers
                     await _userManager.UpdateAsync(loggingUser);
                 }
 
+                var user = new AuthUpdateModel
+                {
+                    Id = loggingUser.Id,
+                    FullUserName = loggingUser.FullUserName,
+                    Email = loggingUser.Email,
+                    PhoneNumber = loggingUser.PhoneNumber
+                };
+
                 return Ok
                 (new
                 {
                     JwtAccessToken = JwtAccessTokenHashed,
-                    JwtAccessTokenExpirationDate = JwtAccessToken.ValidTo,
                     JwtRefreshToken = currentRefreshToken,
-                    JwtRefreshTokenExpirationDate = loggingUser.RefreshTokenExpiryTime
+                    user = user,
                 });
             }
 
@@ -165,7 +164,7 @@ namespace Auth.Controllers
         [ProducesResponseType(typeof(WebResponse), 200)]
         [ProducesResponseType(typeof(WebResponse), 400)]
         [ProducesResponseType(typeof(WebResponse), 401)]
-        [Authorize]
+        [AllowAnonymous]
         [HttpPost]
         [Route("refresh")]
         public async Task<IActionResult> UpdateAccessToken(TokenModel tokenModel)
@@ -187,12 +186,11 @@ namespace Auth.Controllers
             if (principal == null || princimalClaims == null)
                 return BadRequest(WebResponsesAuth.authResponseErrorAccessToken);
 
-            string? username = principal?.Identity?.Name;
-
-            if (username == null)
+            var currentUserEmail = principal.FindFirstValue(ClaimTypes.Email);
+            if (currentUserEmail == null)
                 return BadRequest(WebResponsesAuth.authResponseErrorClaimsPrincipal);
 
-            var refreshUser = await _userManager.FindByNameAsync(username);
+            var refreshUser = await _userManager.FindByEmailAsync(currentUserEmail);
             if (refreshUser == null)
                 return BadRequest(WebResponsesAuth.authResponseErrorUser);
 
@@ -224,9 +222,7 @@ namespace Auth.Controllers
                 return new ObjectResult(new
                 {
                     JwtAccessToken = JwtAccessTokenHashed,
-                    JwtAccessTokenExpirationDate = newAccessToken.ValidTo,
                     JwtRefreshToken = newRefreshToken,
-                    JwtRefreshTokenExpirationDate = refreshUser.RefreshTokenExpiryTime
                 });
             }
             return Unauthorized(WebResponsesAuth.authResponseErrorUnauthorized);

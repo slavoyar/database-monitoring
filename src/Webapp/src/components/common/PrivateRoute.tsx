@@ -1,11 +1,17 @@
 import React, { FC } from 'react';
-import { Navigate, Outlet } from 'react-router-dom'
-import { Path } from '@models'
-import { store } from '@redux/store'
+import { useSelector } from 'react-redux';
+import { Navigate, Outlet } from 'react-router-dom';
+import { Path } from '@models';
+import { useGetUserInfoQuery } from '@redux/api/api';
+import { RootState } from '@redux/store';
 
 const PrivateRoute: FC = () => {
-    const { isLoggedIn } = store.getState().authState;
-    return isLoggedIn ? <Outlet /> : <Navigate to={`/${Path.login}`} replace />
-}
+  const accessToken = useSelector<RootState>((state) => state.authState.accessToken);
+  const user = useSelector<RootState>(state => state.authState.user);
+  // fetch user only if logged in 
+  // eslint-disable-next-line no-undef, @typescript-eslint/no-unused-vars
+  const userResult = useGetUserInfoQuery(undefined, { skip: !!user });
+  return accessToken ? <Outlet /> : <Navigate to={`/${Path.login}`} replace />;
+};
 
-export default PrivateRoute
+export default PrivateRoute;

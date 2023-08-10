@@ -8,10 +8,15 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Serilog;
+using Serilog.Formatting.Json;
+using Serilog.Sinks.Elasticsearch;
+using Serilog.Sinks.File;
 
 //-------------------------------------------------------------------
 
 var builder = WebApplication.CreateBuilder(args);
+AddCustomLogging(builder);
 ConfigurationManager configuration = builder.Configuration;
 
 //--- Add Connection to Sql
@@ -24,6 +29,7 @@ builder.Services.AddIdentity<AuthUser, IdentityRole>(options =>
     {
         options.SignIn.RequireConfirmedEmail = false;
         options.SignIn.RequireConfirmedPhoneNumber = false;
+        options.Lockout.AllowedForNewUsers = false;
     })
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<AuthDbContext>()
@@ -120,6 +126,7 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
+
 using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetService<AuthDbContext>();
@@ -152,3 +159,24 @@ app.UseIdentityServer();
 app.MapControllers();
 
 app.Run();
+
+void AddCustomLogging(WebApplicationBuilder builder)
+{
+    builder.Host.UseSerilog((context, services, configuration) =>
+    {
+        configuration.ReadFrom.Configuration(context.Configuration)
+        .WriteTo.Console()
+        .WriteTo.Elasticsearch(new ElasticsearchSinkOptions(new Uri(builder.Configuration["ELASTICSEARCH_URL"]))
+        {
+            FailureCallback = e =>
+            {
+                Console.WriteLine("Unable to submit event " + e.Exception);
+            },
+            FailureSink = new FileSink("./failures.txt", new JsonFormatter(), null),
+            TypeName = null,
+            IndexFormat = "auth-service-{0:yyyy.MM.dd}",
+            AutoRegisterTemplate = true,
+            EmitEventFailure = EmitEventFailureHandling.ThrowException | EmitEventFailureHandling.RaiseCallback | EmitEventFailureHandling.WriteToSelfLog
+        });
+    });
+}

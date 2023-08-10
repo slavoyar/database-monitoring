@@ -8,4 +8,4 @@ enum Path {
   login = 'login',
 }
 
-export default Path
+export default Path;
