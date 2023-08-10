@@ -23,7 +23,7 @@ services:
     networks:
       - caching-network
     volumes:
-    - redis_data:/usr/share/redis/data/
+      - redis_data:/usr/share/redis/data/
 
   Elasticsearch:
     image: elasticsearch:7.16.2
