@@ -13,9 +13,9 @@ namespace TestPatient.Data
             if ( RuntimeInformation.IsOSPlatform(OSPlatform.Windows) )
             {
                 var random = new Random();
-                var randomNumber = random.Next(0, 10);
+                var randomNumber = random.Next(1, 5);
 
-                for ( int i = 0; i < randomNumber; i++ )
+                for ( int i = 1; i < randomNumber; i++ )
                 {
                     Array values = Enum.GetValues(typeof(EventLogEntryType));
                     var randomInt = random.Next(values.Length);
@@ -68,7 +68,7 @@ namespace TestPatient.Data
             var logsList = new List<LogModel>();
 
             var random = new Random();
-            var randomNumber = random.Next(0, 10);
+            var randomNumber = random.Next(1, 5);
 
             for ( int i = 0; i < randomNumber; i++ )
             {

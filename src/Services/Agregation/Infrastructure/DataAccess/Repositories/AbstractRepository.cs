@@ -57,6 +57,17 @@ namespace Agregation.Infrastructure.DataAccess.Repositories
         }
 
         /// <summary>
+        /// Запросить все сущности в базе (Список GUID)
+        /// </summary>
+        /// <param name="guids">Список Guid</param>
+        /// <returns>IQueryable массив сущностей</returns>
+        public IQueryable<T> GetListGuid(ICollection<Guid> guids)
+        {
+            var query = entitySet.Where(data => guids.Contains(data.Id));
+            return query;
+        }
+
+        /// <summary>
         /// Запросить все сущности в базе
         /// </summary>
         /// <param name="cancellationToken">Токен отмены</param>

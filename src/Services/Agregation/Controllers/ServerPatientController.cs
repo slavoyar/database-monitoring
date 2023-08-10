@@ -12,7 +12,7 @@ namespace Agregation.Controllers
         protected readonly ILogSetService logSetService;
         protected readonly IServerPatientSetService serverPatientSetService;
         protected readonly IMapper mapper;
-        public ServerPatientController( ILogSetService logSetService,
+        public ServerPatientController(ILogSetService logSetService,
             IServerPatientSetService setService, IMapper mapper)
         {
             this.logSetService = logSetService;
@@ -38,6 +38,19 @@ namespace Agregation.Controllers
         }
 
         /// <summary>
+        /// Получить список полной информации о серверах пациентах (Список GUID)
+        /// </summary>
+        /// <param name="guids">Список GUID</param>
+        /// <returns>Возвращвет список серверов с полной информацией о них</returns>
+        [HttpGet("Aggregation/Server/ListGuid")]
+        public async Task<IResult> GetListGuid(List<Guid> guids)
+        {
+            var dtoPage = await serverPatientSetService.GetListByListGuid(guids);
+            var viewModelPage = mapper.Map<ICollection<ServerPatientViewModel>>(dtoPage);
+            return Results.Ok(viewModelPage);
+        }
+
+        /// <summary>
         /// Получить список серверов с кратким описанием в пагинированном виде
         /// </summary>
         /// <param name="page">Номер страницы</param>
@@ -50,6 +63,19 @@ namespace Agregation.Controllers
                     { "page or items per page less or equal then 0" , new string[]{ "Enter correct numbers" }  },
                 });
             var dtoPage = await serverPatientSetService.GetShortServerPatientsPaged(page, itemsPerPage);
+            var viewModelPage = mapper.Map<ICollection<ServerPatientShortViewModel>>(dtoPage);
+            return Results.Ok(viewModelPage);
+        }
+
+        /// <summary>
+        /// Получить список серверов с кратким описанием (Список GUID)
+        /// </summary>
+        /// <param name="guids">Список GUID</param>
+        /// <returns>Возвращвет список серверов с краткой информацией</returns>
+        [HttpGet("Aggregation/Server/ShortServersRequest/ListGuid")]
+        public async Task<IResult> GetShortListGuid(List<Guid> guids)
+        {
+            var dtoPage = await serverPatientSetService.GetShortListByListGuid(guids);
             var viewModelPage = mapper.Map<ICollection<ServerPatientShortViewModel>>(dtoPage);
             return Results.Ok(viewModelPage);
         }
@@ -89,7 +115,8 @@ namespace Agregation.Controllers
         public async Task<IResult> GetById(Guid id)
         {
             var dto = await serverPatientSetService.GetAsync(id);
-            if (dto == null) {
+            if (dto == null)
+            {
                 return Results.NotFound();
             }
             var view = mapper.Map<ServerPatientViewModel>(dto);
