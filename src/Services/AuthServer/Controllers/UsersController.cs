@@ -75,9 +75,14 @@ namespace Auth.Controllers
                 Role = userRole,
                 PhoneNumber = model.PhoneNumber,
                 Password = model.Password,
-                UserName = model.Email
+                UserName = model.Email,
+                LockoutEnabled = false
             };
 
+            if (model.Password != null)
+            {
+                user.PasswordHash = _userManager.PasswordHasher.HashPassword(user, model.Password);
+            }
             var result = await _userManager.CreateAsync(user);
 
             if (!result.Succeeded)
