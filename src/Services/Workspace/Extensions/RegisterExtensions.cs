@@ -71,7 +71,7 @@ public static class RegisterExtensions
             options.Configuration = configuration["REDIS_CONNECTION_STRING"];
             options.InstanceName = "WorkspaceService";
         });
-        services.AddTransient<ICasheRepository<WorkspaceDto>, RedisWorkspaceCashRepository>();
+        services.AddTransient<ICacheRepository<WorkspaceDto>, RedisWorkspaceCacheRepository>();
         return services;
     }
 

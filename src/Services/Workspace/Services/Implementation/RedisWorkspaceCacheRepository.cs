@@ -3,15 +3,15 @@ namespace DatabaseMonitoring.Services.Workspace.Services.Implementation;
 /// <summary>
 /// ICashRepository implementation for cashing Workspaces
 /// </summary>
-public class RedisWorkspaceCashRepository : ICasheRepository<WorkspaceDto>
+public class RedisWorkspaceCacheRepository : ICacheRepository<WorkspaceDto>
 {
-    private readonly ILogger<RedisWorkspaceCashRepository> logger;
+    private readonly ILogger<RedisWorkspaceCacheRepository> logger;
     private readonly IDistributedCache distributedCache;
 
     /// <summary>
     /// Ctor
     /// </summary>
-    public RedisWorkspaceCashRepository(ILogger<RedisWorkspaceCashRepository> logger, IDistributedCache distributedCache)
+    public RedisWorkspaceCacheRepository(ILogger<RedisWorkspaceCacheRepository> logger, IDistributedCache distributedCache)
     {
         this.logger = logger ?? throw new ArgumentNullException();
         this.distributedCache = distributedCache ?? throw new ArgumentNullException();

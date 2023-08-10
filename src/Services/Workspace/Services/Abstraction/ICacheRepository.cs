@@ -3,7 +3,7 @@ namespace DatabaseMonitoring.Services.Workspace.Services.Abstraction;
 /// <summary>
 /// Interface for working with cash
 /// </summary>
-public interface ICasheRepository<T>
+public interface ICacheRepository<T>
 {
     /// <summary>
     /// Get value from cash
