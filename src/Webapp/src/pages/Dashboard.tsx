@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { Navbar } from '@components/common/';
-import { Cards } from '@components/dashboard/';
+import { Cards, SearchPanel } from '@components/dashboard/';
 import { MOCK_SERVERS } from '@models/Server';
 import { Layout } from 'antd';
 
@@ -11,6 +11,7 @@ const Dashboard: FC = () => (
     <Navbar />
     <Layout.Content className='dashboard-content'>
       <div className='card-container'>
+        <SearchPanel/>
         <Cards servers={MOCK_SERVERS} />
       </div>
     </Layout.Content>
