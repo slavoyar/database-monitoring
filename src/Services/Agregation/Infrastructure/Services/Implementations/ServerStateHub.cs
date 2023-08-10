@@ -20,7 +20,7 @@ namespace Agregation.Infrastructure.Services.Implementations
             }
         }
 
-        public async Task Unsubscribe(ICollection<Guid> ListServerId)
+        public async Task UnsubscribeToGroup(ICollection<Guid> ListServerId)
         {
             foreach (var serverId in ListServerId)
             {
@@ -28,7 +28,7 @@ namespace Agregation.Infrastructure.Services.Implementations
             }
         }
 
-        public async Task UnsubscribeToGroup(Guid serverId)
+        public async Task Unsubscribe(Guid serverId)
         {
             await Groups.RemoveFromGroupAsync(Context.ConnectionId, serverId.ToString());
 
