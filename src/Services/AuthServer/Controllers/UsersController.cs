@@ -165,6 +165,40 @@ namespace Auth.Controllers
             });
         }
 
+
+        /// <summary>
+        /// Get user information by id from the claims
+        /// </summary>
+        /// <returns></returns>
+        /// <response code="200">Success reading</response>
+        /// <response code="400">Data has missing/invalid values</response>
+        /// <response code="401">Error while authorizing user, maybe you are not authorized</response>
+        [ProducesResponseType(typeof(WebResponse), 200)]
+        [ProducesResponseType(typeof(WebResponse), 400)]
+        [ProducesResponseType(typeof(WebResponse), 401)]
+        [Authorize]
+        [HttpGet]
+        [Route("{userId}")]
+        public async Task<ActionResult<AuthUpdateModel>> GetUserInfoBtId(string userId)
+        {
+            var currentUserEmail = User.FindFirstValue(ClaimTypes.Email);
+            if (currentUserEmail == null)
+                return BadRequest(WebResponsesAuth.authResponseErrorUser);
+
+            var foundedUser = await _userManager.FindByIdAsync(userId);
+            if (foundedUser == null)
+                return BadRequest(WebResponsesAuth.authResponseErrorUser);
+
+            return Ok(new AuthUpdateModel
+            {
+                Id = foundedUser.Id,
+                FullUserName = foundedUser.FullUserName,
+                Email = foundedUser.Email,
+                PhoneNumber = foundedUser.PhoneNumber,
+                Role = foundedUser.Role
+            });
+        }
+
         #endregion GetUsers
 
         #region UpdateUser
