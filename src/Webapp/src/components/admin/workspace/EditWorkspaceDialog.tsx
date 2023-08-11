@@ -1,7 +1,7 @@
 import React, { FC, useEffect, useState } from 'react';
 import { PropertyInput, PropertySelect } from '@components/common';
 import { User, UserId, WorkspaceTableData } from '@models';
-import { MOCK_SERVERS, Server, ServerId } from '@models/Server';
+import { Server, ServerId } from '@models/Server';
 import { ValueWithLabel } from '@models/Types';
 import { Modal, ModalFuncProps } from 'antd';
 
@@ -41,7 +41,6 @@ const EditWorkspaceDialog: FC<EditWorkspaceDialogProps> = ({
     )));
   }, [fetchedUsers]);
 
-  const serverOptions = MOCK_SERVERS.map((server) => ({ value: server.id, label: server.name }));
 
   const computedTitle = workspace
     ? 'Редактировать рабочее пространство'
@@ -71,7 +70,7 @@ const EditWorkspaceDialog: FC<EditWorkspaceDialogProps> = ({
   };
 
   const onServerChange = (ids: ServerId[]) => {
-    setServers(MOCK_SERVERS.filter(s => ids.includes(s.id)));
+    console.log(ids);
   };
 
   return (
@@ -88,7 +87,7 @@ const EditWorkspaceDialog: FC<EditWorkspaceDialogProps> = ({
       />
       <PropertySelect
         title='Серверы'
-        options={serverOptions}
+        options={[]}
         mode='multiple'
         value={servers.map(s => s.id)}
         onChange={onServerChange}

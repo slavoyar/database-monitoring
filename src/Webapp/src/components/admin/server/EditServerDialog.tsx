@@ -1,14 +1,13 @@
 import React, { FC, useEffect, useState } from 'react';
 import { PropertyInput } from '@components/common';
+import { ServerShort } from '@models';
 import { Optional } from '@models/Types';
 import { Modal, ModalFuncProps } from 'antd';
 
-import { ServerTableData } from './ServerTable';
-
 interface EditServerDialogProps extends ModalFuncProps {
-  server: ServerTableData | undefined
+  server: ServerShort | undefined
   isOpen: boolean
-  onSave: (server: Omit<Optional<ServerTableData, 'key'>, 'status'>) => void
+  onSave: (server: Omit<Optional<ServerShort, 'id'>, 'status'>) => void
 }
 
 const EditServerDialog: FC<EditServerDialogProps> = ({
@@ -22,16 +21,16 @@ const EditServerDialog: FC<EditServerDialogProps> = ({
 
   useEffect(() => {
     setName(server?.name ?? '');
-    setAddress(server?.address ?? '');
+    setAddress(server?.ipAddress ?? '');
   }, [server, isOpen]);
 
   const computedTitle = server ? 'Редактировать параметры сервера' : 'Добавить сервер';
 
   const onOkHandler = (): void => {
     onSave({
-      key: server?.key,
+      id: server?.id,
       name,
-      address,
+      ipAddress: address,
     });
   };
 
@@ -46,7 +45,7 @@ const EditServerDialog: FC<EditServerDialogProps> = ({
   return (
     <Modal title={computedTitle} onOk={onOkHandler} open={isOpen} {...props}>
       <PropertyInput title='Название' value={name} onChange={onNameChange} />
-      <PropertyInput title='Адрес' value={address} onChange={onAddressChange} />
+      <PropertyInput title='IP Адрес' value={address} onChange={onAddressChange} />
     </Modal>
   );
 };

@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Agregation.Controllers
 {
-    [Route("api/server")]
+    [Route("server")]
     public class ServerPatientController : Controller
     {
         protected readonly ILogSetService logSetService;
@@ -42,7 +42,7 @@ namespace Agregation.Controllers
         /// </summary>
         /// <param name="guids">Список GUID</param>
         /// <returns>Возвращвет список серверов с полной информацией о них</returns>
-        [HttpGet("Aggregation/Server/ListGuid")]
+        [HttpGet]
         public async Task<IResult> GetListGuid(List<Guid> guids)
         {
             var dtoPage = await serverPatientSetService.GetListByListGuid(guids);
@@ -72,7 +72,7 @@ namespace Agregation.Controllers
         /// </summary>
         /// <param name="guids">Список GUID</param>
         /// <returns>Возвращвет список серверов с краткой информацией</returns>
-        [HttpGet("Aggregation/Server/ShortServersRequest/ListGuid")]
+        [HttpGet("short")]
         public async Task<IResult> GetShortListGuid(List<Guid> guids)
         {
             var dtoPage = await serverPatientSetService.GetShortListByListGuid(guids);

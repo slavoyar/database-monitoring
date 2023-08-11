@@ -1,6 +1,6 @@
 import React, { FC, useEffect, useState } from 'react';
 import { DeleteOutlined, PlusOutlined } from '@ant-design/icons';
-import { MOCK_SERVERS } from '@models/Server';
+import { ServerShort } from '@models';
 import { Optional } from '@models/Types';
 import { Button, Table } from 'antd';
 
@@ -10,13 +10,6 @@ enum ServerTableColumn {
   NAME = 'name',
   STATUS = 'status',
   ADDRESS = 'address',
-}
-
-export interface ServerTableData {
-  key: string
-  [ServerTableColumn.NAME]: string
-  [ServerTableColumn.STATUS]: string
-  [ServerTableColumn.ADDRESS]: string
 }
 
 const columns = [
@@ -38,20 +31,13 @@ const columns = [
 ];
 
 const ServerTable: FC = () => {
-  const [tableDate, setTableData] = useState<ServerTableData[]>([]);
+  const [tableDate, setTableData] = useState<ServerShort[]>([]);
   const [deleteDisabled, setDeleteDisabled] = useState(true);
   const [selectedRows, setSelectedRows] = useState<React.Key[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [currentServer, setcurrentServer] = useState<ServerTableData | undefined>(undefined);
+  const [currentServer, setcurrentServer] = useState<ServerShort | undefined>(undefined);
 
   useEffect(() => {
-    const data = MOCK_SERVERS.map((server) => ({
-      key: server.id,
-      address: server.address,
-      name: server.name,
-      status: server.status,
-    }));
-    setTableData(data);
   }, []);
 
   const onAddClick = () => {
@@ -59,7 +45,7 @@ const ServerTable: FC = () => {
   };
 
   const onDeleteClick = () => {
-    const newData = tableDate.filter((item) => !selectedRows.includes(item.key));
+    const newData = tableDate.filter((item) => !selectedRows.includes(item.id));
     setSelectedRows([]);
     setTableData(newData);
     setDeleteDisabled(true);
@@ -79,19 +65,8 @@ const ServerTable: FC = () => {
     }
   };
 
-  const onSaveHandler = (server: Omit<Optional<ServerTableData, 'key'>, 'status'>): void => {
-    const result = [...tableDate];
-    const index = tableDate.findIndex((item) => item.key === server.key);
-    if (index < 0) {
-      const newWorkspace = {
-        ...server,
-        key: String(tableDate.length + 1),
-        status: 'bad',
-      };
-      result.push(newWorkspace);
-    }
-    result[index] = { ...server } as ServerTableData;
-    setTableData(result);
+  const onSaveHandler = (server: Omit<Optional<ServerShort, 'id'>, 'status'>): void => {
+    console.error(server);
     close();
   };
 
@@ -100,7 +75,7 @@ const ServerTable: FC = () => {
     onChange: onSelectChange,
   };
 
-  const onRowClick = (record: ServerTableData): void => {
+  const onRowClick = (record: ServerShort): void => {
     setcurrentServer(record);
   };
 
@@ -121,6 +96,7 @@ const ServerTable: FC = () => {
         dataSource={tableDate}
         columns={columns}
         rowSelection={rowSelection}
+        rowKey='id'
         onRow={(record) => ({ onClick: () => onRowClick(record) })}
       />
       <EditServerDialog

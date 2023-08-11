@@ -1,11 +1,11 @@
 import React, { FC } from 'react';
 import { CheckCircleFilled, CloseCircleFilled, WarningFilled } from '@ant-design/icons';
-import { Server, ServerStatus } from '@models';
+import { ServerShort, ServerStatus } from '@models';
 import { Card } from 'antd';
 
 import '@css/ServerCard.css';
 
-type StatusIconProps = Pick<Server, 'status'>
+type StatusIconProps = Pick<ServerShort, 'status'>
 
 const getStatusIcon: FC<StatusIconProps> = ({ status }: StatusIconProps) => {
   let icon;
@@ -24,13 +24,13 @@ const getStatusIcon: FC<StatusIconProps> = ({ status }: StatusIconProps) => {
   return icon;
 };
 
-const ServerCard: FC<Server> = ({ name, status, address }: Server) => {
+const ServerCard: FC<ServerShort> = ({ name, status, ipAddress }: ServerShort) => {
   const iconComponent = getStatusIcon({ status });
   return (
     <Card title={name} extra={iconComponent} className='server-card'>
       <span>
         <strong>IP-address: </strong>
-        {address}
+        {ipAddress}
       </span>
     </Card>
   );
