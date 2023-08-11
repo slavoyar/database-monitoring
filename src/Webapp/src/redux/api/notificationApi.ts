@@ -5,7 +5,7 @@ import { api } from './api';
 
 type NotificationId = string;
 
-interface NotificationRequest { 
+interface GetNotificationRequest {
     userId: UserId;
     workspaceId: WorkspaceId;
 };
@@ -13,22 +13,20 @@ interface NotificationRequest {
 interface NotificationResponse {
     id: NotificationId;
     data: string;
-    dateTime: string;
-    serverId?: string;
-    userId?: string;
+    creationDate: string;
 }
 
-interface MarkNotificationsAsReadRequest { 
+interface MarkNotificationsAsReadRequest {
     userId: UserId;
     notificationsId: NotificationId[];
 };
 
 export const notificationApi = api.injectEndpoints({
     endpoints: (build) => ({
-        getUnreadNotifications: build.query<NotificationResponse[], NotificationRequest>({
+        getUnreadNotifications: build.query<NotificationResponse[], GetNotificationRequest>({
             query: (request) => ({
                 url: 'notification',
-                params: request,
+                params: { userId: request.userId, workspaceId: request.workspaceId },
             }),
         }),
         markNotificationsAsRead: build.mutation<void, MarkNotificationsAsReadRequest>({
