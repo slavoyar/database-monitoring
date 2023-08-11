@@ -15,7 +15,7 @@ const NotificationsPage: FC = () => {
   const [notificationData, setNotificationData] = useState<Notification[]>([]);
   const userId = useSelector<RootState>(state => state.authState.user?.id) as UserId;
   const workspaceId = useSelector<RootState>(state => state.authState.workspaceId) as WorkspaceId;
-  const { data: notifications } =
+  const { data: notifications, isLoading } =
     useGetUnreadNotificationsQuery({ userId, workspaceId }, { skip: !userId || !workspaceId });
 
   useEffect(() => {
@@ -24,7 +24,7 @@ const NotificationsPage: FC = () => {
         notifications.map((notification) => ({
           id: notification.id,
           data: notification.data,
-          creationDate: notification.creationDate,
+          creationDate: new Date(notification.creationDate).toUTCString(),
         })),
       );
     }
@@ -42,6 +42,7 @@ const NotificationsPage: FC = () => {
             <Button type="primary">Пометить как прочитано</Button>
           </div>}
           bordered
+          loading={isLoading}
           dataSource={notificationData}
           renderItem={(item: Notification) =>
             <List.Item key={item.id}>
