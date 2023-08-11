@@ -8,7 +8,7 @@ namespace TestPatient.Services
         private readonly HangfireContext _hangfireDatabaseContext;
         private readonly IConfiguration _configuration;
 
-        public HangFireJobService(HangfireContext hangfireDatabaseContext,IConfiguration configuration)
+        public HangFireJobService(HangfireContext hangfireDatabaseContext, IConfiguration configuration)
         {
             _hangfireDatabaseContext = hangfireDatabaseContext;
             _configuration = configuration;
@@ -29,25 +29,25 @@ namespace TestPatient.Services
         public void ReccuringJob()
         {
             var hostId = _configuration.GetValue<string>("HostId") ?? throw new NullReferenceException("HostId is null");
-            var testLogs = TestLogs.GetTestLogs(hostId);
 
-            foreach ( var log in testLogs )
+            for ( int i = 0; i < 60; i++ )
             {
-                _hangfireDatabaseContext.PatientLogs.Add(log);
-                _hangfireDatabaseContext.SaveChanges();
+                var testLogs = TestLogs.GetTestLogs(hostId);
+                foreach ( var log in testLogs )
+                {
+                    _hangfireDatabaseContext.PatientLogs.Add(log);
+                    _hangfireDatabaseContext.SaveChanges();
+                }
+
+                var random = new Random();
+                var randomValue = random.Next(500, 1000);
+                Task.Delay(randomValue).Wait();
             }
         }
 
         public void DelayedJob()
         {
-            var hostId = _configuration.GetValue<string>("HostId") ?? throw new NullReferenceException("HostId is null");
-            var testLogs = TestLogs.GetTestLogs(hostId);
-
-            foreach ( var log in testLogs )
-            {
-                _hangfireDatabaseContext.PatientLogs.Add(log);
-                _hangfireDatabaseContext.SaveChanges();
-            }
+            Console.WriteLine("Hello from a Delayed job!");
         }
 
         public void ContinuationJob()

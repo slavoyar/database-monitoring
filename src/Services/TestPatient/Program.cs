@@ -8,7 +8,6 @@ using TestPatient.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 ConfigurationManager configuration = builder.Configuration;
-
 // Add services to the container.
 
 builder.Services.AddControllers();
@@ -20,7 +19,6 @@ builder.Services.AddSwaggerGen(c =>
 
 var connectionString = builder.Configuration.GetConnectionString("DBConnection");
 builder.Services.AddDbContext<HangfireContext>(options => options.UseNpgsql(connectionString));
-
 builder.Services.AddScoped<IHangFireJobService, HangFireJobService>();
 builder.Services.AddHangfire(x =>
 {
@@ -28,22 +26,27 @@ builder.Services.AddHangfire(x =>
 });
 builder.Services.AddHangfireServer();
 
+//--------------------------------------------------------------------------------------------------------------
+
 var app = builder.Build();
 
-using ( var scope = app.Services.CreateScope() )
+var scope = app.Services.CreateScope();
+var dbContext = scope.ServiceProvider.GetService<HangfireContext>();
+var db = dbContext?.Database;
+
+for (int i = 0; i < 10; i++)
 {
-    var dbContext = scope.ServiceProvider.GetService<HangfireContext>();
-    try
+    if (db != null && db.CanConnect())
     {
-        dbContext?.Database.Migrate();
-    }
-    catch ( Exception )
-    {
-    }
+        db.Migrate();
+        break;
+    };
+
+    Task.Delay(TimeSpan.FromSeconds(3)).Wait();
 }
 
 // Configure the HTTP request pipeline.
-if ( app.Environment.IsDevelopment() )
+if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
     app.UseSwagger();
@@ -56,6 +59,20 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.UseHangfireDashboard();
+app.UseHangfireDashboard("/hangfire", new DashboardOptions
+{
+    Authorization = new[]
+            {
+                new  HangfireAuthorizationFilter("admin")
+            }
+});
+
+RecurringJobManager recurringJobManager = new();
+var scopedHangFireService =
+            scope.ServiceProvider
+                .GetRequiredService<IHangFireJobService>();
+var jobid = "TestPatientLoopedLogs";
+recurringJobManager.AddOrUpdate(jobid, () => scopedHangFireService.ReccuringJob(), Cron.Minutely);
+recurringJobManager.Trigger(jobid);
 
 app.Run();

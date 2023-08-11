@@ -5,6 +5,7 @@ namespace Auth.Models
     /// <summary>
     /// Model for User Authentication
     /// </summary>
+    /// <example>admin@admin : Qwe123!@#</example>
     public class AuthLoginModel
     {
         /// <summary>

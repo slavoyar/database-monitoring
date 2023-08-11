@@ -60,7 +60,7 @@ export const api = createApi({
     deleteUser: builder.mutation<AuthResponse, string>({
       query: (email) => (
         {
-          url: 'users/delete',
+          url: 'users',
           method: 'DELETE',
           body: JSON.stringify(email),
         }),

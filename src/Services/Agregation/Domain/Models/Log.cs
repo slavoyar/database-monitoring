@@ -11,6 +11,7 @@ namespace Agregation.Domain.Models
     {
         [Key]
         public Guid Id { get; set; }
+
         public string CriticalStatus { get; set; } = null!;
 
         [Required]
@@ -21,13 +22,14 @@ namespace Agregation.Domain.Models
 
         public string ServiceName { get; set; } = null!;
 
-        public string CreationDate { get; set; } = DateTime.Now.ToString();
+        public string CreationDate { get; set; } = null!;
 
-        public string RecievedAt { get; set; } = null!;
+        public string RecievedAt { get; set; } = DateTime.Now.ToString();
 
         public string Message { get; set; } = null!;
 
         public Guid ServerPatientId { get; set; }
+
         [ForeignKey("ServerPatientId")]
         public virtual ServerPatient ServerPatient { get; set; } = null!;
 

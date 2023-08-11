@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Agregation.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20230619181017_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20230807180441_add-test-data1")]
+    partial class addtestdata1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -107,6 +107,41 @@ namespace Agregation.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("ServerPatients");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("d69cd87f-1f08-4b12-af16-980b003cdc5f"),
+                            ConnectionStatus = true,
+                            IconId = "1",
+                            IdAddress = "testpatient-1",
+                            LastSuccessLog = "2023-08-07 21:04:41",
+                            Name = "testpatient1",
+                            PingStatus = true,
+                            Status = "Working"
+                        },
+                        new
+                        {
+                            Id = new Guid("d13920a2-4961-43cc-bd22-12187b19f512"),
+                            ConnectionStatus = true,
+                            IconId = "1",
+                            IdAddress = "testpatient-2",
+                            LastSuccessLog = "2023-08-07 21:04:41",
+                            Name = "testpatient2",
+                            PingStatus = true,
+                            Status = "Working"
+                        },
+                        new
+                        {
+                            Id = new Guid("8d8a6029-676a-4e09-91c5-32c56602f67f"),
+                            ConnectionStatus = true,
+                            IconId = "1",
+                            IdAddress = "testpatient-3",
+                            LastSuccessLog = "2023-08-07 21:04:41",
+                            Name = "testpatient3",
+                            PingStatus = true,
+                            Status = "Working"
+                        });
                 });
 
             modelBuilder.Entity("Agregation.Domain.Models.Log", b =>

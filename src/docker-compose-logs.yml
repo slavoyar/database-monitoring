@@ -2,10 +2,15 @@ version: "3.4"
 
 # miau         docker-compose up
 # logs         docker-compose -f docker-compose-logs.yml up
+# all          docker-compose -f docker-compose.yml -f docker-compose-logs.yml up
 
 # testpatient1 http://localhost:5003/swagger/index.html
 # testpatient2 http://localhost:5004/swagger/index.html
 # testpatient3 http://localhost:5005/swagger/index.html
+
+# testpatient1 d69cd87f-1f08-4b12-af16-980b003cdc5f
+# testpatient2 d13920a2-4961-43cc-bd22-12187b19f512
+# testpatient3 8d8a6029-676a-4e09-91c5-32c56602f67f
 
 services:
 
@@ -19,14 +24,12 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:80
       - ConnectionStrings__DBConnection=Server=testpatient-1-postgre;Port=5434;Database=MIAY;Username=postgres;Password=admin;Pooling=True;TrustServerCertificate=True
-      - HostId=TestPatient1.com
+      - HostId=d69cd87f-1f08-4b12-af16-980b003cdc5f
     depends_on:
       - testpatient-1-postgre
     build:
       context: ../src
       dockerfile: Services/TestPatient/Dockerfile
-    tty: true
-    restart: on-failure
 
   testpatient-1-postgre:
     container_name: ${COMPOSE_PROJECT_NAME_LOGS}-testpatient-1-postgre
@@ -37,7 +40,6 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=admin
       - POSTGRES_DB=MIAY
-    tty: true
     restart: on-failure
     volumes:
       - testpatient-1-db:/var/lib/postgresql/data
@@ -52,7 +54,7 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:80
       - ConnectionStrings__DBConnection=Server=testpatient-2-postgre;Port=5435;Database=MIAY;Username=postgres;Password=admin;Pooling=True;TrustServerCertificate=True
-      - HostId=TestPatient2.com
+      - HostId=d13920a2-4961-43cc-bd22-12187b19f512
     depends_on:
       - testpatient-2-postgre
     build:
@@ -85,7 +87,7 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:80
       - ConnectionStrings__DBConnection=Server=testpatient-3-postgre;Port=5436;Database=MIAY;Username=postgres;Password=admin;Pooling=True;TrustServerCertificate=True
-      - HostId=TestPatient3.com
+      - HostId=8d8a6029-676a-4e09-91c5-32c56602f67f
     depends_on:
       - testpatient-3-postgre
     build:
