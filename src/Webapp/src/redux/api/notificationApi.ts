@@ -3,7 +3,7 @@ import { UserId, WorkspaceId } from '@models';
 import { api } from './api';
 
 
-type NotificationId = string;
+export type NotificationId = string;
 
 interface GetNotificationRequest {
     userId: UserId;

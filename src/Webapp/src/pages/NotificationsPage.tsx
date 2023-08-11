@@ -1,8 +1,9 @@
 import React, { FC, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Navbar } from '@components/common/';
-import { Notification, UserId, WorkspaceId } from '@models';
-import { useGetUnreadNotificationsQuery } from '@redux/api/notificationApi';
+import { Notification, NotificationId, UserId, WorkspaceId } from '@models';
+import { useGetUnreadNotificationsQuery, useMarkNotificationsAsReadMutation }
+  from '@redux/api/notificationApi';
 import { RootState } from '@redux/store';
 import { Button, Layout, List } from 'antd';
 
@@ -17,6 +18,14 @@ const NotificationsPage: FC = () => {
   const workspaceId = useSelector<RootState>(state => state.authState.workspaceId) as WorkspaceId;
   const { data: notifications, isLoading } =
     useGetUnreadNotificationsQuery({ userId, workspaceId }, { skip: !userId || !workspaceId });
+  const [markAsRead] = useMarkNotificationsAsReadMutation();
+
+  const onMarkAsReadClick = async (): Promise<void> => {
+    const notificationsId = notificationData.map(nd => nd.id) as NotificationId[];
+    await markAsRead({ userId, notificationsId });
+    setNotificationData([]);
+  };
+
 
   useEffect(() => {
     if (notifications) {
@@ -39,7 +48,9 @@ const NotificationsPage: FC = () => {
           size="large"
           header={<div className='notifications-list_header'>
             <h1>Уведомления</h1>
-            <Button type="primary">Пометить как прочитано</Button>
+            <Button
+              onClick={onMarkAsReadClick}
+              type="primary">Пометить как прочитано</Button>
           </div>}
           bordered
           loading={isLoading}

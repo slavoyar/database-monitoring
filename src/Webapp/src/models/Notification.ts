@@ -1,7 +1,10 @@
+type NotificationId = string;
+
 interface Notification {
-    id: string
+    id: NotificationId
     data: string
     creationDate: string
 }
 
-export default Notification;
+
+export { type Notification, type NotificationId };
