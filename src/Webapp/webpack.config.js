@@ -86,7 +86,7 @@ module.exports = {
         target: 'http://localhost:5000/',
       },
       {
-        context: ['/api/server', '/api/log'],
+        context: ['/api/server', '/api/log', '/serverState'],
         target: 'http://localhost:5002/',
       },
       {

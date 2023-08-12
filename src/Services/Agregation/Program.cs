@@ -5,6 +5,7 @@ using Agregation.Infrastructure.Services.Implementations;
 using Hangfire;
 using Hangfire.PostgreSql;
 using MIAUDataBase;
+using Microsoft.AspNetCore.Http.Connections;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
@@ -60,7 +61,7 @@ builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(builder =>
     {
-        builder.SetIsOriginAllowed(origin => new Uri(origin).Host == "front" || new Uri(origin).Host == "localhost")
+        builder.SetIsOriginAllowed(origin => new Uri(origin).Host == "nginx" || new Uri(origin).Host == "localhost")
         .AllowAnyHeader()
         .AllowAnyMethod();
     });
@@ -117,8 +118,10 @@ var jobid = "AggLoopedLogs";
 recurringJobManager.AddOrUpdate(jobid, () => scopedHangFireService.ReccuringJob(), Cron.Minutely);
 recurringJobManager.Trigger(jobid);
 
-app.MapHub<ServerStateHub>("/serversState");
-
+app.MapHub<ServerStateHub>("/serversState", options =>
+{
+    options.Transports = HttpTransportType.WebSockets;
+});
 
 app.Run();
 
