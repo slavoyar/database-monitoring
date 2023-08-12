@@ -16,6 +16,7 @@ import {
 import { Button, Table } from 'antd';
 
 import EditWorkspaceDialog from './EditWorkspaceDialog';
+import { useGetServersByPageQuery } from '@redux/api/agregationApi';
 
 enum WorkspaceTableColumn {
   NAME = 'name',
@@ -68,16 +69,17 @@ const WorkspaceTable: FC = () => {
 
   const { data: fetchedData } = useGetAllWorkspacesQuery();
   const { data: fetchedUsers } = useFetchUsersQuery();
+  // TODO: add endpoint for all servers by user id.
+  const { data: fetchedServers } = useGetServersByPageQuery({ page: 1, itemPerPage: 100 });
   const [createWorkspace] = useCreateWorkspaceMutation();
   const [updateWorkspace] = useUpdateWorkspaceMutation();
   const [deleteWorkspace] = useDeleteWorkspaceMutation();
 
   useEffect(() => {
-    if (fetchedData && fetchedUsers && !isAuthResponse(fetchedUsers)) {
-      // TODO: Add servers
-      setData(workspacesToTableData(fetchedData, fetchedUsers, []));
+    if (fetchedData && fetchedUsers && fetchedServers && !isAuthResponse(fetchedUsers)) {
+      setData(workspacesToTableData(fetchedData, fetchedUsers, fetchedServers));
     }
-  }, [fetchedData, fetchedUsers]);
+  }, [fetchedData, fetchedUsers, fetchedServers]);
 
   const onAddClick = () => {
     setIsModalOpen(true);
@@ -148,6 +150,7 @@ const WorkspaceTable: FC = () => {
       <EditWorkspaceDialog
         workspace={currentWorkspace}
         users={fetchedUsers && !isAuthResponse(fetchedUsers) ? fetchedUsers : []}
+        servers={fetchedServers ?? []}
         isOpen={!!currentWorkspace || isModalOpen}
         onCancel={close}
         onSave={onSaveHandler}
