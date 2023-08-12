@@ -1,4 +1,4 @@
-import { Server, ServerId, ServerShort } from '@models';
+import { Server, ServerBase, ServerId, ServerShort } from '@models';
 
 import { api } from './api';
 
@@ -24,6 +24,7 @@ export const agregationApi = api.injectEndpoints({
         }),
         getServersByPage: build.query<Server[], TableDataRequest>({
             query: (params) => `server/${params.page}/${params.itemPerPage}`,
+            providesTags: ['Servers'],
         }),
         createServer: build.mutation<Server, Server>({
             query: (server) => ({
@@ -40,7 +41,7 @@ export const agregationApi = api.injectEndpoints({
             }),
             invalidatesTags: ['Servers'],
         }),
-        updateServer: build.mutation<void, Server>({
+        updateServer: build.mutation<void, ServerBase>({
             query: (server) => ({
                 url: 'server',
                 method: 'PUT',

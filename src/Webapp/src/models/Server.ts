@@ -24,4 +24,4 @@ interface ServerShort extends ServerBase {
   countOfLogs?: number;
 }
 
-export { ServerStatus, type Server, type ServerShort, type ServerId };
+export { ServerStatus, type ServerBase, type Server, type ServerShort, type ServerId };

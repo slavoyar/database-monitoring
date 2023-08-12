@@ -1,8 +1,13 @@
 import React, { FC, useEffect, useState } from 'react';
 import { DeleteOutlined, PlusOutlined } from '@ant-design/icons';
-import { Server } from '@models';
+import { Server, ServerId } from '@models';
 import { Optional } from '@models/Types';
-import { useGetServersByPageQuery } from '@redux/api/agregationApi';
+import {
+  useCreateServerMutation,
+  useDeleteServerMutation,
+  useGetServersByPageQuery,
+  useUpdateServerMutation,
+} from '@redux/api/agregationApi';
 import { Button, Table, TablePaginationConfig } from 'antd';
 
 import EditServerDialog from './EditServerDialog';
@@ -43,13 +48,15 @@ const ServerTable: FC = () => {
   const [selectedRows, setSelectedRows] = useState<React.Key[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentServer, setCurrentServer] = useState<Server | undefined>(undefined);
+  const [deleteServer] = useDeleteServerMutation();
+  const [updateServer] = useUpdateServerMutation();
+  const [createServer] = useCreateServerMutation();
 
   const { data: servers, isLoading }
     = useGetServersByPageQuery({ page: pagination.current ?? 1, itemPerPage: DEFAULT_PAGE_SIZE });
 
   useEffect(() => {
     if (servers) {
-      console.error(servers);
       setTableData(servers);
     }
   }, [servers]);
@@ -58,8 +65,8 @@ const ServerTable: FC = () => {
     setIsModalOpen(true);
   };
 
-  const onDeleteClick = () => {
-
+  const onDeleteClick = async () => {
+    await deleteServer(selectedRows[0] as ServerId);
     setDeleteDisabled(true);
   };
 
@@ -77,8 +84,12 @@ const ServerTable: FC = () => {
     }
   };
 
-  const onSaveHandler = (server: Omit<Optional<Server, 'id'>, 'status'>): void => {
-    console.error(server);
+  const onSaveHandler = async (server: Optional<Server, 'id'>): Promise<void> => {
+    if (server.id) {
+      await updateServer({ id: server.id, name: server.name, idAddress: server.idAddress });
+    } else {
+      await createServer(server as Server);
+    }
     close();
   };
 
@@ -88,7 +99,6 @@ const ServerTable: FC = () => {
   };
 
   const onRowClick = (record: Server): void => {
-    console.warn(record);
     setCurrentServer(record);
   };
 

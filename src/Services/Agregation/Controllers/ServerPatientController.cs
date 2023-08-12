@@ -84,12 +84,11 @@ namespace Agregation.Controllers
         /// <param name="ServerCreateRequest">Информация о сервере пациенте для создания.</param>
         /// <returns>Возвращает информацию о сервере с его идентификатором.</returns>
         [HttpPost]
-        public async Task<ActionResult<ServerPatientViewModel>> Create([FromBody] ServerPatientCreateModel ServerCreateRequest)
+        public async Task<ActionResult<ServerPatientViewModel>> Create([FromBody] ServerPatientEditModel request)
         {
-            var dto = mapper.Map<ServerPatientDto>(ServerCreateRequest);
-            var retObj = await serverPatientSetService.AddAsync(dto);
-            var retModel = mapper.Map<ServerPatientViewModel>(retObj);
-            return Ok(retModel);
+            var dto = await serverPatientSetService.AddAsync(request);
+            var serverModel = mapper.Map<ServerPatientViewModel>(dto);
+            return Ok(serverModel);
         }
 
         /// <summary>
@@ -124,13 +123,12 @@ namespace Agregation.Controllers
         /// <summary>
         /// Обновить информацию о сервере.
         /// </summary>
-        /// <param name="ServerUpdateRequest"></param>
+        /// <param name="request"></param>
         /// <returns></returns>
         [HttpPut]
-        public async Task<IActionResult> Edit(ServerPatientEditModel ServerUpdateRequest)
+        public async Task<IActionResult> Edit([FromBody] ServerPatientEditModel request)
         {
-            var dto = mapper.Map<ServerPatientDto>(ServerUpdateRequest);
-            var result = await serverPatientSetService.TryUpdateAsync(dto);
+            var result = await serverPatientSetService.TryUpdateAsync(request);
             return result ? Ok() : NotFound();
         }
     }
