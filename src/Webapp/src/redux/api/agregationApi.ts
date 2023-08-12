@@ -14,12 +14,15 @@ export interface LogRequest extends TableDataRequest {
 
 export const agregationApi = api.injectEndpoints({
     endpoints: (build) => ({
-        getServerByIds: build.query<Server, ServerId[]>({
+        getServerByIds: build.query<Server[], ServerId[]>({
             query: (ids) => ({ url: 'server', params: { guids: ids } }),
             providesTags: ['Servers'],
         }),
-        getServerByIdsShort: build.query<ServerShort, ServerId[]>({
-            query: (ids) => ({ url: 'server/short', params: { guids: ids } }),
+        getServerByIdsShort: build.query<ServerShort[], ServerId[]>({
+            query: (ids) => {
+                const params = ids.map(id => `guids=${id}`).join('&');
+                return { url: `server/short?${params}` };
+            },
             providesTags: ['Servers'],
         }),
         getServersByPage: build.query<Server[], TableDataRequest>({

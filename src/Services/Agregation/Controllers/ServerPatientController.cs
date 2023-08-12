@@ -71,7 +71,7 @@ namespace Agregation.Controllers
         /// <param name="guids">Список GUID</param>
         /// <returns>Возвращвет список серверов с краткой информацией</returns>
         [HttpGet("short")]
-        public async Task<ActionResult<ICollection<ServerPatientShortViewModel>>> GetShortListGuid(List<Guid> guids)
+        public async Task<ActionResult<ICollection<ServerPatientShortViewModel>>> GetShortListGuid(Guid[] guids)
         {
             var dtoPage = await serverPatientSetService.GetShortListByListGuid(guids);
             var viewModelPage = mapper.Map<ICollection<ServerPatientShortViewModel>>(dtoPage);
