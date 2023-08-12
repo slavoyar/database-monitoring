@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Agregation.Controllers
 {
-    [Route("server")]
+    [Route("api/server")]
     public class ServerPatientController : Controller
     {
         protected readonly ILogSetService logSetService;

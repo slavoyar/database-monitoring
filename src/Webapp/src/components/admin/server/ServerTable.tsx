@@ -1,15 +1,18 @@
 import React, { FC, useEffect, useState } from 'react';
 import { DeleteOutlined, PlusOutlined } from '@ant-design/icons';
-import { ServerShort } from '@models';
+import { Server } from '@models';
 import { Optional } from '@models/Types';
-import { Button, Table } from 'antd';
+import { useGetServersByPageQuery } from '@redux/api/agregationApi';
+import { Button, Table, TablePaginationConfig } from 'antd';
 
 import EditServerDialog from './EditServerDialog';
+
+const DEFAULT_PAGE_SIZE = 10;
 
 enum ServerTableColumn {
   NAME = 'name',
   STATUS = 'status',
-  ADDRESS = 'address',
+  IP_ADDRESS = 'idAddress',
 }
 
 const columns = [
@@ -25,29 +28,38 @@ const columns = [
   },
   {
     title: 'Адрес',
-    dataIndex: ServerTableColumn.ADDRESS,
-    key: ServerTableColumn.ADDRESS,
+    dataIndex: ServerTableColumn.IP_ADDRESS,
+    key: ServerTableColumn.IP_ADDRESS,
   },
 ];
 
 const ServerTable: FC = () => {
-  const [tableDate, setTableData] = useState<ServerShort[]>([]);
+  const [pagination, setPagination] = useState<TablePaginationConfig>({
+    current: 1,
+    pageSize: DEFAULT_PAGE_SIZE,
+  });
+  const [tableData, setTableData] = useState<Server[]>([]);
   const [deleteDisabled, setDeleteDisabled] = useState(true);
   const [selectedRows, setSelectedRows] = useState<React.Key[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [currentServer, setcurrentServer] = useState<ServerShort | undefined>(undefined);
+  const [currentServer, setCurrentServer] = useState<Server | undefined>(undefined);
+
+  const { data: servers, isLoading }
+    = useGetServersByPageQuery({ page: pagination.current ?? 1, itemPerPage: DEFAULT_PAGE_SIZE });
 
   useEffect(() => {
-  }, []);
+    if (servers) {
+      console.error(servers);
+      setTableData(servers);
+    }
+  }, [servers]);
 
   const onAddClick = () => {
     setIsModalOpen(true);
   };
 
   const onDeleteClick = () => {
-    const newData = tableDate.filter((item) => !selectedRows.includes(item.id));
-    setSelectedRows([]);
-    setTableData(newData);
+
     setDeleteDisabled(true);
   };
 
@@ -61,11 +73,11 @@ const ServerTable: FC = () => {
       setIsModalOpen(false);
     }
     if (currentServer) {
-      setcurrentServer(undefined);
+      setCurrentServer(undefined);
     }
   };
 
-  const onSaveHandler = (server: Omit<Optional<ServerShort, 'id'>, 'status'>): void => {
+  const onSaveHandler = (server: Omit<Optional<Server, 'id'>, 'status'>): void => {
     console.error(server);
     close();
   };
@@ -75,8 +87,13 @@ const ServerTable: FC = () => {
     onChange: onSelectChange,
   };
 
-  const onRowClick = (record: ServerShort): void => {
-    setcurrentServer(record);
+  const onRowClick = (record: Server): void => {
+    console.warn(record);
+    setCurrentServer(record);
+  };
+
+  const onTableChange = (paging: TablePaginationConfig): void => {
+    setPagination(paging);
   };
 
   return (
@@ -93,11 +110,14 @@ const ServerTable: FC = () => {
       </Button.Group>
       <Table
         bordered
-        dataSource={tableDate}
+        dataSource={tableData}
         columns={columns}
         rowSelection={rowSelection}
         rowKey='id'
+        loading={isLoading}
+        pagination={pagination}
         onRow={(record) => ({ onClick: () => onRowClick(record) })}
+        onChange={onTableChange}
       />
       <EditServerDialog
         server={currentServer}

@@ -1,13 +1,13 @@
 import React, { FC, useEffect, useState } from 'react';
 import { PropertyInput } from '@components/common';
-import { ServerShort } from '@models';
+import { Server, ServerStatus } from '@models';
 import { Optional } from '@models/Types';
 import { Modal, ModalFuncProps } from 'antd';
 
 interface EditServerDialogProps extends ModalFuncProps {
-  server: ServerShort | undefined
+  server: Server | undefined
   isOpen: boolean
-  onSave: (server: Omit<Optional<ServerShort, 'id'>, 'status'>) => void
+  onSave: (server: Optional<Server, 'id'>) => void
 }
 
 const EditServerDialog: FC<EditServerDialogProps> = ({
@@ -21,16 +21,19 @@ const EditServerDialog: FC<EditServerDialogProps> = ({
 
   useEffect(() => {
     setName(server?.name ?? '');
-    setAddress(server?.ipAddress ?? '');
+    setAddress(server?.idAddress ?? '');
   }, [server, isOpen]);
 
   const computedTitle = server ? 'Редактировать параметры сервера' : 'Добавить сервер';
 
   const onOkHandler = (): void => {
     onSave({
-      id: server?.id,
+      status: ServerStatus.down,
+      connectionStatus: false,
+      pingStatus: false,
+      ...server,
       name,
-      ipAddress: address,
+      idAddress: address,
     });
   };
 

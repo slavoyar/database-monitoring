@@ -2,10 +2,14 @@ import { Server, ServerId, ServerShort } from '@models';
 
 import { api } from './api';
 
-export interface LogRequest {
-    serverId: ServerId;
+// TODO: move to models, since table data can be used in different places
+export interface TableDataRequest {
     page: number;
     itemPerPage: number;
+}
+
+export interface LogRequest extends TableDataRequest {
+    serverId: ServerId;
 }
 
 export const agregationApi = api.injectEndpoints({
@@ -17,6 +21,9 @@ export const agregationApi = api.injectEndpoints({
         getServerByIdsShort: build.query<ServerShort, ServerId[]>({
             query: (ids) => ({ url: 'server/short', params: { guids: ids } }),
             providesTags: ['Servers'],
+        }),
+        getServersByPage: build.query<Server[], TableDataRequest>({
+            query: (params) => `server/${params.page}/${params.itemPerPage}`,
         }),
         createServer: build.mutation<Server, Server>({
             query: (server) => ({
@@ -51,6 +58,7 @@ export const agregationApi = api.injectEndpoints({
 export const {
     useGetServerByIdsQuery,
     useGetServerByIdsShortQuery,
+    useGetServersByPageQuery,
     useCreateServerMutation,
     useDeleteServerMutation,
     useUpdateServerMutation,

@@ -95,7 +95,7 @@ namespace Agregation.Infrastructure.Services.Implementations
                 }
 
                 var random = new Random();
-                var randomValue = random.Next(500, 1000);
+                var randomValue = random.Next(5000, 10000);
                 Task.Delay(randomValue).Wait();
             }
         }

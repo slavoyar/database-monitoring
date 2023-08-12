@@ -1,17 +1,17 @@
+using System.Reflection;
+using Agregation.Domain.Intefaces;
+using Agregation.Infrastructure.DataAccess;
+using Agregation.Infrastructure.Services.Implementations;
 using Hangfire;
 using Hangfire.PostgreSql;
-using Agregation.Infrastructure.DataAccess;
 using MIAUDataBase;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Serilog;
 using Serilog.Formatting.Json;
 using Serilog.Sinks.Elasticsearch;
 using Serilog.Sinks.File;
-using System.Reflection;
-using Agregation.Infrastructure.Services.Implementations;
-using Agregation.Domain.Intefaces;
-using Microsoft.AspNetCore.SignalR;
 
 var builder = WebApplication.CreateBuilder(args);
 ConfigurationManager configuration = builder.Configuration;
@@ -56,6 +56,16 @@ builder.Services.AddHangfireServer();
 
 builder.Services.AddSignalR();
 
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(builder =>
+    {
+        builder.SetIsOriginAllowed(origin => new Uri(origin).Host == "front" || new Uri(origin).Host == "localhost")
+        .AllowAnyHeader()
+        .AllowAnyMethod();
+    });
+});
+
 //--------------------------------------------------------------------------------------------------------------
 
 var app = builder.Build();
@@ -85,7 +95,7 @@ if (app.Environment.IsDevelopment())
 app.UseDefaultFiles();
 app.UseStaticFiles();
 
-app.UseHttpsRedirection();
+app.UseCors();
 
 app.UseAuthorization();
 
@@ -114,7 +124,8 @@ app.Run();
 
 void AddCustomLogging(WebApplicationBuilder builder)
 {
-    builder.Host.UseSerilog((context, services, configuration) => {
+    builder.Host.UseSerilog((context, services, configuration) =>
+    {
         configuration.ReadFrom.Configuration(context.Configuration)
         .WriteTo.Console()
         .WriteTo.Elasticsearch(new ElasticsearchSinkOptions(new Uri(builder.Configuration["ELASTICSEARCH_URL"]))

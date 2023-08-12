@@ -1,5 +1,5 @@
 enum ServerStatus {
-  good = 'good',
+  good = 'Working',
   warn = 'warn',
   down = 'down',
 }
@@ -9,14 +9,14 @@ type ServerId = string
 interface ServerBase {
   id: ServerId;
   name: string;
-  ipAddress: string;
+  idAddress: string;
 }
 
 interface Server extends ServerBase {
   status: ServerStatus;
   pingStatus: boolean;
   connectionStatus: boolean;
-  lastSuccessLog: string;
+  lastSuccessLog?: string;
 }
 
 interface ServerShort extends ServerBase {
