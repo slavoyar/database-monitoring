@@ -27,14 +27,13 @@ namespace Agregation.Controllers
         /// <param name="itemsPerPage">Количесвто элементов на странице.</param>
         /// <returns>Возвращает itemsPerPage серверов пациентов с полной информацией о них.</returns>
         [HttpGet("{page}/{itemsPerPage}")]
-        public async Task<IResult> GetPaged(int page, int itemsPerPage)
+        public async Task<ActionResult<ICollection<ServerPatientViewModel>>> GetPaged(int page, int itemsPerPage)
         {
-            if (page <= 0 || itemsPerPage <= 0) return Results.ValidationProblem(new Dictionary<string, string[]>() {
-                    { "page or items per page less or equal then 0" , new string[]{ "Enter correct numbers" }  },
-                });
+            if (page <= 0 || itemsPerPage <= 0) 
+                return NotFound();
             var dtoPage = await serverPatientSetService.GetPagedAsync(page, itemsPerPage);
             var viewModelPage = mapper.Map<ICollection<ServerPatientViewModel>>(dtoPage);
-            return Results.Ok(viewModelPage);
+            return Ok(viewModelPage);
         }
 
         /// <summary>
@@ -43,11 +42,11 @@ namespace Agregation.Controllers
         /// <param name="guids">Список GUID</param>
         /// <returns>Возвращвет список серверов с полной информацией о них</returns>
         [HttpGet]
-        public async Task<IResult> GetListGuid(List<Guid> guids)
+        public async Task<ActionResult<ICollection<ServerPatientViewModel>>> GetListGuid(List<Guid> guids)
         {
             var dtoPage = await serverPatientSetService.GetListByListGuid(guids);
             var viewModelPage = mapper.Map<ICollection<ServerPatientViewModel>>(dtoPage);
-            return Results.Ok(viewModelPage);
+            return Ok(viewModelPage);
         }
 
         /// <summary>
@@ -59,12 +58,11 @@ namespace Agregation.Controllers
         [HttpGet("short/{page}/{itemsPerPage}")]
         public async Task<ActionResult<ICollection<ServerPatientShortViewModel>>> GetShortListByPage(int page, int itemsPerPage)
         {
-            if (page <= 0 || itemsPerPage <= 0) return Results.ValidationProblem(new Dictionary<string, string[]>() {
-                    { "page or items per page less or equal then 0" , new string[]{ "Enter correct numbers" }  },
-                });
+            if (page <= 0 || itemsPerPage <= 0) 
+                return NotFound("No data fro specidied page");
             var dtoPage = await serverPatientSetService.GetShortServerPatientsPaged(page, itemsPerPage);
             var viewModelPage = mapper.Map<ICollection<ServerPatientShortViewModel>>(dtoPage);
-            return viewModelPage;
+            return Ok(viewModelPage);
         }
 
         /// <summary>
@@ -73,11 +71,11 @@ namespace Agregation.Controllers
         /// <param name="guids">Список GUID</param>
         /// <returns>Возвращвет список серверов с краткой информацией</returns>
         [HttpGet("short")]
-        public async Task<IResult> GetShortListGuid(List<Guid> guids)
+        public async Task<ActionResult<ICollection<ServerPatientShortViewModel>>> GetShortListGuid(List<Guid> guids)
         {
             var dtoPage = await serverPatientSetService.GetShortListByListGuid(guids);
             var viewModelPage = mapper.Map<ICollection<ServerPatientShortViewModel>>(dtoPage);
-            return Results.Ok(viewModelPage);
+            return Ok(viewModelPage);
         }
 
         /// <summary>
@@ -86,12 +84,12 @@ namespace Agregation.Controllers
         /// <param name="ServerCreateRequest">Информация о сервере пациенте для создания.</param>
         /// <returns>Возвращает информацию о сервере с его идентификатором.</returns>
         [HttpPost]
-        public async Task<ActionResult<ServerPatientViewModel>> Create(ServerPatientCreateModel ServerCreateRequest)
+        public async Task<ActionResult<ServerPatientViewModel>> Create([FromBody] ServerPatientCreateModel ServerCreateRequest)
         {
             var dto = mapper.Map<ServerPatientDto>(ServerCreateRequest);
             var retObj = await serverPatientSetService.AddAsync(dto);
             var retModel = mapper.Map<ServerPatientViewModel>(retObj);
-            return Results.Created("Not uri", retModel);
+            return Ok(retModel);
         }
 
         /// <summary>
@@ -100,10 +98,10 @@ namespace Agregation.Controllers
         /// <param name="id">Идентификатор.</param>
         /// <returns>Возвращает 200, при удалении, 404, если сервер с эти ид не найден.</returns>
         [HttpDelete("{id}")]
-        public async Task<IResult> DeleteById(Guid id)
+        public async Task<IActionResult> DeleteById(Guid id)
         {
             var result = await serverPatientSetService.TryDeleteAsync(id);
-            return result ? Results.Ok() : Results.NotFound();
+            return result ? Ok() : NotFound();
         }
 
         /// <summary>
@@ -117,10 +115,10 @@ namespace Agregation.Controllers
             var dto = await serverPatientSetService.GetAsync(id);
             if (dto == null)
             {
-                return Results.NotFound();
+                return NotFound();
             }
             var view = mapper.Map<ServerPatientViewModel>(dto);
-            return Results.Ok(view);
+            return Ok(view);
         }
 
         /// <summary>
@@ -129,11 +127,11 @@ namespace Agregation.Controllers
         /// <param name="ServerUpdateRequest"></param>
         /// <returns></returns>
         [HttpPut]
-        public async Task<IResult> Edit(ServerPatientEditModel ServerUpdateRequest)
+        public async Task<IActionResult> Edit(ServerPatientEditModel ServerUpdateRequest)
         {
             var dto = mapper.Map<ServerPatientDto>(ServerUpdateRequest);
             var result = await serverPatientSetService.TryUpdateAsync(dto);
-            return result ? Results.Ok() : Result.NotFound();
+            return result ? Ok() : NotFound();
         }
     }
 }

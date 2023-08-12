@@ -1,4 +1,4 @@
-import { Server, ServerId } from '@models';
+import { Server, ServerId, ServerShort } from '@models';
 
 import { api } from './api';
 
@@ -14,7 +14,7 @@ export const agregationApi = api.injectEndpoints({
             query: (ids) => ({ url: 'server', params: { guids: ids } }),
             providesTags: ['Servers'],
         }),
-        getServerByIdsShort: build.query<Server, ServerId[]>({
+        getServerByIdsShort: build.query<ServerShort, ServerId[]>({
             query: (ids) => ({ url: 'server/short', params: { guids: ids } }),
             providesTags: ['Servers'],
         }),

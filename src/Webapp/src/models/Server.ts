@@ -6,20 +6,20 @@ enum ServerStatus {
 
 type ServerId = string
 
-interface Server {
+interface ServerBase {
   id: ServerId;
   name: string;
-  status: ServerStatus;
-  pingStatus: boolean;
-  connectionStatus: string;
-  lastSuccessLog: string;
   ipAddress: string;
 }
 
-interface ServerShort {
-  id: ServerId;
-  name: string;
-  ipAddress: string;
+interface Server extends ServerBase {
+  status: ServerStatus;
+  pingStatus: boolean;
+  connectionStatus: boolean;
+  lastSuccessLog: string;
+}
+
+interface ServerShort extends ServerBase {
   status?: ServerStatus;
   countOfLogs?: number;
 }
