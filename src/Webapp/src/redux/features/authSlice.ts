@@ -1,4 +1,4 @@
-import { User } from '@models';
+import { User, WorkspaceId } from '@models';
 import { api } from '@redux/api/api';
 import { TokenModel } from '@redux/api/customFetchBase';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
@@ -7,6 +7,7 @@ interface AuthState {
     accessToken?: string;
     refreshToken?: string;
     user?: Partial<User>;
+    workspaceId?: WorkspaceId;
 }
 
 export const authSlice = createSlice({
@@ -32,6 +33,9 @@ export const authSlice = createSlice({
         updateUser: (state, { payload }: PayloadAction<User>) => {
             state.user = payload;
         },
+        updateWorkspaceId: (state, { payload }: PayloadAction<WorkspaceId>) => {
+            state.workspaceId = payload;
+        },
     },
     extraReducers: (builder) => {
         builder.addMatcher(
@@ -55,4 +59,4 @@ export const authSlice = createSlice({
 });
 
 export default authSlice.reducer;
-export const { logout, refreshTokens, updateUser } = authSlice.actions;
+export const { logout, refreshTokens, updateUser, updateWorkspaceId } = authSlice.actions;

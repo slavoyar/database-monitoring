@@ -1,0 +1,27 @@
+.notifications-container {
+    max-width: 80rem;
+    margin: auto;
+
+}
+
+.notifications-content {
+    height: calc(100vh - 64px);
+    text-align: center;
+}
+
+.notifications-list {
+    margin: auto;
+    margin-top: 10px;
+    min-width: 400px;
+    width: 50%;
+}
+
+.notifications-list .ant-list-item {
+    display: block;
+}
+
+.notifications-list_header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
