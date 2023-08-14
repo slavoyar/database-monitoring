@@ -1,4 +1,5 @@
 ﻿using Agregation.Domain.Models;
+using Agregation.Infrastructure.Services.DTO;
 
 namespace Agregation.Domain.Interfaces
 {

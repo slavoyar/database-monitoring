@@ -1,7 +1,7 @@
 enum ServerStatus {
   good = 'Working',
-  warn = 'warn',
-  down = 'down',
+  warn = 'Warn',
+  down = 'Down',
 }
 
 type ServerId = string

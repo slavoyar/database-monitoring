@@ -65,6 +65,15 @@ builder.Services.AddCors(options =>
         .AllowAnyHeader()
         .AllowAnyMethod();
     });
+    options.AddPolicy("SignalRPolicy",
+    builder =>
+    {
+        builder
+        .WithOrigins("http://localhost:8080", "http://localhost")
+        .WithMethods("GET", "POST")
+        .AllowAnyHeader()
+        .AllowCredentials();
+    });
 });
 
 //--------------------------------------------------------------------------------------------------------------
@@ -96,7 +105,7 @@ if (app.Environment.IsDevelopment())
 app.UseDefaultFiles();
 app.UseStaticFiles();
 
-app.UseCors();
+app.UseCors("SignalRPolicy");
 
 app.UseAuthorization();
 
@@ -118,10 +127,7 @@ var jobid = "AggLoopedLogs";
 recurringJobManager.AddOrUpdate(jobid, () => scopedHangFireService.ReccuringJob(), Cron.Minutely);
 recurringJobManager.Trigger(jobid);
 
-app.MapHub<ServerStateHub>("/serversState", options =>
-{
-    options.Transports = HttpTransportType.WebSockets;
-});
+app.MapHub<ServerStateHub>("/serverState");
 
 app.Run();
 

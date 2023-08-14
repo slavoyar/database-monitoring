@@ -73,6 +73,13 @@ namespace Agregation.Infrastructure.Services.Implementations
             return dto;
         }
 
+        public async Task<ShortServerPatientDto?> GetShortAsync(Guid id)
+        {
+            var entity = await serverPatientRepository.GetAsync(id);
+            var dto = mapper.Map<ShortServerPatientDto>(entity);
+            return dto;
+        }
+
         public async Task<ICollection<ServerPatientDto>?> GetListByListGuid(ICollection<Guid> guids)
         {
             var entity = await Task.Run(() => serverPatientRepository.GetListGuid(guids));
@@ -95,6 +102,18 @@ namespace Agregation.Infrastructure.Services.Implementations
 
             server.Name = editModel.Name;
             server.IdAddress = editModel.IdAddress;
+            var result = serverPatientRepository.TryUpdate(server);
+            await serverPatientRepository.SaveChangesAsync();
+            return result;
+        }
+
+        public async Task<bool> UpdateStatusAsync(ShortServerPatientDto model)
+        {
+            var server = serverPatientRepository.Get(model.Id);
+            if (server == null)
+                return false;
+
+            server.Status = model.Status;
             var result = serverPatientRepository.TryUpdate(server);
             await serverPatientRepository.SaveChangesAsync();
             return result;

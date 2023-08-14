@@ -1,5 +1,14 @@
-import { HttpTransportType, HubConnection, HubConnectionBuilder } from '@microsoft/signalr';
+import {
+    HubConnection,
+    HubConnectionBuilder,
+    HubConnectionState,
+} from '@microsoft/signalr';
 import { Server, ServerId } from '@models';
+
+enum MethodName {
+    subscribeToGroup = 'SubscribeToGroup',
+    unsubscribeToGroup = 'UnsubscribeToGroup',
+}
 
 class Connector {
 
@@ -9,21 +18,29 @@ class Connector {
 
     private groupServerIds: ServerId[];
 
+    private invokeQueue: Record<string, ServerId[]> = {};
+
     // eslint-disable-next-line no-use-before-define
     private static instance: Connector;
 
     constructor() {
         this.groupServerIds = [];
         this.connection = new HubConnectionBuilder()
-            .withUrl('/serverState', {
-                skipNegotiation: true,
-                transport: HttpTransportType.WebSockets,
-            })
+            .withUrl('http://localhost:5002/serverState', { withCredentials: false })
             .withAutomaticReconnect()
             .build();
-        this.connection.start().catch(console.error);
+        this.connection.start()
+            .then(() => {
+                console.log('SignalR connection STARTED');
+                // eslint-disable-next-line no-underscore-dangle
+                this.subscribeToGroup(this.invokeQueue[MethodName.subscribeToGroup]);
+            })
+            .catch(console.error);
         this.events = (onMessageReceived) => {
-            this.connection.on('Receive', (server) => {
+            console.warn('onMessageReceived');
+            const _instance = Connector.getInstance();
+            _instance.connection.on('Receive', (server) => {
+                console.log('on Receive');
                 onMessageReceived(server);
             });
         };
@@ -36,16 +53,13 @@ class Connector {
     }
 
     public async subscribeToGroup(serverIds: ServerId[]): Promise<void> {
-        if (this.groupServerIds?.length) {
-            throw new Error('Need to unsubscribe first');
+        // eslint-disable-next-line no-underscore-dangle
+        const _instance = Connector.getInstance();
+        if (_instance.connection.state !== HubConnectionState.Connected) {
+            _instance.invokeQueue[MethodName.subscribeToGroup] = serverIds;
+            return;
         }
-        this.groupServerIds = serverIds;
-        await this.connection.invoke('SubscribeToGroup', serverIds);
-    }
-
-    public async unsubscribeFromGroup(): Promise<void> {
-        await this.connection.invoke('UnsubscribeToGroup', this.groupServerIds);
-        this.groupServerIds = [];
+        await _instance.connection.invoke('SubscribeToGroup', serverIds);
     }
 }
 

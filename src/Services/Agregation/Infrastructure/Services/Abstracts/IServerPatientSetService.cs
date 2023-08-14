@@ -13,9 +13,10 @@ namespace Agregation.Infrastructure.Services.Abstracts
         public Task<ServerPatientDto> AddAsync(ServerPatientEditModel model);
         public Task<bool> TryDeleteAsync(Guid id);
         public Task<ServerPatientDto?> GetAsync(Guid id);
+        public Task<ShortServerPatientDto?> GetShortAsync(Guid id);
         public Task<ICollection<ServerPatientDto>?> GetListByListGuid(ICollection<Guid> guids);
         public Task<ICollection<ShortServerPatientDto>?> GetShortListByListGuid(ICollection<Guid> guids);
         public Task<bool> TryUpdateAsync(ServerPatientEditModel model);
-
+        public Task<bool> UpdateStatusAsync(ShortServerPatientDto model);
     }
 }

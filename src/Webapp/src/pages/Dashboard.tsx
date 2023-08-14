@@ -10,7 +10,7 @@ import '@css/Dashboard.css';
 
 const Dashboard: FC = () => {
   // TODO: Add ability to get servers from workspace
-  const { events, subscribeToGroup } = Connector();
+  const { subscribeToGroup, events } = Connector();
   const [servers, setServers] = useState<ServerShort[]>([]);
   const MOCK_IDS = ['8d8a6029-676a-4e09-91c5-32c56602f67f', 'd13920a2-4961-43cc-bd22-12187b19f512'];
   const { data: fetchedServers } = useGetServerByIdsShortQuery(MOCK_IDS);
@@ -18,6 +18,7 @@ const Dashboard: FC = () => {
   useEffect(() => {
     subscribeToGroup(MOCK_IDS);
     events((server) => {
+      console.error('IN DASHBOARD');
       const updatedServers = [...servers];
       const serverIndex = updatedServers.findIndex(item => item.id === server.id);
       if (serverIndex >= 0) {
@@ -25,7 +26,7 @@ const Dashboard: FC = () => {
         setServers(updatedServers);
       }
     });
-  }, []);
+  });
 
   useEffect(() => {
     if (fetchedServers) {

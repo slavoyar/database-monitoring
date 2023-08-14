@@ -6,6 +6,7 @@ using AutoMapper.Configuration.Annotations;
 using TestPatient.Models;
 using Microsoft.AspNetCore.SignalR;
 using System.Text.Json;
+using Newtonsoft.Json;
 
 namespace Agregation.Infrastructure.Services.Implementations
 {
@@ -44,15 +45,24 @@ namespace Agregation.Infrastructure.Services.Implementations
 
                     foreach (var server in servers)
                     {
-                        var stateChanged = false;
+                        var newServerState = _serverPatientSetService.GetShortAsync(server.Id).Result;
+
                         var serverDataEndpoint = new Uri("http://" + server.IdAddress + "/" + patientEndpoint);
 
                         var _httpClient = new HttpClient();
 
                         var httpResponse = _httpClient.GetAsync(serverDataEndpoint).Result;
 
-                        if (!httpResponse.IsSuccessStatusCode)
-                            throw new Exception($"{serverDataEndpoint} is not reachable)");
+                        if (!httpResponse.IsSuccessStatusCode || newServerState == null)
+                        {
+                            if (newServerState != null && newServerState.Status != ServerState.Down)
+                            {
+                                newServerState.Status = ServerState.Down;
+                                _serverPatientSetService.UpdateStatusAsync(newServerState).Wait();
+                                _hubContext.Clients.Group(server.Id.ToString()).SendAsync("Receive", newServerState).Wait();
+                            }
+                            continue;
+                        }
 
                         var serverLogs = httpResponse.Content.ReadFromJsonAsync<List<SendingLogsModel>>().Result;
 
@@ -74,18 +84,22 @@ namespace Agregation.Infrastructure.Services.Implementations
                             logsList.Add(newLog);
                         }
 
-                        if (logsList.Count > 0)
+                        var areNewLogs = logsList.Count > 0;
+
+                        if (areNewLogs)
                         {
-                            stateChanged = true;
                             _AppDatabaseContext.Logs.AddRange(logsList);
                             _AppDatabaseContext.SaveChanges();
                         }
 
+                        newServerState = _serverPatientSetService.GetShortAsync(server.Id).Result;
+
                         // Send new data to SignalR Group
-                        if (stateChanged)
+                        if (newServerState.Status == ServerState.Down || areNewLogs)
                         {
-                            var newServerState = _serverPatientSetService.GetAsync(new Guid(server.Id));
-                            _hubContext.Clients.Group(server.Id).SendAsync("Receive", newServerState).Wait();
+                            newServerState.Status = areNewLogs ? ServerState.Warn : ServerState.Working;
+                            _serverPatientSetService.UpdateStatusAsync(newServerState).Wait();
+                            _hubContext.Clients.Group(server.Id.ToString()).SendAsync("Receive", newServerState).Wait();
                         }
                     }
                 }
@@ -95,8 +109,7 @@ namespace Agregation.Infrastructure.Services.Implementations
                 }
 
                 var random = new Random();
-                var randomValue = random.Next(5000, 10000);
-                Task.Delay(randomValue).Wait();
+                var randomValue = random.Next(500, 1000);
             }
         }
 
