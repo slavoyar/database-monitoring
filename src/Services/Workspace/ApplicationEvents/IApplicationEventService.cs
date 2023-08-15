@@ -6,8 +6,14 @@ namespace DatabaseMonitoring.Services.Workspace.ApplicationEvents;
 public interface IApplicationEventService
 {
     /// <summary>
-    /// Description
+    /// Publish new event to event bus
     /// </summary>
     /// <param name="event">Event to publish</param>
-    void PublishThroughEventBus(BaseEvent @event);
+    Task PublishThroughEventBus(BaseEvent @event);
+
+    /// <summary>
+    /// Publish new events to event bus
+    /// </summary>
+    /// <param name="events">Events to publish</param>
+    Task PublishManyThroughEventBus(IEnumerable<BaseEvent> events);
 }

@@ -57,7 +57,7 @@ public class WorkspaceService : IWorkspaceService
             WorkspaceId = workspace.Id,
             UsersId = workspace.Users.Select(x => x.OuterId)
         };
-        applicationEventSerivce.PublishThroughEventBus(@event);
+        await applicationEventSerivce.PublishThroughEventBus(@event);
     }
 
     /// <inheritdoc/>
@@ -87,7 +87,7 @@ public class WorkspaceService : IWorkspaceService
             WorkspaceId = workspace.Id,
             UsersId = workspace.Users.Select(x => x.OuterId)
         };
-        applicationEventSerivce.PublishThroughEventBus(@event);
+        await applicationEventSerivce.PublishThroughEventBus(@event);
     }
 
     /// <inheritdoc/>
@@ -198,7 +198,7 @@ public class WorkspaceService : IWorkspaceService
             WorkspaceId = workspace.Id,
             UsersId = workspace.Users.Select(x => x.OuterId)
         };
-        applicationEventSerivce.PublishThroughEventBus(@event);
+        await applicationEventSerivce.PublishThroughEventBus(@event);
 
         return true;
     }
@@ -231,7 +231,7 @@ public class WorkspaceService : IWorkspaceService
             WorkspaceId = workspace.Id,
             UsersId = workspace.Users.Select(x => x.OuterId)
         };
-        applicationEventSerivce.PublishThroughEventBus(@event);
+        await applicationEventSerivce.PublishThroughEventBus(@event);
 
         return true;
     }
@@ -239,17 +239,58 @@ public class WorkspaceService : IWorkspaceService
     /// <inheritdoc/>
     public async Task<bool> UpdateWorkspaceAsync(Guid workspaceId, WorkspaceDto workspaceDto)
     {
+        // Update entity in database
         var workspace = await unitOfWork.Workspaces.GetAll().Where(w => w.Id == workspaceId).Include(w => w.Servers).Include(x => x.Users).FirstAsync();
         workspace.Description = workspaceDto.Description;
         workspace.Name = workspaceDto.Name;
         unitOfWork.Workspaces.Update(workspace);
-        await unitOfWork.Workspaces.SaveChangesAsync();
-        await ReplaceEntities(workspace.Users, workspaceDto.Users, unitOfWork.Users, workspace);
-        await ReplaceEntities(workspace.Servers, workspaceDto.Servers, unitOfWork.Servers, workspace);
+        //await unitOfWork.Workspaces.SaveChangesAsync();
 
-        var workspaceToCache = mapper.Map<WorkspaceDto>(workspace);
-        await workspaceCacheReposotory.SetAsync(workspace.Id.ToString(), workspaceToCache);
+        var workspaceUsersOuterIds = workspace.Users.Select(user => user.OuterId);
+        var usersToDelete = workspace.Users.Where(user => !workspaceDto.Users.Contains(user.OuterId)).ToList();
+        var usersToAdd = workspaceDto.Users.Where(userOuterId => !workspaceUsersOuterIds.Contains(userOuterId))
+            .Select(userOuterId => new User(){OuterId = userOuterId, Workspace = workspace}).ToList();
+
+        if(usersToDelete != null && usersToDelete.Count() > 0)
+            unitOfWork.Users.DeleteRange(usersToDelete);
+        if(usersToAdd != null && usersToAdd.Count() > 0)
+            await unitOfWork.Users.CreateRangeAsync(usersToAdd);
+
+        var workspaceServersOuterIds = workspace.Servers.Select(s => s.OuterId);
+        var serversToDelete = workspace.Servers.Where(s => !workspaceDto.Servers.Contains(s.OuterId)).ToList();
+        var serversToAdd = workspaceDto.Servers.Where(serverId => !workspaceServersOuterIds.Contains(serverId))
+            .Select(serverOuterId => new Server(){OuterId = serverOuterId, Workspace = workspace}).ToList();
+
+        if(serversToDelete != null && serversToDelete.Count() > 0)
+            unitOfWork.Servers.DeleteRange(serversToDelete);
+        if(serversToAdd != null && serversToAdd.Count() > 0)
+            await unitOfWork.Servers.CreateRangeAsync(serversToAdd);
+
+        await unitOfWork.Workspaces.SaveChangesAsync();
+
+        // await ReplaceEntities(workspace.Users, workspaceDto.Users, unitOfWork.Users, workspace);
+        // await ReplaceEntities(workspace.Servers, workspaceDto.Servers, unitOfWork.Servers, workspace);
+
+        // Update entity in cashe
+        // var workspaceToCache = mapper.Map<WorkspaceDto>(workspace);
+        // await workspaceCacheReposotory.SetAsync(workspace.Id.ToString(), workspaceToCache);
+
+        if(!workspace.Users.Any())
+            return true;
         
+        // Create and publish events to message bus
+        var userAddedToWorkspaceEvents = usersToAdd.Select(user => UserAddedToWorkspaceAppEvent.FromModels(user, workspace));
+        await applicationEventSerivce.PublishManyThroughEventBus(userAddedToWorkspaceEvents);
+
+        var userRemovedFromWorkspaceEvents = usersToDelete.Select(user => UserRemovedFromWorkspaceAppEvent.FromModels(user, workspace));
+        await applicationEventSerivce.PublishManyThroughEventBus(userRemovedFromWorkspaceEvents);
+
+        var serverAddedToWorkspaceEvents = serversToAdd.Select(server => ServerAddedToWorkspaceAppEvent.FromModels(server, workspace));
+        await applicationEventSerivce.PublishManyThroughEventBus(serverAddedToWorkspaceEvents);
+
+        var ServerRemovedFromWorkspaceAppEvents = serversToDelete.Select(server => ServerRemovedFromWorkspaceAppEvent.FromModels(server, workspace));
+        await applicationEventSerivce.PublishManyThroughEventBus(ServerRemovedFromWorkspaceAppEvents);
+
         return true;
     }
 
