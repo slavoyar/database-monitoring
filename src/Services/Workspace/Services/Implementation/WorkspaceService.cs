@@ -298,21 +298,4 @@ public class WorkspaceService : IWorkspaceService
     public async Task<bool> WorkspaceExists(Guid id)
         => (await unitOfWork.Workspaces.GetAsync(id)) != null;
 
-    private static async Task ReplaceEntities<T>(
-        ICollection<T> oldEntities,
-        IEnumerable<Guid> newEnityIds,
-        IRepository<T> repository,
-        WorkspaceEntity workspace
-    ) where T : BaseEntity, IWithOuterId, new()
-    {
-        var entitiesToDelete = oldEntities.Where(u => !newEnityIds.Contains(u.OuterId)).ToList();
-        repository.DeleteRange(entitiesToDelete);
-
-        var oldEntityIds = oldEntities.Select(entity => entity.OuterId);
-        var entityiesToAdd = newEnityIds.Where(entityId => !oldEntityIds.Contains(entityId));
-        await repository.CreateRangeAsync(entityiesToAdd.Select(entity => new T() { OuterId = entity, Workspace = workspace }).ToList());
-
-        await repository.SaveChangesAsync();
-    }
-
 }
