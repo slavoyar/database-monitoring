@@ -60,7 +60,7 @@ export const workspaceApi = api.injectEndpoints({
             }),
         }),
         getWorkspaceServers: build.query<ServerId[], WorkspaceId>({
-            query: (id) => `v1/servers/${id}`,
+            query: (id) => `v1/workspace/${id}/servers`,
         }),
         addServerToWorkspace: build.mutation<void, ServerWithWorkspace>({
             query: (params) => ({
