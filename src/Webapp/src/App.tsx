@@ -3,13 +3,19 @@ import { Route, Routes } from 'react-router-dom';
 import { ServerView, UserSettings, UserView, WorkspaceView } from '@components/admin';
 import PrivateRoute from '@components/common/PrivateRoute';
 import { Path } from '@models';
-import { AdminPage, Dashboard, LoginPage, NotFound } from '@pages';
+import { AdminPage, Dashboard, LoginPage, NotFound, NotificationsPage} from '@pages';
 
 const App: FC = () => (
   <Routes>
     <Route path={Path.login} element={<LoginPage />} />
     <Route path='/' element={<PrivateRoute />} >
       <Route path={Path.dashboard} element={<Dashboard />} />
+      <Route
+          path={Path.notifications}
+          element={
+            <NotificationsPage/>
+          }
+        />
       <Route path={Path.admin}>
         <Route
           path={Path.user}

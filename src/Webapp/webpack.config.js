@@ -93,6 +93,10 @@ module.exports = {
         context: ['/api/v1/workspace', '/api/v1/users', '/api/v1/servers'],
         target: 'http://localhost:5009/',
       },
+      {
+        context: ['/api/notification'],
+        target: 'http://localhost:5001/',
+      },
     ],
   },
   performance: {

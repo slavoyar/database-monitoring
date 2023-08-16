@@ -5,12 +5,13 @@ import {
   DashboardOutlined,
   LineChartOutlined,
   LogoutOutlined,
+  MailOutlined,
   SettingOutlined,
 } from '@ant-design/icons';
 import { Path, UserId, WorkspaceId } from '@models';
 import { ValueWithLabel } from '@models/Types';
 import { useGetUserWorkspacesQuery } from '@redux/api/workspaceApi';
-import { logout } from '@redux/features/authSlice';
+import { logout, updateWorkspaceId } from '@redux/features/authSlice';
 import { RootState, store } from '@redux/store';
 import { Layout, Menu, Select } from 'antd';
 
@@ -28,14 +29,19 @@ const Navbar: FC = () => {
 
   const { data: workspaces } = useGetUserWorkspacesQuery(userId, { skip: !userId });
 
+  const setCurrentWorkspace = (workspaceId: WorkspaceId) => {
+    setWorkspace(workspaceId);
+    store.dispatch(updateWorkspaceId(workspaceId));
+  };
+
   useEffect(() => {
     if (!workspaces) {
-      setWorkspace('');
+      setCurrentWorkspace('');
       setWorkspaceOptions([]);
       return;
     }
     if (!workspace && workspaces.length) {
-      setWorkspace(workspaces[0].id as WorkspaceId);
+      setCurrentWorkspace(workspaces[0].id as WorkspaceId);
     }
     const options = workspaces.map(w => ({ value: w.id, label: w.name } as ValueWithLabel));
     setWorkspaceOptions(options);
@@ -77,8 +83,11 @@ const Navbar: FC = () => {
           className='navbar-workspace-select'
           value={workspace}
           options={workspaceOptions}
-          onChange={setWorkspace}
+          onChange={setCurrentWorkspace}
         />
+        <Link to={`/${Path.notifications}`}>
+          <MailOutlined />
+        </Link>
         <Link to={`/${Path.admin}/${Path.user}`}>
           <SettingOutlined />
         </Link>
