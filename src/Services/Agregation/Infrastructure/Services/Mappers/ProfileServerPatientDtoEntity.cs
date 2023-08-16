@@ -16,7 +16,7 @@ namespace Agregation.Infrastructure.Services.Mappers
                 .ForMember(d => d.LastSuccessLog, m => m.MapFrom(s => DateTime.Parse(s.LastSuccessLog)))
                 .ForMember(d => d.Logs, m => m.MapFrom(s => new List<Log>()));
             CreateMap<ServerPatient, ShortServerPatientDto>()
-                .ForMember(d => d.CountOfLogs, map => map.Ignore());
+                .ForMember(d => d.CountOfLogs, map => map.MapFrom(d => d.Logs.Count));
         }
     }
 }

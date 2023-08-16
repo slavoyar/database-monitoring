@@ -24,13 +24,18 @@ const getStatusIcon: FC<StatusIconProps> = ({ status }: StatusIconProps) => {
   return icon;
 };
 
-const ServerCard: FC<ServerShort> = ({ name, status, idAddress }: ServerShort) => {
+const ServerCard: FC<ServerShort> = ({ name, status, idAddress, countOfLogs }: ServerShort) => {
   const iconComponent = getStatusIcon({ status });
   return (
     <Card title={name} extra={iconComponent} className='server-card'>
       <span>
         <strong>IP-address: </strong>
         {idAddress}
+      </span>
+      <br />
+      <span>
+        <strong>Количество логов: </strong>
+        {countOfLogs}
       </span>
     </Card>
   );

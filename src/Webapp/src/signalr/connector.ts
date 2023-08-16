@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 import {
     HubConnection,
     HubConnectionBuilder,
@@ -31,16 +32,13 @@ class Connector {
             .build();
         this.connection.start()
             .then(() => {
-                console.log('SignalR connection STARTED');
-                // eslint-disable-next-line no-underscore-dangle
+                console.log('SignalR connection started');
                 this.subscribeToGroup(this.invokeQueue[MethodName.subscribeToGroup]);
             })
             .catch(console.error);
         this.events = (onMessageReceived) => {
-            console.warn('onMessageReceived');
             const _instance = Connector.getInstance();
             _instance.connection.on('Receive', (server) => {
-                console.log('on Receive');
                 onMessageReceived(server);
             });
         };
@@ -53,7 +51,6 @@ class Connector {
     }
 
     public async subscribeToGroup(serverIds: ServerId[]): Promise<void> {
-        // eslint-disable-next-line no-underscore-dangle
         const _instance = Connector.getInstance();
         if (_instance.connection.state !== HubConnectionState.Connected) {
             _instance.invokeQueue[MethodName.subscribeToGroup] = serverIds;

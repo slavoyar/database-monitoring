@@ -20,9 +20,11 @@ const Dashboard: FC = () => {
     events((server) => {
       console.error('IN DASHBOARD');
       const updatedServers = [...servers];
+      console.warn(updatedServers, server);
       const serverIndex = updatedServers.findIndex(item => item.id === server.id);
       if (serverIndex >= 0) {
         updatedServers[serverIndex] = server;
+        console.warn(updatedServers);
         setServers(updatedServers);
       }
     });

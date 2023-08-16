@@ -13,7 +13,7 @@ import {
   useGetAllWorkspacesQuery,
   useUpdateWorkspaceMutation,
 } from '@redux/api/workspaceApi';
-import { Button, Table } from 'antd';
+import { Button, Table, notification } from 'antd';
 
 import EditWorkspaceDialog from './EditWorkspaceDialog';
 import { useGetServersByPageQuery } from '@redux/api/agregationApi';
@@ -32,6 +32,8 @@ function userArrayToString(arr: User[]): string {
 function serverArrayToString(arr: Server[]): string {
   return arr.map((item) => item.name).join(', ');
 }
+
+const NOTIFICATION_DURATION = 10;
 
 const columns = [
   {
@@ -67,10 +69,11 @@ const WorkspaceTable: FC = () => {
     undefined,
   );
 
-  const { data: fetchedData } = useGetAllWorkspacesQuery();
-  const { data: fetchedUsers } = useFetchUsersQuery();
+  const { data: fetchedData, isError: isWorkspaceError } = useGetAllWorkspacesQuery();
+  const { data: fetchedUsers, isError: isUserError } = useFetchUsersQuery();
   // TODO: add endpoint for all servers by user id.
-  const { data: fetchedServers } = useGetServersByPageQuery({ page: 1, itemPerPage: 100 });
+  const { data: fetchedServers, isError: isServerError }
+    = useGetServersByPageQuery({ page: 1, itemPerPage: 100 });
   const [createWorkspace] = useCreateWorkspaceMutation();
   const [updateWorkspace] = useUpdateWorkspaceMutation();
   const [deleteWorkspace] = useDeleteWorkspaceMutation();
@@ -80,6 +83,15 @@ const WorkspaceTable: FC = () => {
       setData(workspacesToTableData(fetchedData, fetchedUsers, fetchedServers));
     }
   }, [fetchedData, fetchedUsers, fetchedServers]);
+
+  useEffect(() => {
+    if (isWorkspaceError || isUserError || isServerError) {
+      notification.error({
+        message: 'Ошибка при загрузке рабочих пространств',
+        duration: NOTIFICATION_DURATION,
+      });
+    }
+  }, [isWorkspaceError, isUserError, isServerError]);
 
   const onAddClick = () => {
     setIsModalOpen(true);
