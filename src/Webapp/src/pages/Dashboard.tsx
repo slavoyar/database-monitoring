@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC, useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Navbar } from '@components/common/';
 import { Cards } from '@components/dashboard/';
@@ -13,7 +13,6 @@ import '@css/Dashboard.css';
 
 const NOTIFICATION_DURATION = 10;
 
-
 const Dashboard: FC = () => {
   // TODO: Add ability to get servers from workspace
   const [servers, setServers] = useState<ServerShort[]>([]);
@@ -24,19 +23,20 @@ const Dashboard: FC = () => {
   const { data: fetchedServers }
     = useGetServerByIdsShortQuery(serverIds ?? [], { skip: !serverIds });
 
-  function updateServerState(server: ServerShort): void {
-    const newServers = [...servers];
-    const index = newServers.findIndex(s => s.id === server.id);
-    if (index >= 0) {
-      newServers[index] = server;
-    }
-    setServers(newServers);
-  }
-
   useEffect(() => {
     serverStateService.startConnection();
-    serverStateService.onReceive(updateServerState);
   }, []);
+
+  useEffect(() => {
+    serverStateService.onReceive(server => {
+      const newServers = [...servers];
+      const index = newServers.findIndex(s => s.id === server.id);
+      if (index >= 0) {
+        newServers[index] = server;
+      }
+      setServers(newServers);
+    });
+  }, [servers]);
 
   useEffect(() => {
     if (fetchedServers) {

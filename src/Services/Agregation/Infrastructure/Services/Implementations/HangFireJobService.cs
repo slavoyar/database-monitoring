@@ -83,18 +83,20 @@ namespace Agregation.Infrastructure.Services.Implementations
                     {
                         _AppDatabaseContext.Logs.AddRange(logsList);
                         _AppDatabaseContext.SaveChanges();
+                        // Update server state due to logs change
+                        newServerState = _serverPatientSetService.GetShortAsync(server.Id).Result;
                     }
 
-                    newServerState = _serverPatientSetService.GetShortAsync(server.Id).Result;
-
-                    // Send new data to SignalR Group
                     if (newServerState.Status != ServerState.Working)
                     {
                         newServerState.Status = ServerState.Working;
                         _serverPatientSetService.UpdateStatusAsync(newServerState).Wait();
-                        _hubContext.Clients.Group(server.Id.ToString()).SendAsync("Receive", newServerState).Wait();
                     }
-
+                    else if (!areNewLogs)
+                    {
+                        continue;
+                    }
+                    _hubContext.Clients.Group(server.Id.ToString()).SendAsync("Receive", newServerState).Wait();
                 }
                 catch (Exception ex)
                 {
