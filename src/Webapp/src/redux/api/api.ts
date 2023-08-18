@@ -20,7 +20,7 @@ export function isAuthResponse(value: AuthResponse | User[]): value is AuthRespo
 export const api = createApi({
   reducerPath: 'api',
   baseQuery: customFetchBase,
-  tagTypes: ['Users', 'UserInfo', 'Workspace'],
+  tagTypes: ['Users', 'UserInfo', 'Workspace', 'Servers'],
   endpoints: (builder) => ({
     login: builder.mutation<TokenModel, AuthLoginModel>({
       query: (data) => (

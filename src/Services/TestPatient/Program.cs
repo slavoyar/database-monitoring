@@ -1,8 +1,8 @@
 using Hangfire;
 using Hangfire.PostgreSql;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using TestPatient.Data;
-using Microsoft.EntityFrameworkCore;
 using TestPatient.Interfaces;
 using TestPatient.Services;
 
@@ -62,9 +62,9 @@ app.MapControllers();
 app.UseHangfireDashboard("/hangfire", new DashboardOptions
 {
     Authorization = new[]
-            {
-                new  HangfireAuthorizationFilter("admin")
-            }
+        {
+            new  HangfireAuthorizationFilter("admin")
+        }
 });
 
 RecurringJobManager recurringJobManager = new();

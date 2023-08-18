@@ -86,6 +86,10 @@ module.exports = {
         target: 'http://localhost:5000/',
       },
       {
+        context: ['/api/server', '/api/log', '/serverState'],
+        target: 'http://localhost:5002/',
+      },
+      {
         context: ['/api/v1/workspace', '/api/v1/users', '/api/v1/servers'],
         target: 'http://localhost:5009/',
       },

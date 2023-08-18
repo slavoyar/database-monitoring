@@ -1,13 +1,14 @@
 import React, { FC, useEffect, useState } from 'react';
 import { PropertyInput, PropertySelect } from '@components/common';
 import { User, UserId, WorkspaceTableData } from '@models';
-import { MOCK_SERVERS, Server, ServerId } from '@models/Server';
+import { Server, ServerId } from '@models/Server';
 import { ValueWithLabel } from '@models/Types';
 import { Modal, ModalFuncProps } from 'antd';
 
 interface EditWorkspaceDialogProps extends ModalFuncProps {
   workspace: WorkspaceTableData | undefined;
   users: User[];
+  servers: Server[];
   isOpen: boolean;
   onSave: (workspace: WorkspaceTableData) => void;
 }
@@ -17,6 +18,7 @@ const EditWorkspaceDialog: FC<EditWorkspaceDialogProps> = ({
   isOpen,
   onSave,
   users: fetchedUsers,
+  servers: fetchedServers,
   ...props
 }: EditWorkspaceDialogProps) => {
   const [name, setName] = useState<string>('');
@@ -24,6 +26,7 @@ const EditWorkspaceDialog: FC<EditWorkspaceDialogProps> = ({
   const [users, setUsers] = useState<User[]>([]);
   const [servers, setServers] = useState<Server[]>([]);
   const [userOptions, setUserOptions] = useState<ValueWithLabel[]>([]);
+  const [serverOptions, setServerOptions] = useState<ValueWithLabel[]>([]);
 
   useEffect(() => {
     setName(workspace?.name ?? '');
@@ -41,7 +44,15 @@ const EditWorkspaceDialog: FC<EditWorkspaceDialogProps> = ({
     )));
   }, [fetchedUsers]);
 
-  const serverOptions = MOCK_SERVERS.map((server) => ({ value: server.id, label: server.name }));
+  useEffect(() => {
+    setServerOptions(fetchedServers.map(server => (
+      {
+        value: server.id,
+        label: server.name,
+      }
+    )));
+  }, [fetchedServers]);
+
 
   const computedTitle = workspace
     ? 'Редактировать рабочее пространство'
@@ -66,12 +77,11 @@ const EditWorkspaceDialog: FC<EditWorkspaceDialogProps> = ({
   };
 
   const onUserChange = (ids: UserId[]) => {
-    console.error(ids, fetchedUsers);
     setUsers(fetchedUsers.filter(u => ids.includes(u.id)));
   };
 
   const onServerChange = (ids: ServerId[]) => {
-    setServers(MOCK_SERVERS.filter(s => ids.includes(s.id)));
+    setServers(fetchedServers.filter(s => ids.includes(s.id)));
   };
 
   return (
