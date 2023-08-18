@@ -6,6 +6,7 @@ import {
   workspacesToTableData,
   WorkspaceTableData,
 } from '@models/Workspace';
+import { useGetServersByPageQuery } from '@redux/api/agregationApi';
 import { isAuthResponse, useFetchUsersQuery } from '@redux/api/api';
 import {
   useCreateWorkspaceMutation,
@@ -13,10 +14,9 @@ import {
   useGetAllWorkspacesQuery,
   useUpdateWorkspaceMutation,
 } from '@redux/api/workspaceApi';
-import { Button, Table, notification } from 'antd';
+import { Button, notification, Table } from 'antd';
 
 import EditWorkspaceDialog from './EditWorkspaceDialog';
-import { useGetServersByPageQuery } from '@redux/api/agregationApi';
 
 enum WorkspaceTableColumn {
   NAME = 'name',
