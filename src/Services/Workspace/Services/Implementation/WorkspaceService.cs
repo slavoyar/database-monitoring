@@ -244,7 +244,6 @@ public class WorkspaceService : IWorkspaceService
         workspace.Description = workspaceDto.Description;
         workspace.Name = workspaceDto.Name;
         unitOfWork.Workspaces.Update(workspace);
-        //await unitOfWork.Workspaces.SaveChangesAsync();
 
         var workspaceUsersOuterIds = workspace.Users.Select(user => user.OuterId);
         var usersToDelete = workspace.Users.Where(user => !workspaceDto.Users.Contains(user.OuterId)).ToList();
@@ -268,12 +267,9 @@ public class WorkspaceService : IWorkspaceService
 
         await unitOfWork.Workspaces.SaveChangesAsync();
 
-        // await ReplaceEntities(workspace.Users, workspaceDto.Users, unitOfWork.Users, workspace);
-        // await ReplaceEntities(workspace.Servers, workspaceDto.Servers, unitOfWork.Servers, workspace);
-
         // Update entity in cashe
-        // var workspaceToCache = mapper.Map<WorkspaceDto>(workspace);
-        // await workspaceCacheReposotory.SetAsync(workspace.Id.ToString(), workspaceToCache);
+        var workspaceToCache = mapper.Map<WorkspaceDto>(workspace);
+        await workspaceCacheReposotory.SetAsync(workspace.Id.ToString(), workspaceToCache);
 
         if(!workspace.Users.Any())
             return true;
