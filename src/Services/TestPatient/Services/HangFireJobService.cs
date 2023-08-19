@@ -19,7 +19,7 @@ namespace TestPatient.Services
             var hostId = _configuration.GetValue<string>("HostId") ?? throw new NullReferenceException("HostId is null");
             var testLogs = TestLogs.GetTestLogs(hostId);
 
-            foreach ( var log in testLogs )
+            foreach (var log in testLogs)
             {
                 _hangfireDatabaseContext.PatientLogs.Add(log);
                 _hangfireDatabaseContext.SaveChanges();
@@ -30,17 +30,17 @@ namespace TestPatient.Services
         {
             var hostId = _configuration.GetValue<string>("HostId") ?? throw new NullReferenceException("HostId is null");
 
-            for ( int i = 0; i < 60; i++ )
+            for (int i = 0; i < 10; i++)
             {
                 var testLogs = TestLogs.GetTestLogs(hostId);
-                foreach ( var log in testLogs )
+                foreach (var log in testLogs)
                 {
                     _hangfireDatabaseContext.PatientLogs.Add(log);
                     _hangfireDatabaseContext.SaveChanges();
                 }
 
                 var random = new Random();
-                var randomValue = random.Next(500, 1000);
+                var randomValue = random.Next(3000, 6000);
                 Task.Delay(randomValue).Wait();
             }
         }
