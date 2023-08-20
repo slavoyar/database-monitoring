@@ -33,82 +33,92 @@ namespace Agregation.Infrastructure.Services.Implementations
 
         public void ReccuringJob()
         {
-            var patientEndpoint = _configuration.GetValue<string>("PatientEndpoint") ?? throw new NullReferenceException("PatientEndpoint from appsettings is null");
-            var servers = _serverPatientSetService.GetPagedAsync(1, 100).Result;
-            ShortServerPatientDto? newServerState = null;
-
-            foreach (var server in servers)
+            // Presentation only
+            for (int i = 0; i < 10; i++)
             {
-                try
+                var patientEndpoint = _configuration.GetValue<string>("PatientEndpoint") ?? throw new NullReferenceException("PatientEndpoint from appsettings is null");
+                var servers = _serverPatientSetService.GetPagedAsync(1, 100).Result;
+                ShortServerPatientDto? newServerState = null;
+
+                foreach (var server in servers)
                 {
-                    newServerState = _serverPatientSetService.GetShortAsync(server.Id).Result;
-
-                    var serverDataEndpoint = new Uri("http://" + server.IdAddress + "/" + patientEndpoint);
-                    var _httpClient = new HttpClient();
-                    var httpResponse = _httpClient.GetAsync(serverDataEndpoint).Result;
-
-                    if (!httpResponse.IsSuccessStatusCode || newServerState == null)
+                    try
                     {
-                        if (newServerState != null && newServerState.Status != ServerState.Warn)
-                        {
-                            newServerState.Status = ServerState.Warn;
-                            _serverPatientSetService.UpdateStatusAsync(newServerState).Wait();
-                            _hubContext.Clients.Group(server.Id.ToString()).SendAsync("Receive", newServerState).Wait();
-                        }
-                        continue;
-                    }
-
-                    var serverLogs = httpResponse.Content.ReadFromJsonAsync<List<SendingLogsModel>>().Result;
-
-                    var logsList = new List<Log>();
-                    foreach (var log in serverLogs)
-                    {
-                        var newLog = new Log()
-                        {
-                            Id = new Guid(log.Id),
-                            CriticalStatus = log.CriticalStatus,
-                            ErrorState = log.ErrorState,
-                            ServiceType = log.ServiceType,
-                            ServiceName = log.ServiceName,
-                            CreationDate = log.CreatedAt,
-                            Message = log.Message,
-                            ServerPatientId = new Guid(log.ServerId)
-                        };
-                        logsList.Add(newLog);
-                    }
-
-                    var areNewLogs = logsList.Count > 0;
-
-                    if (areNewLogs)
-                    {
-                        _AppDatabaseContext.Logs.AddRange(logsList);
-                        _AppDatabaseContext.SaveChanges();
-                        // Update server state due to logs change
                         newServerState = _serverPatientSetService.GetShortAsync(server.Id).Result;
-                    }
 
-                    if (newServerState.Status != ServerState.Working)
-                    {
-                        newServerState.Status = ServerState.Working;
-                        _serverPatientSetService.UpdateStatusAsync(newServerState).Wait();
+                        var serverDataEndpoint = new Uri("http://" + server.IdAddress + "/" + patientEndpoint);
+                        var _httpClient = new HttpClient();
+                        var httpResponse = _httpClient.GetAsync(serverDataEndpoint).Result;
+
+                        if (!httpResponse.IsSuccessStatusCode || newServerState == null)
+                        {
+                            if (newServerState != null && newServerState.Status != ServerState.Warn)
+                            {
+                                newServerState.Status = ServerState.Warn;
+                                _serverPatientSetService.UpdateStatusAsync(newServerState).Wait();
+                                _hubContext.Clients.Group(server.Id.ToString()).SendAsync("Receive", newServerState).Wait();
+                            }
+                            continue;
+                        }
+
+                        var serverLogs = httpResponse.Content.ReadFromJsonAsync<List<SendingLogsModel>>().Result;
+                        if (serverLogs is null) continue;
+
+                        var logsList = new List<Log>();
+                        foreach (var log in serverLogs)
+                        {
+                            var newLog = new Log()
+                            {
+                                Id = new Guid(log.Id),
+                                CriticalStatus = log.CriticalStatus,
+                                ErrorState = log.ErrorState,
+                                ServiceType = log.ServiceType,
+                                ServiceName = log.ServiceName,
+                                CreationDate = log.CreatedAt,
+                                Message = log.Message,
+                                ServerPatientId = new Guid(log.ServerId)
+                            };
+                            logsList.Add(newLog);
+                        }
+
+                        var areNewLogs = logsList.Count > 0;
+
+                        if (areNewLogs)
+                        {
+                            _AppDatabaseContext.Logs.AddRange(logsList);
+                            _AppDatabaseContext.SaveChanges();
+                            // Update server state due to logs change
+                            newServerState = _serverPatientSetService.GetShortAsync(server.Id).Result;
+                        }
+
+                        if (newServerState.Status != ServerState.Working)
+                        {
+                            newServerState.Status = ServerState.Working;
+                            _serverPatientSetService.UpdateStatusAsync(newServerState).Wait();
+                        }
+                        else if (!areNewLogs)
+                        {
+                            continue;
+                        }
+                        _hubContext.Clients.Group(server.Id.ToString()).SendAsync("Receive", newServerState).Wait();
                     }
-                    else if (!areNewLogs)
+                    catch (Exception ex)
                     {
-                        continue;
+                        if (newServerState != null && newServerState.Status != ServerState.Down)
+                        {
+                            newServerState.Status = ServerState.Down;
+                            _serverPatientSetService.UpdateStatusAsync(newServerState).Wait();
+                            _hubContext.Clients.Group(newServerState.Id.ToString()).SendAsync("Receive", newServerState).Wait();
+                        }
+                        Console.WriteLine(ex.Message);
                     }
-                    _hubContext.Clients.Group(server.Id.ToString()).SendAsync("Receive", newServerState).Wait();
                 }
-                catch (Exception ex)
-                {
-                    if (newServerState != null && newServerState.Status != ServerState.Down)
-                    {
-                        newServerState.Status = ServerState.Down;
-                        _serverPatientSetService.UpdateStatusAsync(newServerState).Wait();
-                        _hubContext.Clients.Group(newServerState.Id.ToString()).SendAsync("Receive", newServerState).Wait();
-                    }
-                    Console.WriteLine(ex.Message);
-                }
+
+                var random = new Random();
+                var randomValue = random.Next(3000, 6000);
+                Task.Delay(randomValue).Wait();
             }
+
         }
 
         public void DelayedJob()
