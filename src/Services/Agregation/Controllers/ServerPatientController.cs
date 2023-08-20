@@ -1,4 +1,4 @@
-﻿using Agregation.Infrastructure.Services.Abstracts;
+using Agregation.Infrastructure.Services.Abstracts;
 using Agregation.Infrastructure.Services.DTO;
 using Agregation.ViewModels.ServerPatient;
 using AutoMapper;

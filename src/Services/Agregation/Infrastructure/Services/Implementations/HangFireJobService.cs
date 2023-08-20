@@ -1,4 +1,4 @@
-﻿using Agregation.Domain.Intefaces;
+using Agregation.Domain.Intefaces;
 using Agregation.Domain.Models;
 using Agregation.Infrastructure.DataAccess;
 using Agregation.Infrastructure.Services.Abstracts;

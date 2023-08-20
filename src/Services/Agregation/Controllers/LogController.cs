@@ -1,4 +1,4 @@
-﻿using Agregation.Infrastructure.Services.Abstracts;
+using Agregation.Infrastructure.Services.Abstracts;
 using Agregation.ViewModels.LogModels;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
