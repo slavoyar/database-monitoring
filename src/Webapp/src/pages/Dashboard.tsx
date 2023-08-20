@@ -7,7 +7,7 @@ import { useGetServerByIdsShortQuery } from '@redux/api/agregationApi';
 import { useGetWorkspaceServersQuery } from '@redux/api/workspaceApi';
 import { RootState } from '@redux/store';
 import serverStateService from '@signalr/serverStateService';
-import { Layout, notification } from 'antd';
+import { Layout, notification, Spin } from 'antd';
 
 import '@css/Dashboard.css';
 
@@ -20,7 +20,7 @@ const Dashboard: FC = () => {
 
   const { data: serverIds, isError }
     = useGetWorkspaceServersQuery(workspaceId as WorkspaceId, { skip: !workspaceId });
-  const { data: fetchedServers }
+  const { data: fetchedServers, isFetching }
     = useGetServerByIdsShortQuery(serverIds ?? [], { skip: !serverIds });
 
   useEffect(() => {
@@ -62,7 +62,11 @@ const Dashboard: FC = () => {
       <Navbar />
       <Layout.Content className='dashboard-content'>
         <div className='card-container'>
-          <Cards servers={servers ?? []} />
+          {
+            isFetching
+              ? <Spin className='spinner' />
+              : <Cards servers={servers ?? []} />
+          }
         </div>
       </Layout.Content>
     </Layout>
