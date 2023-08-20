@@ -19,4 +19,13 @@ public record ServerRemovedFromWorkspaceAppEvent : BaseEvent
     /// Workspace identifier
     /// </summary>
     public Guid WorkspaceId { get; init; }
+
+    /// <summary>
+    /// Map from models
+    /// </summary>
+    /// <param name="server">Server that was removed</param>
+    /// <param name="workspace">Workspace, from which server was removed</param>
+    /// <returns></returns>
+    public static ServerRemovedFromWorkspaceAppEvent FromModels(Server server, WorkspaceEntity workspace)
+        => new ServerRemovedFromWorkspaceAppEvent{ServerId = server.OuterId, UsersId = workspace.Users.Select(u => u.OuterId), WorkspaceId = workspace.Id};
 }

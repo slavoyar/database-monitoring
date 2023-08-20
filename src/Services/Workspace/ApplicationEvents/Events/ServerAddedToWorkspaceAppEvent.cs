@@ -19,4 +19,13 @@ public record ServerAddedToWorkspaceAppEvent : BaseEvent
     /// Workspace identifier
     /// </summary>
     public Guid WorkspaceId { get; init; }
+
+    /// <summary>
+    /// Map from models
+    /// </summary>
+    /// <param name="server">Server that was added</param>
+    /// <param name="workspace">Workspace, where server was added</param>
+    /// <returns></returns>
+    public static ServerAddedToWorkspaceAppEvent FromModels(Server server, WorkspaceEntity workspace)
+        => new ServerAddedToWorkspaceAppEvent{ServerId = server.OuterId, UsersId = workspace.Users.Select(u => u.OuterId), WorkspaceId = workspace.Id};
 }

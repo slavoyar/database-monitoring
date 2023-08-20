@@ -19,9 +19,25 @@ public class ApplicationEventService : IApplicationEventService
         this.logger = logger;
         this.eventBus = eventBus;
     }
-    ///<inheritdoc />
-    public void PublishThroughEventBus(BaseEvent @event)
+
+    /// <inheritdoc />
+    public async Task PublishManyThroughEventBus(IEnumerable<BaseEvent> events)
     {
+        if(events == null || events.Count() == 0)
+            return;
+
+        foreach (var @event in events)
+        {
+            await PublishThroughEventBus(@event);
+        }
+    }
+
+    ///<inheritdoc />
+    public Task PublishThroughEventBus(BaseEvent @event)
+    {
+        if(@event == null)
+            return Task.CompletedTask;
+
         try
         {
             logger.LogInformation("Publishing application event:  {IntegrationEventId_published} - ({@IntegrationEvent})", @event.Id, @event);
@@ -31,5 +47,7 @@ public class ApplicationEventService : IApplicationEventService
         {
             logger.LogError(e, "Error Publishing integration event: {IntegrationEventId} - ({@IntegrationEvent})", @event.Id, @event);
         }
+
+        return Task.CompletedTask;
     }
 }
