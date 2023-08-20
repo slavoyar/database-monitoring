@@ -1,22 +1,23 @@
 import React, { FC, useEffect, useState } from 'react';
 import { DeleteOutlined, PlusOutlined } from '@ant-design/icons';
-import { MOCK_SERVERS } from '@models/Server';
+import { Server, ServerId } from '@models';
 import { Optional } from '@models/Types';
-import { Button, Table } from 'antd';
+import {
+  useCreateServerMutation,
+  useDeleteServerMutation,
+  useGetServersByPageQuery,
+  useUpdateServerMutation,
+} from '@redux/api/agregationApi';
+import { Button, Table, TablePaginationConfig } from 'antd';
 
 import EditServerDialog from './EditServerDialog';
+
+const DEFAULT_PAGE_SIZE = 10;
 
 enum ServerTableColumn {
   NAME = 'name',
   STATUS = 'status',
-  ADDRESS = 'address',
-}
-
-export interface ServerTableData {
-  key: string
-  [ServerTableColumn.NAME]: string
-  [ServerTableColumn.STATUS]: string
-  [ServerTableColumn.ADDRESS]: string
+  IP_ADDRESS = 'idAddress',
 }
 
 const columns = [
@@ -32,36 +33,40 @@ const columns = [
   },
   {
     title: 'Адрес',
-    dataIndex: ServerTableColumn.ADDRESS,
-    key: ServerTableColumn.ADDRESS,
+    dataIndex: ServerTableColumn.IP_ADDRESS,
+    key: ServerTableColumn.IP_ADDRESS,
   },
 ];
 
 const ServerTable: FC = () => {
-  const [tableDate, setTableData] = useState<ServerTableData[]>([]);
+  const [pagination, setPagination] = useState<TablePaginationConfig>({
+    current: 1,
+    pageSize: DEFAULT_PAGE_SIZE,
+  });
+  const [tableData, setTableData] = useState<Server[]>([]);
   const [deleteDisabled, setDeleteDisabled] = useState(true);
   const [selectedRows, setSelectedRows] = useState<React.Key[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [currentServer, setcurrentServer] = useState<ServerTableData | undefined>(undefined);
+  const [currentServer, setCurrentServer] = useState<Server | undefined>(undefined);
+  const [deleteServer] = useDeleteServerMutation();
+  const [updateServer] = useUpdateServerMutation();
+  const [createServer] = useCreateServerMutation();
+
+  const { data: servers, isLoading }
+    = useGetServersByPageQuery({ page: pagination.current ?? 1, itemPerPage: DEFAULT_PAGE_SIZE });
 
   useEffect(() => {
-    const data = MOCK_SERVERS.map((server) => ({
-      key: server.id,
-      address: server.address,
-      name: server.name,
-      status: server.status,
-    }));
-    setTableData(data);
-  }, []);
+    if (servers) {
+      setTableData(servers);
+    }
+  }, [servers]);
 
   const onAddClick = () => {
     setIsModalOpen(true);
   };
 
-  const onDeleteClick = () => {
-    const newData = tableDate.filter((item) => !selectedRows.includes(item.key));
-    setSelectedRows([]);
-    setTableData(newData);
+  const onDeleteClick = async () => {
+    await deleteServer(selectedRows[0] as ServerId);
     setDeleteDisabled(true);
   };
 
@@ -75,23 +80,16 @@ const ServerTable: FC = () => {
       setIsModalOpen(false);
     }
     if (currentServer) {
-      setcurrentServer(undefined);
+      setCurrentServer(undefined);
     }
   };
 
-  const onSaveHandler = (server: Omit<Optional<ServerTableData, 'key'>, 'status'>): void => {
-    const result = [...tableDate];
-    const index = tableDate.findIndex((item) => item.key === server.key);
-    if (index < 0) {
-      const newWorkspace = {
-        ...server,
-        key: String(tableDate.length + 1),
-        status: 'bad',
-      };
-      result.push(newWorkspace);
+  const onSaveHandler = async (server: Optional<Server, 'id'>): Promise<void> => {
+    if (server.id) {
+      await updateServer({ id: server.id, name: server.name, idAddress: server.idAddress });
+    } else {
+      await createServer(server as Server);
     }
-    result[index] = { ...server } as ServerTableData;
-    setTableData(result);
     close();
   };
 
@@ -100,8 +98,12 @@ const ServerTable: FC = () => {
     onChange: onSelectChange,
   };
 
-  const onRowClick = (record: ServerTableData): void => {
-    setcurrentServer(record);
+  const onRowClick = (record: Server): void => {
+    setCurrentServer(record);
+  };
+
+  const onTableChange = (paging: TablePaginationConfig): void => {
+    setPagination(paging);
   };
 
   return (
@@ -118,10 +120,14 @@ const ServerTable: FC = () => {
       </Button.Group>
       <Table
         bordered
-        dataSource={tableDate}
+        dataSource={tableData}
         columns={columns}
         rowSelection={rowSelection}
+        rowKey='id'
+        loading={isLoading}
+        pagination={pagination}
         onRow={(record) => ({ onClick: () => onRowClick(record) })}
+        onChange={onTableChange}
       />
       <EditServerDialog
         server={currentServer}

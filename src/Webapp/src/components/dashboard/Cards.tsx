@@ -1,16 +1,16 @@
 import { FC } from 'react';
-import { Server } from '@models';
+import { ServerShort } from '@models';
 
 import ServerCard from './ServerCard';
 
 interface CardsProps {
-  servers: Server[]
+  servers: ServerShort[]
 }
 
 const Cards: FC<CardsProps> = ({ servers }: CardsProps) => (
   <>
     {servers.map((server) => (
-      <ServerCard {...server} key={server.name} />
+      <ServerCard {...server} key={server.id} />
     ))}
   </>
 );

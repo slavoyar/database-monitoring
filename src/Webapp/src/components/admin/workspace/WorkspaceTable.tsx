@@ -6,6 +6,7 @@ import {
   workspacesToTableData,
   WorkspaceTableData,
 } from '@models/Workspace';
+import { useGetServersByPageQuery } from '@redux/api/agregationApi';
 import { isAuthResponse, useFetchUsersQuery } from '@redux/api/api';
 import {
   useCreateWorkspaceMutation,
@@ -13,7 +14,7 @@ import {
   useGetAllWorkspacesQuery,
   useUpdateWorkspaceMutation,
 } from '@redux/api/workspaceApi';
-import { Button, Table } from 'antd';
+import { Button, notification, Table } from 'antd';
 
 import EditWorkspaceDialog from './EditWorkspaceDialog';
 
@@ -31,6 +32,8 @@ function userArrayToString(arr: User[]): string {
 function serverArrayToString(arr: Server[]): string {
   return arr.map((item) => item.name).join(', ');
 }
+
+const NOTIFICATION_DURATION = 10;
 
 const columns = [
   {
@@ -66,18 +69,29 @@ const WorkspaceTable: FC = () => {
     undefined,
   );
 
-  const { data: fetchedData } = useGetAllWorkspacesQuery();
-  const { data: fetchedUsers } = useFetchUsersQuery();
+  const { data: fetchedData, isError: isWorkspaceError } = useGetAllWorkspacesQuery();
+  const { data: fetchedUsers, isError: isUserError } = useFetchUsersQuery();
+  // TODO: add endpoint for all servers by user id.
+  const { data: fetchedServers, isError: isServerError }
+    = useGetServersByPageQuery({ page: 1, itemPerPage: 100 });
   const [createWorkspace] = useCreateWorkspaceMutation();
   const [updateWorkspace] = useUpdateWorkspaceMutation();
   const [deleteWorkspace] = useDeleteWorkspaceMutation();
 
   useEffect(() => {
-    if (fetchedData && fetchedUsers && !isAuthResponse(fetchedUsers)) {
-      // TODO: Add servers
-      setData(workspacesToTableData(fetchedData, fetchedUsers, []));
+    if (fetchedData && fetchedUsers && fetchedServers && !isAuthResponse(fetchedUsers)) {
+      setData(workspacesToTableData(fetchedData, fetchedUsers, fetchedServers));
     }
-  }, [fetchedData, fetchedUsers]);
+  }, [fetchedData, fetchedUsers, fetchedServers]);
+
+  useEffect(() => {
+    if (isWorkspaceError || isUserError || isServerError) {
+      notification.error({
+        message: 'Ошибка при загрузке рабочих пространств',
+        duration: NOTIFICATION_DURATION,
+      });
+    }
+  }, [isWorkspaceError, isUserError, isServerError]);
 
   const onAddClick = () => {
     setIsModalOpen(true);
@@ -148,6 +162,7 @@ const WorkspaceTable: FC = () => {
       <EditWorkspaceDialog
         workspace={currentWorkspace}
         users={fetchedUsers && !isAuthResponse(fetchedUsers) ? fetchedUsers : []}
+        servers={fetchedServers ?? []}
         isOpen={!!currentWorkspace || isModalOpen}
         onCancel={close}
         onSave={onSaveHandler}

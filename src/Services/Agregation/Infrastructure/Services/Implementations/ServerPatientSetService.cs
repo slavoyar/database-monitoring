@@ -2,6 +2,7 @@
 using Agregation.Domain.Models;
 using Agregation.Infrastructure.Services.Abstracts;
 using Agregation.Infrastructure.Services.DTO;
+using Agregation.ViewModels.ServerPatient;
 using AutoMapper;
 
 namespace Agregation.Infrastructure.Services.Implementations
@@ -37,10 +38,19 @@ namespace Agregation.Infrastructure.Services.Implementations
             return mapper.Map<ICollection<ServerPatientDto>>(entities);
         }
 
-        public async Task<ServerPatientDto> AddAsync(ServerPatientDto dto)
+        public async Task<ServerPatientDto> AddAsync(ServerPatientEditModel model)
         {
-            var entity = mapper.Map<ServerPatient>(dto);
-            var entityToReturn = await serverPatientRepository.AddAsync(entity);
+            var server = new ServerPatient
+            {
+                Id = model.Id,
+                Name = model.Name,
+                IdAddress = model.IdAddress,
+                Status = "Down",
+                PingStatus = false,
+                ConnectionStatus = false,
+                IconId = "1",
+            };
+            var entityToReturn = await serverPatientRepository.AddAsync(server);
             await serverPatientRepository.SaveChangesAsync();
             var dtoToReturn = mapper.Map<ServerPatientDto>(entityToReturn);
             return dtoToReturn;
@@ -63,6 +73,13 @@ namespace Agregation.Infrastructure.Services.Implementations
             return dto;
         }
 
+        public async Task<ShortServerPatientDto?> GetShortAsync(Guid id)
+        {
+            var entity = await serverPatientRepository.GetAsync(id);
+            var dto = mapper.Map<ShortServerPatientDto>(entity);
+            return dto;
+        }
+
         public async Task<ICollection<ServerPatientDto>?> GetListByListGuid(ICollection<Guid> guids)
         {
             var entity = await Task.Run(() => serverPatientRepository.GetListGuid(guids));
@@ -77,15 +94,29 @@ namespace Agregation.Infrastructure.Services.Implementations
             return dto;
         }
 
-        public async Task<bool> TryUpdateAsync(ServerPatientDto dto)
+        public async Task<bool> TryUpdateAsync(ServerPatientEditModel editModel)
         {
-            var entity = mapper.Map<ServerPatient>(dto);
-            return await Task.Run(() =>
-            {
-                var isSuccess = serverPatientRepository.TryUpdate(entity);
-                serverPatientRepository.SaveChanges();
-                return isSuccess;
-            });
+            var server = serverPatientRepository.Get(editModel.Id);
+            if (server == null)
+                return false;
+
+            server.Name = editModel.Name;
+            server.IdAddress = editModel.IdAddress;
+            var result = serverPatientRepository.TryUpdate(server);
+            await serverPatientRepository.SaveChangesAsync();
+            return result;
+        }
+
+        public async Task<bool> UpdateStatusAsync(ShortServerPatientDto model)
+        {
+            var server = serverPatientRepository.Get(model.Id);
+            if (server == null)
+                return false;
+
+            server.Status = model.Status;
+            var result = serverPatientRepository.TryUpdate(server);
+            await serverPatientRepository.SaveChangesAsync();
+            return result;
         }
     }
 }

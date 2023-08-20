@@ -18,11 +18,9 @@ services:
     restart: always
     ports:
       - 6379:6379
-    command:
-          --requirepass ${REDIS_PASSWORD}
+    command: --requirepass ${REDIS_PASSWORD}
     volumes:
       - redis_data:/usr/share/redis/data/
-      
 
   Elasticsearch:
     image: elasticsearch:7.16.2
@@ -32,22 +30,21 @@ services:
       - elastic_data:/usr/share/elasticsearch/data/
     environment:
       ES_JAVA_OPTS: "-Xmx256m -Xms256m"
-      discovery.type: single-node    
+      discovery.type: single-node
     ports:
-    - '9200:9200'
-    - '9300:9300'
+      - '9200:9200'
+      - '9300:9300'
 
   Kibana:
     image: kibana:7.16.2
     container_name: kibana
-    restart: always       
+    restart: always
     ports:
-    - '5601:5601'
+      - '5601:5601'
     environment:
-      - ELASTICSEARCH_URL=http://elasticsearch:9200  
+      - ELASTICSEARCH_URL=http://elasticsearch:9200
     depends_on:
-      - Elasticsearch  
-
+      - Elasticsearch
 
   # -------------------------------------------------------
   front:
@@ -178,6 +175,7 @@ services:
       - workspace-postgre
       - rabbitmq
       - Elasticsearch
+      - Redis
     build:
       context: ../src
       dockerfile: Services/Workspace/Dockerfile
@@ -233,4 +231,5 @@ volumes:
   front_build:
   elastic_data:
   redis_data:
+
 

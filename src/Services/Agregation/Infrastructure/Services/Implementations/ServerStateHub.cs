@@ -11,7 +11,6 @@ namespace Agregation.Infrastructure.Services.Implementations
         {
             await Groups.AddToGroupAsync(Context.ConnectionId, serverId.ToString());
         }
-
         public async Task SubscribeToGroup(ICollection<Guid> ListServerId)
         {
             foreach (var serverId in ListServerId)
@@ -32,16 +31,6 @@ namespace Agregation.Infrastructure.Services.Implementations
         {
             await Groups.RemoveFromGroupAsync(Context.ConnectionId, serverId.ToString());
 
-        }
-
-        public async Task Send(string username, string message)
-        {
-            await Clients.All.SendAsync("Receive", username, message);
-        }
-
-        public async Task SendGroup(string serverId, string message)
-        {
-            await Clients.Group(serverId).SendAsync("Receive", message);
         }
     }
 }

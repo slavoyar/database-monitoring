@@ -9,8 +9,8 @@ namespace Auth.Data
 {
     public class AuthDbContext : ApiAuthorizationDbContext<AuthUser>
     {
-        private static readonly string adminGuid = Guid.NewGuid().ToString();
-        private static readonly string adminRoleGuid = Guid.NewGuid().ToString();
+        private static readonly string adminGuid = "7499844d-efea-4494-9612-39138922c9db";
+        private static readonly string adminRoleGuid = "78f8db3f-fa66-466a-9649-339364d6358f";
 
         public AuthDbContext(
             DbContextOptions dbContextOptions,
