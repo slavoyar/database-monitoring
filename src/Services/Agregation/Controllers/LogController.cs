@@ -1,10 +1,12 @@
-﻿using Agregation.Infrastructure.Services.Abstracts;
+using Agregation.Infrastructure.Services.Abstracts;
 using Agregation.ViewModels.LogModels;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Agregation.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     public class LogController : Controller
     {

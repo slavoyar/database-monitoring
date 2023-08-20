@@ -3,6 +3,11 @@
   margin: auto;
 }
 
+.card-container .spinner {
+  margin: 20% auto;
+  display: block;
+}
+
 .dashboard-content {
   height: calc(100vh - 64px);
 }

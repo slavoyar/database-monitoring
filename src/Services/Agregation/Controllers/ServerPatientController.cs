@@ -1,11 +1,13 @@
-﻿using Agregation.Infrastructure.Services.Abstracts;
+using Agregation.Infrastructure.Services.Abstracts;
 using Agregation.Infrastructure.Services.DTO;
 using Agregation.ViewModels.ServerPatient;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Agregation.Controllers
 {
+    [Authorize]
     [Route("api/server")]
     public class ServerPatientController : Controller
     {
@@ -29,7 +31,7 @@ namespace Agregation.Controllers
         [HttpGet("{page}/{itemsPerPage}")]
         public async Task<ActionResult<ICollection<ServerPatientViewModel>>> GetPaged(int page, int itemsPerPage)
         {
-            if (page <= 0 || itemsPerPage <= 0) 
+            if (page <= 0 || itemsPerPage <= 0)
                 return NotFound();
             var dtoPage = await serverPatientSetService.GetPagedAsync(page, itemsPerPage);
             var viewModelPage = mapper.Map<ICollection<ServerPatientViewModel>>(dtoPage);
@@ -58,7 +60,7 @@ namespace Agregation.Controllers
         [HttpGet("short/{page}/{itemsPerPage}")]
         public async Task<ActionResult<ICollection<ServerPatientShortViewModel>>> GetShortListByPage(int page, int itemsPerPage)
         {
-            if (page <= 0 || itemsPerPage <= 0) 
+            if (page <= 0 || itemsPerPage <= 0)
                 return NotFound("No data fro specidied page");
             var dtoPage = await serverPatientSetService.GetShortServerPatientsPaged(page, itemsPerPage);
             var viewModelPage = mapper.Map<ICollection<ServerPatientShortViewModel>>(dtoPage);
